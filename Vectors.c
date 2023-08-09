@@ -1,0 +1,70 @@
+#include <math.h>
+
+#include "Vectors.h"
+
+IVec3 Min(IVec3 a, IVec3 b) {
+    IVec3 result;
+
+    result.X = (a.X <= b.X) ? a.X : b.X;
+    result.Y = (a.Y <= b.Y) ? a.Y : b.Y;
+    result.Z = (a.Z <= b.Z) ? a.Z : b.Z;
+
+    return result;
+}
+
+IVec3 Max(IVec3 a, IVec3 b) {
+    IVec3 result;
+
+    result.X = (a.X >= b.X) ? a.X : b.X;
+    result.Y = (a.Y >= b.Y) ? a.Y : b.Y;
+    result.Z = (a.Z >= b.Z) ? a.Z : b.Z;
+
+    return result;
+}
+
+IVec3 Transform2DTo3D(IVec2 vector, Axis axis) {
+    IVec3 result;
+    switch (axis) {
+        case AXIS_X:
+            result.X = 0;
+            result.Y = vector.X;
+            result.Z = vector.Y; 
+            return result;
+        case AXIS_Y:
+            result.X = vector.X;
+            result.Y = 0;
+            result.Z = vector.Y; 
+            return result;
+        case AXIS_Z:
+        default:
+            result.X = vector.X;
+            result.Y = vector.Y;
+            result.Z = 0;
+            return result;
+    }
+}
+
+IVec3 Add(const IVec3 a, const IVec3 b) {
+    IVec3 result;
+    result.X = a.X + b.X;
+    result.Y = a.Y + b.Y;
+    result.Z = a.Z + b.Z;
+    return result;
+}
+
+IVec3 Substract(const IVec3 a, const IVec3 b) {
+    IVec3 result;
+    result.X = a.X - b.X;
+    result.Y = a.Y - b.Y;
+    result.Z = a.Z - b.Z;
+    return result;
+}
+
+int Dot(const IVec3 a, const IVec3 b) {
+    return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+}
+
+double Distance(IVec3 a, IVec3 b) {
+    IVec3 difference = Substract(a, b);
+    return sqrt(Dot(difference, difference));
+}

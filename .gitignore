@@ -1,0 +1,4 @@
+doc
+*.DS_Store
+CC_API
+makefile
