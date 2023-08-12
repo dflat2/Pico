@@ -5,6 +5,7 @@ struct ChatCommand AbortCommand;
 struct ChatCommand AscendCommand;
 struct ChatCommand CenterCommand;
 struct ChatCommand CopyCommand;
+struct ChatCommand CutCommand;
 struct ChatCommand DescendCommand;
 struct ChatCommand MarkAllCommand;
 struct ChatCommand MarkCommand;
