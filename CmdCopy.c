@@ -76,10 +76,10 @@ struct ChatCommand CopyCommand = {
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
 		"&b/Copy &f- Copies the blocks in an area.",
-		"&b/Copy save <name> &f- Saves what you have copied.",
-        "&b/Copy load <name> &f- Loads what you have saved.",
-		"&b/Copy list &f- Lists what you have saved.",
-		"&b/Copy delete <name> &f- Deletes the specified copy."
+		NULL,
+		NULL,
+		NULL,
+		NULL
 	},
 	NULL
 };
