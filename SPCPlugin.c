@@ -43,6 +43,7 @@ static void RegisterCommands() {
 	Commands_Register(&AscendCommand);
 	Commands_Register(&DescendCommand);
     Commands_Register(&MeasureCommand);
+    Commands_Register(&CopyCommand);
     Commands_Register(&AbortCommand);
     Commands_Register(&MarkCommand);
     Commands_Register(&MarkAllCommand);
