@@ -9,6 +9,7 @@ struct ChatCommand DescendCommand;
 struct ChatCommand MarkAllCommand;
 struct ChatCommand MarkCommand;
 struct ChatCommand MeasureCommand;
+struct ChatCommand PasteCommand;
 struct ChatCommand PlaceCommand;
 struct ChatCommand ReachDistanceCommand;
 struct ChatCommand ZCommand;

@@ -58,7 +58,7 @@ static void CopySelectionHandler(IVec3* marks, int count, void* object) {
 		.height = max.Y - min.Y + 1,
 		.length = max.Z - min.Z + 1,
 		.content = blocks,
-		.anchor = marks[0]
+		.anchor = anchor
 	};
 
 	SetCopiedBuffer(buffer);
