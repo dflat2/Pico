@@ -20,9 +20,9 @@ static void ShowBlocksCopied(int amount) {
 	char message[128];
 
 	if (amount == 1) {
-		snprintf(message, sizeof(message), "%d block were copied.", amount);
+		snprintf(message, sizeof(message), "&b%d &fblock were copied.", amount);
 	} else {
-		snprintf(message, sizeof(message), "%d blocks were copied.", amount);
+		snprintf(message, sizeof(message), "&b%d &fblocks were copied.", amount);
 	}
 
 	PlayerMessage(message);

@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdio.h>
 
+#include "CC_API/BlockID.h"
 #include "CC_API/Chat.h"
 #include "CC_API/Core.h"
 #include "CC_API/Game.h"
@@ -44,6 +45,7 @@ static void PasteSelectionHandler(IVec3* marks, int count, void* object) {
         return;
     }
 
+	PasteArgs* pasteArgs = (PasteArgs*)object;
 	BlocksBuffer buffer = GetCopiedBuffer();
 	IVec3 origin = Substract(marks[0], buffer.anchor);
 	int index = -1;
@@ -53,7 +55,10 @@ static void PasteSelectionHandler(IVec3* marks, int count, void* object) {
 			for (int z = origin.Z; z < origin.Z + buffer.length; z++) {
 				index++;
 				if (!IsInWorldBoundaries(x, y, z)) continue;
-				Game_UpdateBlock(x, y, z, buffer.content[index]);
+
+				if (pasteArgs->mode == AIR || buffer.content[index] != BLOCK_AIR) {
+					Game_UpdateBlock(x, y, z, buffer.content[index]);
+				}
 			}
 		}
 	}
@@ -72,7 +77,30 @@ static void Paste_Command(const cc_string* args, int argsCount) {
 		return;
 	}
 
+	if (argsCount >= 2) {
+		PlayerMessage("Usage: &b/Paste [mode]&f.");
+		return;
+	}
+
 	PasteArgs* pasteArgs = allocateZeros(1, sizeof(pasteArgs));
+
+	if (argsCount == 0) {
+		pasteArgs->mode = NORMAL;
+	} else if (argsCount == 1) {
+		cc_string modesString[] = {
+			String_FromConst(":normal"),
+			String_FromConst(":air"),
+		};
+
+		int modesCount = 2;
+		int i_mode;
+
+		if (!TryParseMode((cc_string*)modesString, modesCount, &args[0], &i_mode)) {
+			return;
+		}
+
+		pasteArgs->mode = (PasteMode)i_mode;
+	}
 
     MakeSelection(PasteSelectionHandler, 1, pasteArgs, CleanResources);
     PlayerMessage("&fPlace a block in the corner of where you want to paste.");

@@ -37,7 +37,7 @@ static void ShowUnkownBlock(const cc_string* block) {
     Chat_Add(&message);
 }
 
-static bool TryParseBlock(const cc_string* blockString, BlockID* block) {
+bool TryParseBlock(const cc_string* blockString, BlockID* block) {
     int i_block;
     i_block = Block_Parse(blockString);
 
@@ -50,7 +50,7 @@ static bool TryParseBlock(const cc_string* blockString, BlockID* block) {
     return SUCCESS;
 }
 
-static bool TryParseMode(const cc_string* modes, int modesCount, const cc_string* modeString, int* mode) {
+bool TryParseMode(const cc_string* modes, int modesCount, const cc_string* modeString, int* mode) {
     for (int i = 0; i < modesCount; i++) {
        if (String_CaselessEquals(&modes[i], modeString)) {
             *mode = i;
