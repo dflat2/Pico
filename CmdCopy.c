@@ -32,37 +32,8 @@ static void CopySelectionHandler(IVec3* marks, int count, void* object) {
     if (count != 2) {
         return;
     }
-
-	IVec3 min = Min(marks[0], marks[1]);
-	IVec3 max = Max(marks[0], marks[1]);
-	IVec3 anchor = Substract(marks[0], min);
-
-	int width = max.X - min.X + 1;
-	int height = max.Y - min.Y + 1;
-	int length = max.Z - min.Z + 1;
-
-	BlockID* blocks = allocateZeros(width * height * length, sizeof(BlockID));
-	int index = 0;
-
-	for (int x = min.X; x <= max.X; x++) {
-		for (int y = min.Y; y <= max.Y; y++) {
-			for (int z = min.Z; z <= max.Z; z++) {
-				blocks[index] = GetBlock(x, y, z);
-				index++;
-			}
-		}
-	}
-
-	BlocksBuffer buffer = {
-		.width = max.X - min.X + 1,
-		.height = max.Y - min.Y + 1,
-		.length = max.Z - min.Z + 1,
-		.content = blocks,
-		.anchor = anchor
-	};
-
-	SetCopiedBuffer(buffer);
-	ShowBlocksCopied(buffer.width * buffer.height * buffer.length);
+	int amountCopied = Copy(marks[0], marks[1]);
+	ShowBlocksCopied(amountCopied);
 }
 
 static void Copy_Command(const cc_string* args, int argsCount) {

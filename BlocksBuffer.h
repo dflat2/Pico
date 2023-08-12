@@ -15,5 +15,6 @@ typedef struct BlocksBuffer_ {
 BlocksBuffer GetCopiedBuffer();
 bool BufferIsEmpty();
 void SetCopiedBuffer(BlocksBuffer buffer);
+int Copy(IVec3 mark1, IVec3 mark2);
 
 #endif /* BLOCKS_BUFFER_H */
