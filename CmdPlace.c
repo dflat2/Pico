@@ -9,6 +9,32 @@
 
 #include "WorldUtils.h"
 #include "Messaging.h"
+#include "Draw.h"
+
+static void Place(IVec3 position, BlockID block) {
+	int blocksAffected = 0;
+
+	cc_string cc_blockName = Block_UNSAFE_GetName(block);
+	char blockName[64];
+	String_CopyToRaw(blockName, sizeof(blockName), &cc_blockName);
+	blockName[63] = '\0';
+	char description[64];
+	snprintf(description, sizeof(description), "Place %s", blockName);
+	
+	Draw_Start(description);
+	Draw_Block(position.X, position.Y, position.Z, block);
+	blocksAffected = Draw_End();
+
+	char message[64];
+
+	if (blocksAffected == 1) {
+		snprintf(message, sizeof(message), "&b%s &fblock was placed at &b(%d, %d, %d)&f.", blockName, position.X, position.Y, position.Z);
+	} else {
+		snprintf(message, sizeof(message), "&b(%d, %d, %d)&f is already &b%s&f. No block affected.", position.X, position.Y, position.Z, blockName);
+	}
+
+	PlayerMessage(message);
+}
 
 static void Place_Command(const cc_string* args, int argsCount) {
 	if (argsCount == 2 || argsCount >= 5) {
@@ -44,12 +70,7 @@ static void Place_Command(const cc_string* args, int argsCount) {
 		}
 	}
 
-	Game_UpdateBlock(position.X, position.Y, position.Z, block);
-	cc_string blockName = Block_UNSAFE_GetName(block);
-	char message[64];
-	cc_string cc_message = { message, 0, sizeof(message) };
-	String_Format4(&cc_message, "&b%s &fblock was placed at &b(%i, %i, %i)&f.", &blockName, &position.X, &position.Y, &position.Z);
-	Chat_Add(&cc_message);
+	Place(position, block);
 }
 
 struct ChatCommand PlaceCommand = {

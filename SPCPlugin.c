@@ -17,6 +17,7 @@
 
 #include "Messaging.h"
 #include "Commands.h"
+#include "UndoTree.h"
 
 static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
     const cc_string clientCuboid = String_FromReadonly("/client cuboid");
@@ -57,6 +58,7 @@ static void RegisterCommands() {
 static void SinglePlayerCommandsPlugin_Init(void) {
 	RegisterCommands();
 	RegisterChatSending();
+	UndoTree_Enable();
 }
 
 EXPORT int Plugin_ApiVersion = 1;

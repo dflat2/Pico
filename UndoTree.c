@@ -276,6 +276,7 @@ void UndoTree_PrepareNewNode(char* description) {
 	s_buildingNode->entries = NULL;
 	s_buildingNode->timestamp_Millisecond = Time_Now_Millisecond();
 	s_buildingNode->redoChild = NULL;
+	s_buildingNode->children = List_CreateEmpty();
 }
 
 void UndoTree_AddBlockChangeEntry(signed short x, signed short y, signed short z, DeltaBlockID delta) {
@@ -301,6 +302,12 @@ void UndoTree_AddBlockChangeEntry(signed short x, signed short y, signed short z
 
 void UndoTree_Commit() {
 	if (!s_enabled || !BuildingNode()) return;
+
+	if (s_buildingNode->blocksAffected == 0) {
+		FreeUndoNode(s_buildingNode);
+		s_buildingNode = NULL;
+		return;
+	}
 
 	Attach(s_here, s_buildingNode);
 	s_here = s_buildingNode;
@@ -354,7 +361,7 @@ static void DescribeNode(UndoNode* node, char* message, size_t length) {
 }
 
 static void InitRoot() {
-	UndoNode* s_root = allocate(1, sizeof(UndoNode));
+	s_root = allocate(1, sizeof(UndoNode));
 	s_root->commit = 0;
 	char description[] = "World loaded";
 	strncpy(s_root->description, description, sizeof(description));

@@ -26,5 +26,6 @@ void UndoTree_Commit();
 
 // Information.
 void UndoTree_ShowLeaves();
+bool UndoTree_Enabled();
 
 #endif
