@@ -2,3 +2,6 @@ doc
 *.DS_Store
 CC_API
 makefile
+.vscode/
+tags
+ctags-deamon.bash
