@@ -6,7 +6,9 @@
 #include "CC_API/Core.h"
 #include "CC_API/Game.h"
 #include "CC_API/Inventory.h"
+#include "CC_API/Block.h"
 
+#include "Draw.h"
 #include "MarkSelection.h"
 #include "MemoryAllocation.h"
 #include "Messaging.h"
@@ -32,33 +34,46 @@ static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zma
     for (int i = xmin; i <= xmax; i++) {
         for (int j = ymin; j <= ymax; j++) {
             for (int k = zmin; k <= zmax; k++) {
-                Game_UpdateBlock(i, j, k, block);
+                Draw_Block(i, j, k, block);
             }
         }
     }
 }
 
 static void DoCuboidSolid(IVec3 min, IVec3 max, BlockID block) {
+	Draw_Start("Cuboid :solid");
     DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, max.Z, block);
+
+	int blocksAffected = Draw_End();
+	Message_BlocksAffected(blocksAffected);
 }
 
 static void DoCuboidHollow(IVec3 min, IVec3 max, BlockID block) {
+	Draw_Start("Cuboid :hollow");
     DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, max.Z, block);
     DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, min.Z, block);
     DrawCuboid(min.X, min.Y, min.Z, max.X, min.Y, max.Z, block);
     DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, max.Z, block);
     DrawCuboid(min.X, max.Y, min.Z, max.X, max.Y, max.Z, block);
     DrawCuboid(min.X, min.Y, max.Z, max.X, max.Y, max.Z, block);
+
+	int blocksAffected = Draw_End();
+	Message_BlocksAffected(blocksAffected);
 }
 
 static void DoCuboidWalls(IVec3 min, IVec3 max, BlockID block) {
+	Draw_Start("Cuboid :walls");
     DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, max.Z, block);
     DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, min.Z, block);
     DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, max.Z, block);
     DrawCuboid(min.X, min.Y, max.Z, max.X, max.Y, max.Z, block);
+
+	int blocksAffected = Draw_End();
+	Message_BlocksAffected(blocksAffected);
 }
 
 static void DoCuboidWire(IVec3 min, IVec3 max, BlockID block) {
+	Draw_Start("Cuboid :wire");
     DrawCuboid(min.X, min.Y, min.Z, max.X, min.Y, min.Z, block);
     DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, min.Z, block);
     DrawCuboid(min.X, min.Y, min.Z, min.X, min.Y, max.Z, block);
@@ -71,17 +86,24 @@ static void DoCuboidWire(IVec3 min, IVec3 max, BlockID block) {
     DrawCuboid(max.X, min.Y, min.Z, max.X, min.Y, max.Z, block);
     DrawCuboid(max.X, min.Y, max.Z, max.X, max.Y, max.Z, block);
     DrawCuboid(max.X, max.Y, min.Z, max.X, max.Y, max.Z, block);
+
+	int blocksAffected = Draw_End();
+	Message_BlocksAffected(blocksAffected);
 }
 
 static void DoCuboidCorners(IVec3 min, IVec3 max, BlockID block) {
-    Game_UpdateBlock(min.X, min.Y, min.Z, block);
-    Game_UpdateBlock(min.X, min.Y, max.Z, block);
-    Game_UpdateBlock(min.X, max.Y, min.Z, block);
-    Game_UpdateBlock(min.X, max.Y, max.Z, block);
-    Game_UpdateBlock(max.X, min.Y, min.Z, block);
-    Game_UpdateBlock(max.X, min.Y, max.Z, block);
-    Game_UpdateBlock(max.X, max.Y, min.Z, block);
-    Game_UpdateBlock(max.X, max.Y, max.Z, block);
+	Draw_Start("Cuboid :corners");
+    Draw_Block(min.X, min.Y, min.Z, block);
+    Draw_Block(min.X, min.Y, max.Z, block);
+    Draw_Block(min.X, max.Y, min.Z, block);
+    Draw_Block(min.X, max.Y, max.Z, block);
+    Draw_Block(max.X, min.Y, min.Z, block);
+    Draw_Block(max.X, min.Y, max.Z, block);
+    Draw_Block(max.X, max.Y, min.Z, block);
+    Draw_Block(max.X, max.Y, max.Z, block);
+
+	int blocksAffected = Draw_End();
+	Message_BlocksAffected(blocksAffected);
 }
 
 static CuboidOperation GetFunction(ZMode mode) {

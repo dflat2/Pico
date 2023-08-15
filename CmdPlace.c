@@ -12,8 +12,6 @@
 #include "Draw.h"
 
 static void Place(IVec3 position, BlockID block) {
-	int blocksAffected = 0;
-
 	cc_string cc_blockName = Block_UNSAFE_GetName(block);
 	char blockName[64];
 	String_CopyToRaw(blockName, sizeof(blockName), &cc_blockName);
@@ -23,7 +21,7 @@ static void Place(IVec3 position, BlockID block) {
 	
 	Draw_Start(description);
 	Draw_Block(position.X, position.Y, position.Z, block);
-	blocksAffected = Draw_End();
+	int blocksAffected = Draw_End();
 
 	char message[64];
 
