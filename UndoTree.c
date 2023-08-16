@@ -6,11 +6,13 @@
 #include "CC_API/Block.h"
 #include "CC_API/Game.h"
 #include "CC_API/Chat.h"
+#include "CC_API/Event.h"
 
 #include "MemoryAllocation.h"
 #include "Messaging.h"
 #include "UndoTree.h"
 #include "Format.h"
+#include "MarkSelection.h"
 
 #include "List.h"
 #include "TimeFunctions.h"
@@ -47,6 +49,7 @@ static void CheckoutFromNode(UndoNode* target);
 static void Attach(UndoNode* parent, UndoNode* child);
 static void SetRedoChild(UndoNode* node);
 static void ShowCurrentNode();
+static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID block);
 
 static UndoNode* s_root = NULL;
 static UndoNode* s_here = NULL;
@@ -69,6 +72,10 @@ void UndoTree_Enable() {
 
 	s_enabled = true;
 	ShowCurrentNode();
+
+    struct Event_Void* event = (struct Event_Void*) &UserEvents.BlockChanged;
+    Event_Void_Callback callback = (Event_Void_Callback)OnBlockChanged;
+    Event_Register(event, NULL, callback);
 }
 
 void UndoTree_Disable() {
@@ -100,6 +107,10 @@ void UndoTree_Disable() {
 	List_Free(s_redoStack);
 	s_enabled = false;
 	Message_MessageOf("", MSG_TYPE_STATUS_1);
+
+    struct Event_Void* event = (struct Event_Void*) &UserEvents.BlockChanged;
+    Event_Void_Callback callback = (Event_Void_Callback)OnBlockChanged;
+    Event_Unregister(event, NULL, callback);
 }
 
 bool UndoTree_Enabled() {
@@ -485,4 +496,27 @@ static void ShowCurrentNode() {
 	char message[64];
 	DescribeNode(s_here, message, sizeof(message));
 	Message_MessageOf(message, MSG_TYPE_STATUS_1);
+}
+
+static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID block) {
+	if (RemainingMarks() > 0) {
+		return;
+	}
+
+	char formattedCoordinates[64];
+	Format_Coordinates(coords, formattedCoordinates, sizeof(formattedCoordinates));
+
+	char description[64];
+
+	if (block == BLOCK_AIR) {
+		snprintf(description, sizeof(description), "Destroy %s", formattedCoordinates);
+	} else {
+		char formattedBlock[64];
+		Format_Block(block, formattedBlock, sizeof(formattedBlock));
+		snprintf(description, sizeof(description), "Place %s %s", formattedBlock, formattedCoordinates);
+	}
+ 
+	UndoTree_PrepareNewNode(description);
+	UndoTree_AddBlockChangeEntry(coords.X, coords.Y, coords.Z, block - oldBlock);
+	UndoTree_Commit();
 }
