@@ -5,10 +5,14 @@
 
 #include "Messaging.h"
 
-void PlayerMessage(const char* message)
-{
+void PlayerMessage(const char* message) {
 	cc_string ccStringMessage = String_FromReadonly(message);
 	Chat_Add(&ccStringMessage);
+}
+
+void Message_MessageOf(const char* message, int messageType) {
+	cc_string ccStringMessage = String_FromReadonly(message);
+	Chat_AddOf(&ccStringMessage, messageType);
 }
 
 void Message_BlocksAffected(int blocksAffected) {

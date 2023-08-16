@@ -5,10 +5,12 @@
 #include "CC_API/World.h"
 #include "CC_API/Block.h"
 #include "CC_API/Game.h"
+#include "CC_API/Chat.h"
 
 #include "MemoryAllocation.h"
 #include "Messaging.h"
 #include "UndoTree.h"
+#include "Format.h"
 
 #include "List.h"
 #include "TimeFunctions.h"
@@ -44,7 +46,7 @@ static void Ancestors(UndoNode* node, List* out_ancestors);
 static void CheckoutFromNode(UndoNode* target);
 static void Attach(UndoNode* parent, UndoNode* child);
 static void SetRedoChild(UndoNode* node);
-static void DescribeNode(UndoNode* node, char* message, size_t length);
+static void ShowCurrentNode();
 
 static UndoNode* s_root = NULL;
 static UndoNode* s_here = NULL;
@@ -66,6 +68,7 @@ void UndoTree_Enable() {
 	s_redoStack = List_CreateEmpty();
 
 	s_enabled = true;
+	ShowCurrentNode();
 }
 
 void UndoTree_Disable() {
@@ -96,6 +99,7 @@ void UndoTree_Disable() {
 	List_Free(s_history);
 	List_Free(s_redoStack);
 	s_enabled = false;
+	Message_MessageOf("", MSG_TYPE_STATUS_1);
 }
 
 bool UndoTree_Enabled() {
@@ -130,6 +134,7 @@ void UndoTree_Earlier_Second(int deltaTime_Second) {
 	UndoNode* target = List_Get(s_history, newIndex);
 	List_Append(s_redoStack, s_here);
 	CheckoutFromNode(target);
+	ShowCurrentNode();
 }
 
 void UndoTree_Later_Seconds(int deltaTime_Second) {
@@ -161,6 +166,7 @@ void UndoTree_Later_Seconds(int deltaTime_Second) {
 	UndoNode* target = List_Get(s_history, newIndex);
 	List_Append(s_redoStack, s_here);
 	CheckoutFromNode(target);
+	ShowCurrentNode();
 }
 
 void UndoTree_Earlier(int count) {
@@ -179,6 +185,7 @@ void UndoTree_Earlier(int count) {
 	UndoNode* target = List_Get(s_history, newIndex);
 	List_Append(s_redoStack, s_here);
 	CheckoutFromNode(target);
+	ShowCurrentNode();
 }
 
 void UndoTree_Later(int count) {
@@ -197,6 +204,7 @@ void UndoTree_Later(int count) {
 	UndoNode* target = List_Get(s_history, newIndex);
 	List_Append(s_redoStack, s_here);
 	CheckoutFromNode(target);
+	ShowCurrentNode();
 }
 
 int UndoTree_Ascend(int amount) {
@@ -209,6 +217,7 @@ int UndoTree_Ascend(int amount) {
 			if (amountAscended == 0) {
 				List_Pop(s_redoStack);
 			}
+			ShowCurrentNode();
 			return amountAscended;
 		}
 
@@ -216,6 +225,7 @@ int UndoTree_Ascend(int amount) {
 		amountAscended++;
 	}
 
+	ShowCurrentNode();
 	return amountAscended;
 }
 
@@ -229,6 +239,7 @@ int UndoTree_Descend(int amount) {
 			if (amountDescended == 0) {
 				List_Pop(s_redoStack);
 			}
+			ShowCurrentNode();
 			return amountDescended;
 		}
 
@@ -236,6 +247,7 @@ int UndoTree_Descend(int amount) {
 		amountDescended++;
 	}
 
+	ShowCurrentNode();
     return amountDescended;
 }
 
@@ -247,6 +259,7 @@ void UndoTree_Checkout(int commit) {
 
 	List_Append(s_redoStack, s_here);
 	CheckoutFromNode(target);
+	ShowCurrentNode();
 }
 
 void UndoTree_Redo(int count) {
@@ -262,6 +275,7 @@ void UndoTree_Redo(int count) {
 
 	if (lastPop != NULL) {
 		CheckoutFromNode(lastPop);
+		ShowCurrentNode();
 	}
 }
 
@@ -315,6 +329,7 @@ void UndoTree_Commit() {
 	List_Clear(s_redoStack);
 	SetRedoChild(s_here);
 	s_buildingNode = NULL;
+	ShowCurrentNode();
 }
 
 void UndoTree_ShowLeaves() {
@@ -351,13 +366,13 @@ static void DescribeNode(UndoNode* node, char* message, size_t length) {
     char* description = node->description;
     int blocksAffected = node->blocksAffected;
 
-	char formattedTime[] = "00:00";
-	Time_FormatDayTime(formattedTime, sizeof(formattedTime), Time_UnixTimeToDayTime(node->timestamp_Millisecond));
+	char formattedTime[] = "00:00:00";
+	Format_HHMMSS(node->timestamp_Millisecond / 1000.0, formattedTime, sizeof(formattedTime));
 
     char plural[] = "s";
-    if (blocksAffected != 1) plural[0] = '\0';
+    if (blocksAffected == 1) plural[0] = '\0';
 
-    snprintf(message, length, "%d. %s (%d block%s) [%s]", commit, description, blocksAffected, plural, formattedTime);
+    snprintf(message, length, "[%d] %s (%d block%s) [%s]", commit, description, blocksAffected, plural, formattedTime);
 }
 
 static void InitRoot() {
@@ -464,4 +479,10 @@ static void SetRedoChild(UndoNode* node) {
 		currentNode->parent->redoChild = currentNode;
 		currentNode = currentNode->parent;
 	}
+}
+
+static void ShowCurrentNode() {
+	char message[64];
+	DescribeNode(s_here, message, sizeof(message));
+	Message_MessageOf(message, MSG_TYPE_STATUS_1);
 }

@@ -1,6 +1,11 @@
 #ifndef TIME_H
 #define TIME_H
 
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef double UnixTimeStamp_S;
+
 typedef struct DayTime_ {
     int hours; // 0 - 23
     int minutes; // 0 - 59

@@ -43,10 +43,6 @@ static bool IsDigit(char character) {
     return (character >= '0' && character <= '9');
 }
 
-static bool IsNonZeroDigit(char character) {
-    return (character >= '1' && character <= '9');
-}
-
 static bool TryParsePositiveNumber(char* string, int* out_number, int* index) {
     *out_number = 0;
 

@@ -26,16 +26,25 @@ static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
 	cc_string text;
 
     if (String_CaselessStarts(msg, &clientCuboid) || String_CaselessStarts(msg, &cuboid)) {
-        cc_string text = String_FromReadonly("&cWarning. &fYou are using the vanilla &b/Cuboid&f.");
+        text = String_FromReadonly("&cWarning. &fYou are using the vanilla &b/Cuboid&f.");
         Chat_Add(&text);
         text = String_FromReadonly("&fYou won't be able to &b/Undo&f, &b/Mark&f or &b/Abort&f. Use &b/Z &finstead.");
         Chat_Add(&text);
     }
 }
 
+static void OnMapLoaded(void* obj) {
+	UndoTree_Enable();
+}
+
 static void RegisterChatSending() {
     struct Event_Void* event = (struct Event_Void*) &ChatEvents.ChatSending;
     Event_Void_Callback callback = (Event_Void_Callback)OnChatSending;
+    Event_Register(event, NULL, callback);
+}
+static void EnableUndoWhenMapLoaded() {
+    struct Event_Void* event = (struct Event_Void*) &WorldEvents.MapLoaded;
+    Event_Void_Callback callback = (Event_Void_Callback)OnMapLoaded;
     Event_Register(event, NULL, callback);
 }
 
@@ -58,7 +67,7 @@ static void RegisterCommands() {
 static void SinglePlayerCommandsPlugin_Init(void) {
 	RegisterCommands();
 	RegisterChatSending();
-	UndoTree_Enable();
+	EnableUndoWhenMapLoaded();
 }
 
 EXPORT int Plugin_ApiVersion = 1;
