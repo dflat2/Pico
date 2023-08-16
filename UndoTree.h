@@ -1,6 +1,8 @@
 #ifndef UNDO_TREE_H
 #define UNDO_TREE_H
 
+#include <stdbool.h>
+
 // DeltaBlockID is a difference between two BlockIDs. Only deltas are saved in each operation.
 // e.g. BLOCK_LOG - BLOCK_SAND = 5 may happen if one did /replace sand log.
 typedef signed short DeltaBlockID;

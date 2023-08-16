@@ -437,6 +437,7 @@ static void Ancestors(UndoNode* node, List* out_ancestors) {
 
 static void CheckoutFromNode(UndoNode* target) {
 	List* targetAncestors = List_CreateEmpty();
+	Ancestors(target, targetAncestors);
 
 	while (!List_Contains(targetAncestors, s_here)) {
 		Ascend();
