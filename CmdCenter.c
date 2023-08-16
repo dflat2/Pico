@@ -6,6 +6,7 @@
 #include "CC_API/Game.h"
 #include "CC_API/BlockID.h"
 
+#include "Draw.h"
 #include "MarkSelection.h"
 #include "Messaging.h"
 #include "Vectors.h"
@@ -27,13 +28,15 @@ static void Center(IVec3 a, IVec3 b) {
         (delta.Z % 2) == 0 ? centerCuboidMin.Z : (centerCuboidMin.Z + 1)
     };
 
+	Draw_Start("Center");
     for (int i = centerCuboidMin.X; i <= centerCuboidMax.X; i++) {
         for (int j = centerCuboidMin.Y; j <= centerCuboidMax.Y; j++) {
             for (int k = centerCuboidMin.Z; k <= centerCuboidMax.Z; k++) {
-                Game_UpdateBlock(i, j, k, BLOCK_GOLD);
+                Draw_Block(i, j, k, BLOCK_GOLD);
             }
         }
     }
+	Draw_End();
 
     char message[128];
     snprintf(message, sizeof(message), "&fDrew cuboid at center from &b(%d, %d, %d)&f to &b(%d, %d, %d)&f.",

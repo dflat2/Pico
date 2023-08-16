@@ -10,6 +10,7 @@
 #include "CC_API/Vectors.h"
 
 #include "BlocksBuffer.h"
+#include "Draw.h"
 #include "MarkSelection.h"
 #include "MemoryAllocation.h"
 #include "Messaging.h"
@@ -33,13 +34,17 @@ static void DoCut(IVec3 mark1, IVec3 mark2) {
 	IVec3 min = Min(mark1, mark2);
 	IVec3 max = Max(mark1, mark2);
 
+	Draw_Start("Cut");
 	for (int x = min.X; x <= max.X; x++) {
 		for (int y = min.Y; y <= max.Y; y++) {
 			for (int z = min.Z; z <= max.Z; z++) {
-                Game_UpdateBlock(x, y, z, BLOCK_AIR);
+				Draw_Block(x, y, z, BLOCK_AIR);
 			}
 		}
 	}
+
+	int blocksAffected = Draw_End();
+	Message_BlocksAffected(blocksAffected);
 }
 
 static void CutSelectionHandler(IVec3* marks, int count, void* object) {

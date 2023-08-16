@@ -9,6 +9,7 @@
 #include "CC_API/Inventory.h"
 #include "CC_API/Vectors.h"
 
+#include "Draw.h"
 #include "BlocksBuffer.h"
 #include "MarkSelection.h"
 #include "MemoryAllocation.h"
@@ -45,6 +46,7 @@ static void PasteSelectionHandler(IVec3* marks, int count, void* object) {
         return;
     }
 
+	Draw_Start("Paste");
 	PasteArgs* pasteArgs = (PasteArgs*)object;
 	BlocksBuffer buffer = GetCopiedBuffer();
 	IVec3 origin = Substract(marks[0], buffer.anchor);
@@ -57,12 +59,14 @@ static void PasteSelectionHandler(IVec3* marks, int count, void* object) {
 				if (!IsInWorldBoundaries(x, y, z)) continue;
 
 				if (pasteArgs->mode == AIR || buffer.content[index] != BLOCK_AIR) {
-					Game_UpdateBlock(x, y, z, buffer.content[index]);
+					Draw_Block(x, y, z, buffer.content[index]);
 				}
 			}
 		}
 	}
 
+	int blocksAffected = Draw_End();
+	Message_BlocksAffected(blocksAffected);
 	ShowBlocksPasted(buffer.width * buffer.height * buffer.length);
 }
 
@@ -82,7 +86,7 @@ static void Paste_Command(const cc_string* args, int argsCount) {
 		return;
 	}
 
-	PasteArgs* pasteArgs = allocateZeros(1, sizeof(pasteArgs));
+	PasteArgs* pasteArgs = allocateZeros(1, sizeof(PasteArgs));
 
 	if (argsCount == 0) {
 		pasteArgs->mode = NORMAL;
