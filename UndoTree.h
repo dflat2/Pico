@@ -12,8 +12,8 @@ void UndoTree_Enable();
 void UndoTree_Disable();
 
 // Undo tree navigation.
-int UndoTree_Ascend(int amount);
-int UndoTree_Descend(int amount);
+bool UndoTree_Ascend();
+bool UndoTree_Descend();
 void UndoTree_Earlier_Second(int deltaTime_Second);
 void UndoTree_Later_Second(int deltaTime_Second);
 void UndoTree_Earlier(int count);

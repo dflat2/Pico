@@ -13,6 +13,7 @@ struct ChatCommand MeasureCommand;
 struct ChatCommand PasteCommand;
 struct ChatCommand PlaceCommand;
 struct ChatCommand ReachDistanceCommand;
+struct ChatCommand UndoCommand;
 struct ChatCommand ZCommand;
 
 #endif /* COMMANDS_H */

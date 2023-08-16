@@ -218,48 +218,22 @@ void UndoTree_Later(int count) {
 	ShowCurrentNode();
 }
 
-int UndoTree_Ascend(int amount) {
-	if (!s_enabled || BuildingNode()) return 0;
-	int amountAscended = 0;
+bool UndoTree_Ascend() {
+	if (!s_enabled || BuildingNode() || s_here->parent == NULL) return false;
+
 	List_Append(s_redoStack, s_here);
-
-	for (int i = 0; i < amount; i++) {
-		if (s_here->parent == NULL) {
-			if (amountAscended == 0) {
-				List_Pop(s_redoStack);
-			}
-			ShowCurrentNode();
-			return amountAscended;
-		}
-
-		Ascend();
-		amountAscended++;
-	}
-
+	Ascend();
 	ShowCurrentNode();
-	return amountAscended;
+	return true;
 }
 
-int UndoTree_Descend(int amount) {
-	if (!s_enabled || BuildingNode()) return 0;
-	int amountDescended = 0;
+bool UndoTree_Descend() {
+	if (!s_enabled || BuildingNode() || s_here->redoChild == NULL) return false;
+
 	List_Append(s_redoStack, s_here);
-
-	for (int i = 0; i < amount; i++) {
-		if (s_here->redoChild == NULL) {
-			if (amountDescended == 0) {
-				List_Pop(s_redoStack);
-			}
-			ShowCurrentNode();
-			return amountDescended;
-		}
-
-		Descend();
-		amountDescended++;
-	}
-
+	Descend();
 	ShowCurrentNode();
-    return amountDescended;
+	return true;
 }
 
 void UndoTree_Checkout(int commit) {
@@ -412,9 +386,10 @@ static bool BuildingNode() {
 
 static void Ascend() {
 	BlockChangeEntry* entries = s_here->entries;
+	BlockID currentBlock = World_GetBlock(entries->x, entries->y, entries->z);
 
 	for (int i = 0; i < s_here->blocksAffected; i++) {
-		Game_UpdateBlock(entries[i].x, entries[i].y, entries[i].z, World_GetRawBlock(i) - entries[i].delta);
+		Game_UpdateBlock(entries[i].x, entries[i].y, entries[i].z, currentBlock - entries[i].delta);
 	}
 
 	s_here = s_here->parent;
@@ -423,9 +398,10 @@ static void Ascend() {
 static void Descend() {
 	s_here = s_here->redoChild;
 	BlockChangeEntry* entries = s_here->entries;
+	BlockID currentBlock = World_GetBlock(entries->x, entries->y, entries->z);
 
 	for (int i = 0; i < s_here->blocksAffected; i++) {
-		Game_UpdateBlock(entries[i].x, entries[i].y, entries[i].z, World_GetRawBlock(i) + entries[i].delta);
+		Game_UpdateBlock(entries[i].x, entries[i].y, entries[i].z, currentBlock + entries[i].delta);
 	}
 }
 
