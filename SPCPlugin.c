@@ -53,8 +53,8 @@ static void RegisterCommands() {
 	Commands_Register(&CutCommand);
 	Commands_Register(&DescendCommand);
 	Commands_Register(&PasteCommand);
-    Commands_Register(&RedoCommand);
 	Commands_Register(&UndoCommand);
+	Commands_Register(&UndoTreeCommand);
     Commands_Register(&AbortCommand);
     Commands_Register(&CenterCommand);
     Commands_Register(&CopyCommand);
@@ -63,6 +63,7 @@ static void RegisterCommands() {
     Commands_Register(&MeasureCommand);
     Commands_Register(&PlaceCommand);
     Commands_Register(&ReachDistanceCommand);
+    Commands_Register(&RedoCommand);
     Commands_Register(&ZCommand);
 }
 

@@ -18,9 +18,9 @@
 #include "TimeFunctions.h"
 
 typedef struct BlockChangeEntry_ {
-	signed short x;
-	signed short y;
-	signed short z;
+	int x;
+	int y;
+	int z;
 	DeltaBlockID delta;
 } BlockChangeEntry;
 
@@ -45,7 +45,7 @@ static void Ascend();
 static void Descend();
 static UndoNode* FindNode(int commit);
 static void Ancestors(UndoNode* node, List* out_ancestors);
-static void CheckoutFromNode(UndoNode* target);
+static void CheckoutFromNode(UndoNode* target, int* ascended, int* descended);
 static void Attach(UndoNode* parent, UndoNode* child);
 static void SetRedoChild(UndoNode* node);
 static void ShowCurrentNode();
@@ -117,7 +117,7 @@ bool UndoTree_Enabled() {
 	return s_enabled;
 }
 
-void UndoTree_Earlier_Second(int deltaTime_Second) {
+void UndoTree_Earlier(int deltaTime_Second, int* ascended, int* descended) {
 	if (!s_enabled || BuildingNode()) return;
 	if (deltaTime_Second <= 0) return;
 
@@ -144,11 +144,11 @@ void UndoTree_Earlier_Second(int deltaTime_Second) {
 
 	UndoNode* target = List_Get(s_history, newIndex);
 	List_Append(s_redoStack, s_here);
-	CheckoutFromNode(target);
+	CheckoutFromNode(target, ascended, descended);
 	ShowCurrentNode();
 }
 
-void UndoTree_Later_Seconds(int deltaTime_Second) {
+void UndoTree_Later(int deltaTime_Second, int* ascended, int* descended) {
 	if (!s_enabled || BuildingNode()) return;
 	if (deltaTime_Second <= 0) return;
 
@@ -176,45 +176,7 @@ void UndoTree_Later_Seconds(int deltaTime_Second) {
 
 	UndoNode* target = List_Get(s_history, newIndex);
 	List_Append(s_redoStack, s_here);
-	CheckoutFromNode(target);
-	ShowCurrentNode();
-}
-
-void UndoTree_Earlier(int count) {
-	if (!s_enabled || BuildingNode()) return;
-	if (count <= 0) return;
-
-	int historyIndex = List_IndexOf(s_history, s_here);
-	int newIndex = historyIndex - count;
-
-	if (newIndex < 0) {
-		newIndex = 0;
-	}
-
-	if (newIndex == historyIndex) return;
-
-	UndoNode* target = List_Get(s_history, newIndex);
-	List_Append(s_redoStack, s_here);
-	CheckoutFromNode(target);
-	ShowCurrentNode();
-}
-
-void UndoTree_Later(int count) {
-	if (!s_enabled || BuildingNode()) return;
-	if (count <= 0) return;
-
-	int historyIndex = List_IndexOf(s_history, s_here);
-	int newIndex = historyIndex + count;
-
-	if (newIndex >= List_Count(s_history)) {
-		newIndex = List_Count(s_history) - 1;
-	}
-
-	if (newIndex == historyIndex) return;
-
-	UndoNode* target = List_Get(s_history, newIndex);
-	List_Append(s_redoStack, s_here);
-	CheckoutFromNode(target);
+	CheckoutFromNode(target, ascended, descended);
 	ShowCurrentNode();
 }
 
@@ -236,15 +198,16 @@ bool UndoTree_Descend() {
 	return true;
 }
 
-void UndoTree_Checkout(int commit) {
-	if (!s_enabled || BuildingNode()) return;
+bool UndoTree_Checkout(int commit, int* ascended, int* descended) {
+	if (!s_enabled || BuildingNode()) return false;
 
     UndoNode* target = FindNode(commit);
-	if (target == NULL) return;
+	if (target == NULL) return false;
 
 	List_Append(s_redoStack, s_here);
-	CheckoutFromNode(target);
+	CheckoutFromNode(target, ascended, descended);
 	ShowCurrentNode();
+	return true;
 }
 
 bool UndoTree_Redo() {
@@ -253,7 +216,7 @@ bool UndoTree_Redo() {
 	}
 
 	UndoNode* target = List_Pop(s_redoStack);
-	CheckoutFromNode(target);
+	CheckoutFromNode(target, NULL, NULL);
 	ShowCurrentNode();
 	return true;
 }
@@ -272,7 +235,7 @@ void UndoTree_PrepareNewNode(char* description) {
 	s_buildingNode->children = List_CreateEmpty();
 }
 
-void UndoTree_AddBlockChangeEntry(signed short x, signed short y, signed short z, DeltaBlockID delta) {
+void UndoTree_AddBlockChangeEntry(int x, int y, int z, DeltaBlockID delta) {
 	if (!s_enabled || !BuildingNode()) return;
 
 	BlockChangeEntry entry = {
@@ -380,9 +343,10 @@ static bool BuildingNode() {
 
 static void Ascend() {
 	BlockChangeEntry* entries = s_here->entries;
-	BlockID currentBlock = World_GetBlock(entries->x, entries->y, entries->z);
+	BlockID currentBlock; 
 
 	for (int i = 0; i < s_here->blocksAffected; i++) {
+		currentBlock = World_GetBlock(entries[i].x, entries[i].y, entries[i].z);
 		Game_UpdateBlock(entries[i].x, entries[i].y, entries[i].z, currentBlock - entries[i].delta);
 	}
 
@@ -392,9 +356,10 @@ static void Ascend() {
 static void Descend() {
 	s_here = s_here->redoChild;
 	BlockChangeEntry* entries = s_here->entries;
-	BlockID currentBlock = World_GetBlock(entries->x, entries->y, entries->z);
+	BlockID currentBlock; 
 
 	for (int i = 0; i < s_here->blocksAffected; i++) {
+		currentBlock = World_GetBlock(entries[i].x, entries[i].y, entries[i].z);
 		Game_UpdateBlock(entries[i].x, entries[i].y, entries[i].z, currentBlock + entries[i].delta);
 	}
 }
@@ -432,18 +397,25 @@ static void Ancestors(UndoNode* node, List* out_ancestors) {
 	} while (node != NULL);
 }
 
-static void CheckoutFromNode(UndoNode* target) {
+static void CheckoutFromNode(UndoNode* target, int* ascended, int* descended) {
+	if (ascended != NULL && descended != NULL) {
+		*ascended = 0;
+		*descended = 0;
+	}
+
 	List* targetAncestors = List_CreateEmpty();
 	Ancestors(target, targetAncestors);
 
 	while (!List_Contains(targetAncestors, s_here)) {
 		Ascend();
+		if (ascended != NULL) (*ascended)++;
 	}
 
 	SetRedoChild(target);
 
 	while (s_here != target) {
 		Descend();
+		if (descended != NULL) (*descended)++;
 	}
 
 	List_Free(targetAncestors);
