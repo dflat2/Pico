@@ -53,6 +53,7 @@ static void RegisterCommands() {
 	Commands_Register(&CutCommand);
 	Commands_Register(&DescendCommand);
 	Commands_Register(&PasteCommand);
+    Commands_Register(&RedoCommand);
 	Commands_Register(&UndoCommand);
     Commands_Register(&AbortCommand);
     Commands_Register(&CenterCommand);

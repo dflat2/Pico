@@ -247,21 +247,15 @@ void UndoTree_Checkout(int commit) {
 	ShowCurrentNode();
 }
 
-void UndoTree_Redo(int count) {
-	if (!s_enabled || BuildingNode()) return;
-	if (count <= 0) return;
-
-	UndoNode* lastPop = NULL;
-
-	for (int i = 0; i < count; i++) {
-		if (List_Count(s_redoStack) == 0) break;
-		List_Pop(s_redoStack);
+bool UndoTree_Redo() {
+	if (!s_enabled || BuildingNode() || List_Count(s_redoStack) == 0) {
+		return false;
 	}
 
-	if (lastPop != NULL) {
-		CheckoutFromNode(lastPop);
-		ShowCurrentNode();
-	}
+	UndoNode* target = List_Pop(s_redoStack);
+	CheckoutFromNode(target);
+	ShowCurrentNode();
+	return true;
 }
 
 void UndoTree_PrepareNewNode(char* description) {
@@ -434,7 +428,8 @@ static void Ancestors(UndoNode* node, List* out_ancestors) {
 
 	do {
 		List_Append(out_ancestors, node);
-	} while (node->parent != NULL);
+		node = node->parent;
+	} while (node != NULL);
 }
 
 static void CheckoutFromNode(UndoNode* target) {

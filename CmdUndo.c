@@ -9,7 +9,8 @@
 
 static void Undo_Command(const cc_string* args, int argsCount) {
 	if (!UndoTree_Enabled()) {
-		PlayerMessage("Undo is disabled. It can be enabled with &b/Configure UndoTreeEnabled:True&f.");
+		PlayerMessage("Cannot &b/Undo&f as the undo system is disabled.");
+		PlayerMessage("It can be enabled with &b/Configure UndoTreeEnabled:True&f.");
 		return;
 	}
 

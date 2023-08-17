@@ -19,7 +19,7 @@ void UndoTree_Later_Second(int deltaTime_Second);
 void UndoTree_Earlier(int count);
 void UndoTree_Later(int count);
 void UndoTree_Checkout(int commit);
-void UndoTree_Redo(int count);
+bool UndoTree_Redo();
 
 // Attaching a new node.
 void UndoTree_PrepareNewNode(char* description);
