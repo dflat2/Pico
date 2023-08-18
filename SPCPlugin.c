@@ -14,6 +14,7 @@
 #include "CC_API/Game.h"
 #include "CC_API/Entity.h"
 #include "CC_API/Event.h"
+#include "CC_API/Server.h"
 
 #include "Messaging.h"
 #include "Commands.h"
@@ -73,6 +74,10 @@ static void RegisterCommands() {
 }
 
 static void SinglePlayerCommandsPlugin_Init(void) {
+	if (!Server.IsSinglePlayer) {
+		return;
+	}
+
 	RegisterCommands();
 	RegisterChatSending();
 	EnableUndoWhenMapLoaded();
