@@ -57,6 +57,14 @@ static void Redo_Command(const cc_string* args, int argsCount) {
 	PlayerMessage("Redo performed.");
 }
 
+static void ShowCheckedOut(int commit, int timestamp) {
+	char timestampString[] = "00:00:00";
+    Format_HHMMSS(timestamp, timestampString, sizeof(timestampString));
+	char successMsg[64];
+	snprintf(successMsg, sizeof(successMsg), "Checked out operation &b%d&f [&b%s&f].", commit, timestampString);
+	PlayerMessage(successMsg);
+}
+
 static void UndoTreeShowUsages() {
 	PlayerMessage("Usages:");
 	PlayerMessage("&b/UndoTree ascend/descend/redo");
@@ -121,20 +129,6 @@ static void Redo_SubCommand(const cc_string* args, int argsCount) {
 	PlayerMessage("Redo performed.");
 }
 
-static void ShowAttemptingTimeTravel(timestampFrom, timestampTarget) {
-
-	char stringFrom[] = "00:00:00";
-	char stringTarget[] = "00:00:00";
-
-	Format_HHMMSS(timestampFrom, stringFrom, sizeof(stringFrom));
-	Format_HHMMSS(timestampTarget, stringTarget, sizeof(stringTarget));
-
-	char attemptMsg[64];
-	snprintf(attemptMsg, sizeof(attemptMsg), "Time travelling from &b%s&f to &b%s&f.", stringFrom, stringTarget);
-
-	PlayerMessage(attemptMsg);
-}
-
 static void Earlier_SubCommand(const cc_string* args, int argsCount) {
 	if (argsCount != 1) {
 		PlayerMessage("Usage: &b/UndoTree earlier <duration>&f.");
@@ -153,25 +147,14 @@ static void Earlier_SubCommand(const cc_string* args, int argsCount) {
 		return;
 	}
 
-	int from_Second = (int)(UndoTree_CurrentTimestamp());
-	int target_Second = from_Second - duration_Second;
-
-	ShowAttemptingTimeTravel(from_Second, target_Second);
-
-	int ascended;
-	int descended;
-	UndoTree_Earlier(duration_Second, &ascended, &descended);
-
-	if (ascended == 0 && descended == 0) {
+	int commit;
+	if (!UndoTree_Earlier(duration_Second, &commit)) {
 		PlayerMessage("Already at the earliest moment.");
 		return;
-	}
+	} 
 
-	char successMsg[64];
-	snprintf(successMsg, sizeof(successMsg), "Ascended &b%d&f and descended &b%d&f.", ascended, descended);
-
-	// int arrival_Second = (int)(UndoTree_CurrentTimestamp_Millisecond() / 1000);
-	PlayerMessage(successMsg);
+	int timestamp = (int)UndoTree_CurrentTimestamp();
+	ShowCheckedOut(commit, timestamp);
 }
 
 static void Later_SubCommand(const cc_string* args, int argsCount) {

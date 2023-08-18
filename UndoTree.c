@@ -119,9 +119,9 @@ bool UndoTree_Enabled() {
 	return s_enabled;
 }
 
-void UndoTree_Earlier(int deltaTime_S, int* ascended, int* descended) {
-	if (!s_enabled || BuildingNode()) return;
-	if (deltaTime_S <= 0) return;
+bool UndoTree_Earlier(int deltaTime_S, int* commit) {
+	if (!s_enabled || BuildingNode()) return false;
+	if (deltaTime_S <= 0) return false;
 
 	int historyIndex = List_IndexOf(s_history, s_here);
 
@@ -140,17 +140,19 @@ void UndoTree_Earlier(int deltaTime_S, int* ascended, int* descended) {
 		newIndex = 0;
 	}
 
-	if (newIndex == historyIndex) return;
+	if (newIndex == historyIndex) return false;
 
 	UndoNode* target = List_Get(s_history, newIndex);
 	List_Append(s_redoStack, s_here);
-	CheckoutFromNode(target, ascended, descended);
+	CheckoutFromNode(target, NULL, NULL);
 	ShowCurrentNode();
+	*commit = s_here->commit;
+	return true;
 }
 
-void UndoTree_Later(int deltaTime_S, int* ascended, int* descended) {
-	if (!s_enabled || BuildingNode()) return;
-	if (deltaTime_S <= 0) return;
+int UndoTree_Later(int deltaTime_S, int* ascended, int* descended) {
+	if (!s_enabled || BuildingNode()) return -1;
+	if (deltaTime_S <= 0) return s_here->commit;
 
 	int historyIndex = List_IndexOf(s_history, s_here);
 
@@ -170,12 +172,13 @@ void UndoTree_Later(int deltaTime_S, int* ascended, int* descended) {
 		newIndex = count - 1;
 	}
 
-	if (newIndex == historyIndex) return;
+	if (newIndex == historyIndex) return s_here->commit;
 
 	UndoNode* target = List_Get(s_history, newIndex);
 	List_Append(s_redoStack, s_here);
 	CheckoutFromNode(target, ascended, descended);
 	ShowCurrentNode();
+	return s_here->commit;
 }
 
 bool UndoTree_Ascend() {
