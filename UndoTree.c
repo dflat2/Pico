@@ -288,13 +288,7 @@ void UndoTree_Commit() {
 	ShowCurrentNode();
 }
 
-void UndoTree_ShowLeaves() {
-	if (!s_enabled) {
-		return;
-	}
-
-	char* message = malloc(128 * sizeof(char));
-
+static void GetLeaves(List* out_leaves) {
 	UndoNode* currentNode;
 	List* stack = List_CreateEmpty();
 	List_Append(stack, s_root);
@@ -309,30 +303,41 @@ void UndoTree_ShowLeaves() {
 		}
 
 		if (childrenCount == 0) {
-			DescribeNode(currentNode, message, 128);
-			PlayerMessage(message);
+			List_Append(out_leaves, currentNode);
 		}
 	}
 
 	List_Free(stack);
 }
 
-long UndoTree_CurrentTimestamp() {
-	return s_here->timestamp;
+void UndoTree_ShowLeaves() {
+	List* leaves = List_CreateEmpty();
+	GetLeaves(leaves);
+
+	int count = List_Count(leaves);
+	UndoNode* currentNode;
+
+	for (int i = 0; i < count; i++) {
+		currentNode = (UndoNode*) List_Get(leaves, i);
+
+		char formattedTime[] = "00:00:00";
+		Format_HHMMSS(currentNode->timestamp, formattedTime, sizeof(formattedTime));
+
+		char formattedBlocks[15];
+		Format_Int32(currentNode->blocksAffected, formattedBlocks, sizeof(formattedBlocks));
+
+		char formattedCommit[15];
+		Format_Int32(currentNode->commit, formattedCommit, sizeof(formattedCommit));
+
+		char message[64];
+		snprintf(message, sizeof(message), "[&e%s&f]&e %s @%s/%s", formattedCommit, currentNode->description, formattedTime, formattedBlocks);
+
+		PlayerMessage(message);
+	}
 }
 
-static void DescribeNode(UndoNode* node, char* message, size_t length) {
-    int commit = node->commit;
-    char* description = node->description;
-    int blocksAffected = node->blocksAffected;
-
-	char formattedTime[] = "00:00:00";
-	Format_HHMMSS(node->timestamp, formattedTime, sizeof(formattedTime));
-
-    char plural[] = "s";
-    if (blocksAffected == 1) plural[0] = '\0';
-
-    snprintf(message, length, "[%d] %s (%d block%s) [%s]", commit, description, blocksAffected, plural, formattedTime);
+long UndoTree_CurrentTimestamp() {
+	return s_here->timestamp;
 }
 
 static void InitRoot() {

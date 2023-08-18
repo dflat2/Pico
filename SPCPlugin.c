@@ -53,22 +53,23 @@ static void EnableUndoWhenMapLoaded() {
 }
 
 static void RegisterCommands() {
+	Commands_Register(&AbortCommand);
 	Commands_Register(&AscendCommand);
+	Commands_Register(&CenterCommand);
+	Commands_Register(&CopyCommand);
 	Commands_Register(&CutCommand);
 	Commands_Register(&DescendCommand);
+	Commands_Register(&MarkAllCommand);
+	Commands_Register(&MarkCommand);
+	Commands_Register(&MeasureCommand);
 	Commands_Register(&PasteCommand);
+	Commands_Register(&PlaceCommand);
+	Commands_Register(&ReachDistanceCommand);
+	Commands_Register(&RedoCommand);
 	Commands_Register(&UndoCommand);
+	Commands_Register(&UndoListCommand);
 	Commands_Register(&UndoTreeCommand);
-    Commands_Register(&AbortCommand);
-    Commands_Register(&CenterCommand);
-    Commands_Register(&CopyCommand);
-    Commands_Register(&MarkAllCommand);
-    Commands_Register(&MarkCommand);
-    Commands_Register(&MeasureCommand);
-    Commands_Register(&PlaceCommand);
-    Commands_Register(&ReachDistanceCommand);
-    Commands_Register(&RedoCommand);
-    Commands_Register(&ZCommand);
+	Commands_Register(&ZCommand);
 }
 
 static void SinglePlayerCommandsPlugin_Init(void) {

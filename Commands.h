@@ -15,6 +15,7 @@ struct ChatCommand PlaceCommand;
 struct ChatCommand ReachDistanceCommand;
 struct ChatCommand RedoCommand;
 struct ChatCommand UndoCommand;
+struct ChatCommand UndoListCommand;
 struct ChatCommand UndoTreeCommand;
 struct ChatCommand ZCommand;
 

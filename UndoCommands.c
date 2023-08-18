@@ -256,6 +256,21 @@ static void UndoTree_Command(const cc_string* args, int argsCount) {
 	free(command);
 }
 
+static void UndoList_Command(const cc_string* args, int argsCount) {
+	if (!UndoTree_Enabled()) {
+		ShowUndoDisabled("/UndoList");
+		return;
+	}
+
+	if (argsCount != 0) {
+		PlayerMessage("Usage: &b/UndoList&f.");
+		return;
+	}
+
+	PlayerMessage("List of leaves in the undo tree:");
+	UndoTree_ShowLeaves();
+}
+
 struct ChatCommand RedoCommand = {
 	"Redo",
 	Redo_Command,
@@ -293,6 +308,20 @@ struct ChatCommand UndoTreeCommand = {
 		"&b/UndoTree earlier/later <duration>",
 		"&b/UndoTree checkout <operation>",
 		"Navigates the undo tree. Read the manual for more information.",
+		NULL
+	},
+	NULL
+};
+
+struct ChatCommand UndoListCommand = {
+	"UndoList",
+	UndoList_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/UndoList &f- Lists the leaves of the undo tree.",
+		NULL,
+		NULL,
+		NULL,
 		NULL
 	},
 	NULL
