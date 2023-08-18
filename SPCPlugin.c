@@ -34,6 +34,10 @@ static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
 }
 
 static void OnMapLoaded(void* obj) {
+	if (UndoTree_Enabled()) {
+		UndoTree_Disable();
+	}
+
 	UndoTree_Enable();
 }
 

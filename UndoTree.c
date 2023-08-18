@@ -83,6 +83,7 @@ void UndoTree_Disable() {
 
 	UndoNode* currentNode;
 	List* stack = List_CreateEmpty();
+
 	List_Append(stack, s_root);
 
 	while (!List_IsEmpty(stack)) {
@@ -332,7 +333,6 @@ static void InitRoot() {
 
 static void FreeUndoNode(UndoNode* node) {
 	free(node->entries);
-	free(node->parent);
 	List_Free(node->children);
 	free(node);
 }
