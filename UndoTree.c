@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
 
 #include "CC_API/World.h"
 #include "CC_API/Block.h"
@@ -15,7 +16,6 @@
 #include "MarkSelection.h"
 
 #include "List.h"
-#include "TimeFunctions.h"
 
 typedef struct BlockChangeEntry_ {
 	int x;
@@ -31,7 +31,7 @@ typedef struct UndoNode_ {
 	char description[64];
 	int blocksAffected;
 	BlockChangeEntry* entries;
-	long timestamp_Millisecond;
+	time_t timestamp;
 	UndoNode* parent;
 	List* children;
 	UndoNode* redoChild;
@@ -117,20 +117,18 @@ bool UndoTree_Enabled() {
 	return s_enabled;
 }
 
-void UndoTree_Earlier(int deltaTime_Second, int* ascended, int* descended) {
+void UndoTree_Earlier(int deltaTime_S, int* ascended, int* descended) {
 	if (!s_enabled || BuildingNode()) return;
-	if (deltaTime_Second <= 0) return;
+	if (deltaTime_S <= 0) return;
 
 	int historyIndex = List_IndexOf(s_history, s_here);
-	long deltaTime_Millisecond = deltaTime_Second * 1000;
-	long here_Millisecond = s_here->timestamp_Millisecond;
 
 	int newIndex = -1;
 	UndoNode* currentNode;
 
 	for (int i = historyIndex - 1; i > 0; i--) {
 		currentNode = (UndoNode*) List_Get(s_history, i);
-		if (here_Millisecond - currentNode->timestamp_Millisecond > deltaTime_Millisecond) {
+		if (s_here->timestamp - currentNode->timestamp > deltaTime_S) {
 			newIndex = i;
 			break;
 		}
@@ -148,13 +146,11 @@ void UndoTree_Earlier(int deltaTime_Second, int* ascended, int* descended) {
 	ShowCurrentNode();
 }
 
-void UndoTree_Later(int deltaTime_Second, int* ascended, int* descended) {
+void UndoTree_Later(int deltaTime_S, int* ascended, int* descended) {
 	if (!s_enabled || BuildingNode()) return;
-	if (deltaTime_Second <= 0) return;
+	if (deltaTime_S <= 0) return;
 
 	int historyIndex = List_IndexOf(s_history, s_here);
-	long deltaTime_Millisecond = deltaTime_Second * 1000;
-	long here_Millisecond = s_here->timestamp_Millisecond;
 
 	int count = List_Count(s_history);
 	int newIndex = count;
@@ -162,7 +158,7 @@ void UndoTree_Later(int deltaTime_Second, int* ascended, int* descended) {
 
 	for (int i = historyIndex + 1; i < count - 1; i++) {
 		currentNode = (UndoNode*) List_Get(s_history, i);
-		if (currentNode->timestamp_Millisecond - here_Millisecond > deltaTime_Millisecond) {
+		if (currentNode->timestamp - s_here->timestamp > deltaTime_S) {
 			newIndex = i;
 			break;
 		}
@@ -230,7 +226,7 @@ void UndoTree_PrepareNewNode(char* description) {
 	strncpy(s_buildingNode->description, description, sizeof(s_buildingNode->description));
 	s_buildingNode->blocksAffected = 0;
 	s_buildingNode->entries = NULL;
-	s_buildingNode->timestamp_Millisecond = Time_Now_Millisecond();
+	s_buildingNode->timestamp = time(NULL);
 	s_buildingNode->redoChild = NULL;
 	s_buildingNode->children = List_CreateEmpty();
 }
@@ -303,8 +299,8 @@ void UndoTree_ShowLeaves() {
 	List_Free(stack);
 }
 
-long UndoTree_CurrentTimestamp_Millisecond() {
-	return s_here->timestamp_Millisecond;
+long UndoTree_CurrentTimestamp() {
+	return s_here->timestamp;
 }
 
 static void DescribeNode(UndoNode* node, char* message, size_t length) {
@@ -313,7 +309,7 @@ static void DescribeNode(UndoNode* node, char* message, size_t length) {
     int blocksAffected = node->blocksAffected;
 
 	char formattedTime[] = "00:00:00";
-	Format_HHMMSS(node->timestamp_Millisecond / 1000.0, formattedTime, sizeof(formattedTime));
+	Format_HHMMSS(node->timestamp, formattedTime, sizeof(formattedTime));
 
     char plural[] = "s";
     if (blocksAffected == 1) plural[0] = '\0';
@@ -328,7 +324,7 @@ static void InitRoot() {
 	strncpy(s_root->description, description, sizeof(description));
 	s_root->blocksAffected = World.Width * World.Height * World.Length;
 	s_root->entries = NULL;
-	s_root->timestamp_Millisecond = Time_Now_Millisecond();
+	s_root->timestamp = time(NULL);
 	s_root->parent = NULL;
 	s_root->children = List_CreateEmpty();
 	s_root->redoChild = NULL;

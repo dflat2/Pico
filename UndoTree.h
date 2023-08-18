@@ -27,6 +27,6 @@ void UndoTree_Commit();
 // Information.
 void UndoTree_ShowLeaves();
 bool UndoTree_Enabled();
-long UndoTree_CurrentTimestamp_Millisecond();
+long UndoTree_CurrentTimestamp();
 
 #endif

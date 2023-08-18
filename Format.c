@@ -1,19 +1,13 @@
 #include <stdio.h>
+#include <time.h>
 
 #include "CC_API/Vectors.h"
 #include "CC_API/Block.h"
 #include "CC_API/String.h"
 
-#include "TimeFunctions.h"
-
-void Format_HHMMSS(UnixTimeStamp_S time, char* buffer, size_t size) {
-    int totalSeconds = (int)time;
-    int seconds = totalSeconds % 60;
-    int totalMinutes = totalSeconds / 60;
-    int minutes = totalMinutes % 60;
-    int totalHours = totalMinutes / 60;
-    int hours = totalHours % 24;
-    snprintf(buffer, size, "%02d:%02d:%02d", hours, minutes, seconds); 
+void Format_HHMMSS(time_t time, char* buffer, size_t size) {
+	struct tm* timeStruct = localtime(&time);
+	strftime(buffer, sizeof(buffer), "%X", timeStruct);
 }
 
 void Format_Block(BlockID block, char* buffer, size_t size) {

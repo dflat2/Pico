@@ -9,7 +9,7 @@
 #include "UndoTree.h"
 #include "ParsingUtils.h"
 #include "MemoryAllocation.h"
-#include "TimeFunctions.h"
+#include "Format.h"
 
 static void ShowUndoDisabled(const char* action) {
 	char cannotDoMsg[64];
@@ -121,18 +121,16 @@ static void Redo_SubCommand(const cc_string* args, int argsCount) {
 	PlayerMessage("Redo performed.");
 }
 
-static void ShowAttemptingTimeTravel(from_Second, target_Second) {
-	DayTime from_DayTime = Time_UnixTimeToDayTime(from_Second);
-	DayTime target_DayTime = Time_UnixTimeToDayTime(target_Second);
+static void ShowAttemptingTimeTravel(timestampFrom, timestampTarget) {
 
-	char from_string[64];
-	char target_string[64];
+	char stringFrom[] = "00:00:00";
+	char stringTarget[] = "00:00:00";
 
-	Time_FormatDayTimeSeconds(from_string, sizeof(from_string), from_DayTime);
-	Time_FormatDayTimeSeconds(target_string, sizeof(target_string), target_DayTime);
+	Format_HHMMSS(timestampFrom, stringFrom, sizeof(stringFrom));
+	Format_HHMMSS(timestampTarget, stringTarget, sizeof(stringTarget));
 
 	char attemptMsg[64];
-	snprintf(attemptMsg, sizeof(attemptMsg), "Time travelling from &b%s&f to &b%s&f.", from_string, target_string);
+	snprintf(attemptMsg, sizeof(attemptMsg), "Time travelling from &b%s&f to &b%s&f.", stringFrom, stringTarget);
 
 	PlayerMessage(attemptMsg);
 }
@@ -155,7 +153,7 @@ static void Earlier_SubCommand(const cc_string* args, int argsCount) {
 		return;
 	}
 
-	int from_Second = (int)(UndoTree_CurrentTimestamp_Millisecond() / 1000);
+	int from_Second = (int)(UndoTree_CurrentTimestamp());
 	int target_Second = from_Second - duration_Second;
 
 	ShowAttemptingTimeTravel(from_Second, target_Second);
