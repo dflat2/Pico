@@ -247,9 +247,9 @@ struct ChatCommand UndoCommand = {
 	{
 		"&b/Undo &f- Undoes the last operation.",
 		"This command does the same thing as &b/UndoTree ascend&f.",
+		"Please note that you cannot undo block physics.",
 		NULL,
 		NULL,
-		NULL
 	},
 	NULL
 };

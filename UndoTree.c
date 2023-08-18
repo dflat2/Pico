@@ -109,6 +109,7 @@ void UndoTree_Disable() {
 	List_Free(s_redoStack);
 	s_enabled = false;
 	Message_MessageOf("", MSG_TYPE_STATUS_1);
+	Message_MessageOf("", MSG_TYPE_STATUS_2);
 
     struct Event_Void* event = (struct Event_Void*) &UserEvents.BlockChanged;
     Event_Void_Callback callback = (Event_Void_Callback)OnBlockChanged;
@@ -451,9 +452,23 @@ static void SetRedoChild(UndoNode* node) {
 }
 
 static void ShowCurrentNode() {
-	char message[64];
-	DescribeNode(s_here, message, sizeof(message));
-	Message_MessageOf(message, MSG_TYPE_STATUS_1);
+	char formattedTime[] = "00:00:00";
+	Format_HHMMSS(s_here->timestamp, formattedTime, sizeof(formattedTime));
+
+	char formattedBlocks[15];
+	Format_Int32(s_here->blocksAffected, formattedBlocks, sizeof(formattedBlocks));
+
+	char formattedCommit[15];
+	Format_Int32(s_here->commit, formattedCommit, sizeof(formattedCommit));
+
+	char status1[64];
+	snprintf(status1, sizeof(status1), "[&e%s&f]&e %s @%s", formattedCommit, s_here->description, formattedTime);
+
+	char status2[64];
+	snprintf(status2, sizeof(status2), "Blocks affected: &e%s", formattedBlocks);
+
+	Message_MessageOf(status1, MSG_TYPE_STATUS_1);
+	Message_MessageOf(status2, MSG_TYPE_STATUS_2);
 }
 
 static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID block) {

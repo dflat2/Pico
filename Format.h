@@ -9,5 +9,6 @@
 void Format_HHMMSS(time_t time, char* buffer, size_t max);
 void Format_Block(BlockID block, char* buffer, size_t max);
 void Format_Coordinates(IVec3 coordinates, char* buffer, size_t max);
+void Format_Int32(int integer, char* buffer, size_t max);
 
 #endif /* FORMAT_H */
