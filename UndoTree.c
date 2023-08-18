@@ -54,6 +54,7 @@ static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID bl
 static UndoNode* s_root = NULL;
 static UndoNode* s_here = NULL;
 static UndoNode* s_buildingNode = NULL;
+static int s_entriesSize = 1;
 static int s_commitAutoIncrement = 0;
 static bool s_enabled = false;
 static List* s_history = NULL;
@@ -227,6 +228,7 @@ void UndoTree_PrepareNewNode(char* description) {
 	strncpy(s_buildingNode->description, description, sizeof(s_buildingNode->description));
 	s_buildingNode->blocksAffected = 0;
 	s_buildingNode->entries = NULL;
+	s_entriesSize = 0;
 	s_buildingNode->timestamp = time(NULL);
 	s_buildingNode->redoChild = NULL;
 	s_buildingNode->children = List_CreateEmpty();
@@ -243,13 +245,23 @@ void UndoTree_AddBlockChangeEntry(int x, int y, int z, DeltaBlockID delta) {
 	};
 
 	s_buildingNode->blocksAffected += 1;
-	BlockChangeEntry* newEntries = realloc(s_buildingNode->entries, s_buildingNode->blocksAffected * sizeof(BlockChangeEntry));
 
-	if (newEntries == NULL) {
-		exit(1);
+	if (s_buildingNode->blocksAffected > s_entriesSize) {
+		if (s_entriesSize == 0) {
+			s_entriesSize = 1;
+		} else {
+			s_entriesSize *= 2;
+		}
+
+		BlockChangeEntry* newEntries = realloc(s_buildingNode->entries, s_entriesSize * sizeof(BlockChangeEntry));
+
+		if (newEntries == NULL) {
+			exit(1);
+		}
+
+		s_buildingNode->entries = newEntries;
 	}
 
-	s_buildingNode->entries = newEntries;
 	s_buildingNode->entries[s_buildingNode->blocksAffected - 1] = entry;
 }
 
