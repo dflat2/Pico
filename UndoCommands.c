@@ -9,6 +9,7 @@
 #include "UndoTree.h"
 #include "ParsingUtils.h"
 #include "MemoryAllocation.h"
+#include "TimeFunctions.h"
 
 static void ShowUndoDisabled(const char* action) {
 	char cannotDoMsg[64];
@@ -112,15 +113,67 @@ static void Redo_SubCommand(const cc_string* args, int argsCount) {
 		return;
 	}
 
-	if (UndoTree_Redo()) {
-		PlayerMessage("Redo performed.");
-	} else {
+	if (!UndoTree_Redo()) {
 		PlayerMessage("You have nothing to redo.");
+		return;
 	}
+
+	PlayerMessage("Redo performed.");
+}
+
+static void ShowAttemptingTimeTravel(from_Second, target_Second) {
+	DayTime from_DayTime = Time_UnixTimeToDayTime(from_Second);
+	DayTime target_DayTime = Time_UnixTimeToDayTime(target_Second);
+
+	char from_string[64];
+	char target_string[64];
+
+	Time_FormatDayTimeSeconds(from_string, sizeof(from_string), from_DayTime);
+	Time_FormatDayTimeSeconds(target_string, sizeof(target_string), target_DayTime);
+
+	char attemptMsg[64];
+	snprintf(attemptMsg, sizeof(attemptMsg), "Time travelling from &b%s&f to &b%s&f.", from_string, target_string);
+
+	PlayerMessage(attemptMsg);
 }
 
 static void Earlier_SubCommand(const cc_string* args, int argsCount) {
-	PlayerMessage("Not implemented yet.");
+	if (argsCount != 1) {
+		PlayerMessage("Usage: &b/UndoTree earlier <duration>&f.");
+		return;
+	}
+
+	if (!UndoTree_Enabled()) {
+		ShowUndoDisabled("/UndoTree earlier");
+		return;
+	}
+
+	int duration_Second;
+
+	if (!Parse_DeltaTime_Second(&(args[0]), &duration_Second)) {
+		PlayerMessage("Invalid duration");
+		return;
+	}
+
+	int from_Second = (int)(UndoTree_CurrentTimestamp_Millisecond() / 1000);
+	int target_Second = from_Second - duration_Second;
+
+	ShowAttemptingTimeTravel(from_Second, target_Second);
+
+	int ascended;
+	int descended;
+	UndoTree_Earlier(duration_Second, &ascended, &descended);
+
+	if (ascended == 0 && descended == 0) {
+		PlayerMessage("Already at the earliest moment.");
+		return;
+	}
+
+	char successMsg[64];
+	snprintf(successMsg, sizeof(successMsg), "Ascended &b%d&f and descended &b%d&f.", ascended, descended);
+
+	// int arrival_Second = (int)(UndoTree_CurrentTimestamp_Millisecond() / 1000);
+	PlayerMessage(successMsg);
 }
 
 static void Later_SubCommand(const cc_string* args, int argsCount) {

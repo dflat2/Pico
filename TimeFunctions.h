@@ -16,5 +16,6 @@ long Time_Now_Millisecond();
 int Time_FormatDayTime(char* out_formattedTime, size_t size, DayTime dayTime);
 DayTime Time_UnixTimeToDayTime(double unixTime);
 bool Time_TryParseDeltaTime_Second(char* string, int* out_result_Second);
+int Time_FormatDayTimeSeconds(char* out_formattedTime, size_t size, DayTime dayTime);
 
 #endif

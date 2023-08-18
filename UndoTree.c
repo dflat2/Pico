@@ -303,6 +303,10 @@ void UndoTree_ShowLeaves() {
 	List_Free(stack);
 }
 
+long UndoTree_CurrentTimestamp_Millisecond() {
+	return s_here->timestamp_Millisecond;
+}
+
 static void DescribeNode(UndoNode* node, char* message, size_t length) {
     int commit = node->commit;
     char* description = node->description;

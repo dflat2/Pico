@@ -17,6 +17,11 @@ int Time_FormatDayTime(char* out_formattedTime, size_t size, DayTime dayTime) {
     return snprintf(out_formattedTime, size, "%02d:%02d", dayTime.hours, dayTime.minutes);
 }
 
+
+int Time_FormatDayTimeSeconds(char* out_formattedTime, size_t size, DayTime dayTime) {
+    return snprintf(out_formattedTime, size, "%02d:%02d:%02d", dayTime.hours, dayTime.minutes, dayTime.seconds);
+}
+
 DayTime Time_UnixTimeToDayTime(double unixTime_Second) {
     DayTime dayTime;
 
