@@ -143,7 +143,7 @@ static void Earlier_SubCommand(const cc_string* args, int argsCount) {
 	int duration_Second;
 
 	if (!Parse_DeltaTime_Second(&(args[0]), &duration_Second)) {
-		PlayerMessage("Invalid duration");
+		Parse_ShowExamplesDeltaTime();
 		return;
 	}
 
@@ -158,7 +158,37 @@ static void Earlier_SubCommand(const cc_string* args, int argsCount) {
 }
 
 static void Later_SubCommand(const cc_string* args, int argsCount) {
-	PlayerMessage("Not implemented yet.");
+	if (argsCount != 1) {
+		PlayerMessage("Usage: &b/UndoTree earlier <duration>&f.");
+		return;
+	}
+
+	if (!UndoTree_Enabled()) {
+		ShowUndoDisabled("/UndoTree later");
+		return;
+	}
+
+	int duration_Second;
+
+	if (!Parse_DeltaTime_Second(&(args[0]), &duration_Second)) {
+		Parse_ShowExamplesDeltaTime();
+		return;
+	}
+
+	int commit;
+	if (!UndoTree_Later(duration_Second, &commit)) {
+		char noOpMsg[64];
+		char fromString[] = "00:00:00";
+		Format_HHMMSS(UndoTree_CurrentTimestamp(), fromString, sizeof(fromString));
+		char maxString[] = "00:00:00";
+		Format_HHMMSS(UndoTree_CurrentTimestamp() + duration_Second, maxString, sizeof(maxString));
+		snprintf(noOpMsg, sizeof(noOpMsg), "No operation to checkout between &b%s&f and &b%s&f.", fromString, maxString); 
+		PlayerMessage(noOpMsg);
+		return;
+	} 
+
+	int timestamp = (int)UndoTree_CurrentTimestamp();
+	ShowCheckedOut(commit, timestamp);
 }
 
 static void Checkout_SubCommand(const cc_string* args, int argsCount) {

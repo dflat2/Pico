@@ -15,7 +15,7 @@ void UndoTree_Disable();
 bool UndoTree_Ascend();
 bool UndoTree_Descend();
 bool UndoTree_Earlier(int deltaTime_Second, int* commit); 
-int UndoTree_Later(int deltaTime_Second, int* ascended, int* descended);
+bool UndoTree_Later(int deltaTime_S, int* commit);
 bool UndoTree_Checkout(int commit, int* out_ascended, int* out_descended);
 bool UndoTree_Redo();
 

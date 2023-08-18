@@ -17,5 +17,6 @@ bool TryParseMode(const cc_string* modes, int modesCount, const cc_string* modeS
 int Parse_IndexOfStringCaseless(cc_string argument, cc_string* strings, int count);
 bool Parse_CommandFunc(cc_string argument, NamedCommandFunc* commands, int count, CommandFunc* out_function);
 bool Parse_DeltaTime_Second(const cc_string* string, int* out_result_Second);
+void Parse_ShowExamplesDeltaTime();
 
 #endif /* PARSING_UTILS_H */

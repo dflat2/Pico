@@ -246,3 +246,8 @@ bool Parse_DeltaTime_Second(const cc_string* string, int* out_total_Second) {
 
 	return true;
 }
+
+void Parse_ShowExamplesDeltaTime() {
+	PlayerMessage("Duration must be of the form &b[count]h[count]m[count]s&f.");
+	PlayerMessage("Example: &b1h30m&f means one hour and thirty minutes.");
+}
