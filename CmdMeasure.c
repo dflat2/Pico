@@ -2,7 +2,6 @@
 
 #include "CC_API/Block.h"
 #include "CC_API/Chat.h"
-#include "CC_API/Entity.h"
 
 #include "Messaging.h"
 #include "MemoryAllocation.h"

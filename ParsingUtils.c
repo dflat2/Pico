@@ -1,4 +1,3 @@
-#include "CC_API/String.h"
 #include "CC_API/Block.h"
 
 #include "Messaging.h"

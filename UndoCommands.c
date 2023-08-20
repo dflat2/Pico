@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 #include "CC_API/Chat.h"
-#include "CC_API/String.h"
 
 #include "Messaging.h"
 #include "UndoTree.h"

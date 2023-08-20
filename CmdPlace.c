@@ -1,9 +1,7 @@
 #include <stdio.h>
 
 #include "CC_API/Chat.h"
-#include "CC_API/Block.h"
 #include "CC_API/Inventory.h"
-#include "CC_API/String.h"
 
 #include "WorldUtils.h"
 #include "Messaging.h"

@@ -1,8 +1,6 @@
 #include <stdio.h>
 
 #include "CC_API/Chat.h"
-#include "CC_API/Inventory.h"
-#include "CC_API/Vectors.h"
 
 #include "Draw.h"
 #include "BlocksBuffer.h"

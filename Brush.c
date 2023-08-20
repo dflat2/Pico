@@ -1,7 +1,6 @@
 #include "CC_API/String.h"
 #include "CC_API/Chat.h"
 
-#include "Brush.h"
 #include "Brushes.h"
 #include "List.h"
 #include "MemoryAllocation.h"
