@@ -12,8 +12,9 @@
 
 static void Brushes_Command(const cc_string* args, int argsCount) {
 	PlayerMessage("Available brushes:");
-	PlayerMessage(" &b@Solid <block>");
 	PlayerMessage(" &b@Checkered <block1> <block2>");
+	PlayerMessage(" &b@Rainbow");
+	PlayerMessage(" &b@Solid <block>");
 }
 
 struct ChatCommand BrushesCommand = {

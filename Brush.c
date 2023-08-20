@@ -78,8 +78,9 @@ Brush* Brush_CreateEmpty() {
 
 static void FillList() {
 	s_list = List_CreateEmpty();
-	List_Append(s_list, &BrushSolid_Builder);
 	List_Append(s_list, &BrushCheckered_Builder);
+	List_Append(s_list, &BrushRainbow_Builder);
+	List_Append(s_list, &BrushSolid_Builder);
 }
 
 static bool TryFindBrushBuilder(const cc_string* name, BrushBuilder** builder) {
@@ -110,7 +111,7 @@ static void ShowCouldNotFindBrush(const cc_string* name) {
 static bool TryBuildBrush(BrushBuilder* builder, const cc_string* arguments, int argumentsCount, Brush* brush) {
 	void* brushArguments = builder->ArgumentsParser(arguments, argumentsCount);
 
-	if (brushArguments == NULL) {
+	if (brushArguments == NULL && builder->Cleaner != NULL) {
 		return false;
 	}
 
