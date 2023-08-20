@@ -3,6 +3,7 @@
 
 extern struct ChatCommand AbortCommand;
 extern struct ChatCommand AscendCommand;
+extern struct ChatCommand BrushesCommand;
 extern struct ChatCommand CenterCommand;
 extern struct ChatCommand CopyCommand;
 extern struct ChatCommand CutCommand;

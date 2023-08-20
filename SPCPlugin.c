@@ -56,6 +56,7 @@ static void EnableUndoWhenMapLoaded() {
 static void RegisterCommands() {
 	Commands_Register(&AbortCommand);
 	Commands_Register(&AscendCommand);
+	Commands_Register(&BrushesCommand);
 	Commands_Register(&CenterCommand);
 	Commands_Register(&CopyCommand);
 	Commands_Register(&CutCommand);
