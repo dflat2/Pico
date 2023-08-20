@@ -41,7 +41,7 @@ static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zma
 }
 
 static void DoCuboidSolid(IVec3 min, IVec3 max, Brush* brush) {
-	Draw_Start("Cuboid :solid");
+	Draw_Start("Cuboid solid");
     DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, max.Z, brush);
 
 	int blocksAffected = Draw_End();
@@ -49,7 +49,7 @@ static void DoCuboidSolid(IVec3 min, IVec3 max, Brush* brush) {
 }
 
 static void DoCuboidHollow(IVec3 min, IVec3 max, Brush* brush) {
-	Draw_Start("Cuboid :hollow");
+	Draw_Start("Cuboid hollow");
     DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, max.Z, brush);
     DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, min.Z, brush);
     DrawCuboid(min.X, min.Y, min.Z, max.X, min.Y, max.Z, brush);
@@ -62,7 +62,7 @@ static void DoCuboidHollow(IVec3 min, IVec3 max, Brush* brush) {
 }
 
 static void DoCuboidWalls(IVec3 min, IVec3 max, Brush* brush) {
-	Draw_Start("Cuboid :walls");
+	Draw_Start("Cuboid walls");
     DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, max.Z, brush);
     DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, min.Z, brush);
     DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, max.Z, brush);
@@ -73,7 +73,7 @@ static void DoCuboidWalls(IVec3 min, IVec3 max, Brush* brush) {
 }
 
 static void DoCuboidWire(IVec3 min, IVec3 max, Brush* brush) {
-	Draw_Start("Cuboid :wire");
+	Draw_Start("Cuboid wire");
     DrawCuboid(min.X, min.Y, min.Z, max.X, min.Y, min.Z, brush);
     DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, min.Z, brush);
     DrawCuboid(min.X, min.Y, min.Z, min.X, min.Y, max.Z, brush);
@@ -92,7 +92,7 @@ static void DoCuboidWire(IVec3 min, IVec3 max, Brush* brush) {
 }
 
 static void DoCuboidCorners(IVec3 min, IVec3 max, Brush* brush) {
-	Draw_Start("Cuboid :corners");
+	Draw_Start("Cuboid corners");
     Draw_Brush(min.X, min.Y, min.Z, brush);
     Draw_Brush(min.X, min.Y, max.Z, brush);
     Draw_Brush(min.X, max.Y, min.Z, brush);
@@ -139,6 +139,10 @@ static void CleanResources(void* args) {
 	free(arguments);
 }
 
+static void ShowUsage() {
+	PlayerMessage("Usage: &b/Z [mode] [brush/block]&f.");
+}
+
 static bool TryParseArguments(const cc_string* args, int argsCount, ZArguments* out_arguments) {
     cc_string modesString[] = {
         String_FromConst("solid"),
@@ -175,6 +179,14 @@ static bool TryParseArguments(const cc_string* args, int argsCount, ZArguments* 
 			brushIndex = 1;
 		} else {
 			brushIndex = 0;
+		}
+
+
+		// Checks that there are no trailing blocks in the command, e.g. `/Z Stone Air` doesn't make sens.
+		bool isBlock = args[brushIndex].buffer[0] != '@';
+		if (isBlock && argsCount > (brushIndex + 1)) {
+			ShowUsage();
+			return false;
 		}
 
 		if (!Parse_TryParseBlockOrBrush(&args[brushIndex], argsCount - brushIndex, brush)) {
