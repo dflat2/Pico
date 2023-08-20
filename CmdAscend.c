@@ -5,8 +5,7 @@
 #include "Messaging.h"
 #include "WorldUtils.h"
 
-static bool TryFindAbove(Vec3 currentPosition, Vec3* ascendPosition)
-{
+static bool TryFindAbove(Vec3 currentPosition, Vec3* ascendPosition) {
 	int x = (int) currentPosition.X;
 	int y = (int) currentPosition.Y;
 	int z = (int) currentPosition.Z;
@@ -14,10 +13,8 @@ static bool TryFindAbove(Vec3 currentPosition, Vec3* ascendPosition)
 	ascendPosition->X = currentPosition.X;
 	ascendPosition->Z = currentPosition.Z;
 
-	for (int yCandidate = y + 1; yCandidate <= World.Height; yCandidate++)
-	{
-		if (CanStandOnBlock(x, yCandidate, z))
-		{
+	for (int yCandidate = y + 1; yCandidate <= World.Height; yCandidate++) {
+		if (CanStandOnBlock(x, yCandidate, z)) {
 			ascendPosition->Y = (float)yCandidate;
 			return true;
 		}
@@ -26,10 +23,8 @@ static bool TryFindAbove(Vec3 currentPosition, Vec3* ascendPosition)
 	return false;
 }
 
-static void Ascend_Command(const cc_string* args, int argsCount)
-{
-	if (argsCount >= 1)
-	{
+static void Ascend_Command(const cc_string* args, int argsCount) {
+	if (argsCount >= 1) {
 		PlayerMessage("&fUsage: &b/Ascend");
 		return;
 	}
@@ -42,8 +37,7 @@ static void Ascend_Command(const cc_string* args, int argsCount)
 
 	bool success = TryFindAbove(currentPosition, &ascendPosition);
 
-	if (!success)
-	{
+	if (!success) {
 		PlayerMessage("&fThere are no blocks above to ascend to.");
 		return;
 	}
@@ -69,4 +63,3 @@ struct ChatCommand AscendCommand = {
 	},
 	NULL
 };
-

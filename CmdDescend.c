@@ -4,8 +4,7 @@
 #include "Messaging.h"
 #include "WorldUtils.h"
 
-static bool TryFindBelow(Vec3 currentPosition, Vec3* descendPosition)
-{
+static bool TryFindBelow(Vec3 currentPosition, Vec3* descendPosition) {
 	int x = (int) currentPosition.X;
 	int y = (int) currentPosition.Y;
 	int z = (int) currentPosition.Z;
@@ -13,10 +12,8 @@ static bool TryFindBelow(Vec3 currentPosition, Vec3* descendPosition)
 	descendPosition->X = currentPosition.X;
 	descendPosition->Z = currentPosition.Z;
 
-	for (int yCandidate = y - 1; yCandidate >= 0; yCandidate--)
-	{
-		if (CanStandOnBlock(x, yCandidate, z))
-		{
+	for (int yCandidate = y - 1; yCandidate >= 0; yCandidate--) {
+		if (CanStandOnBlock(x, yCandidate, z)) {
 			descendPosition->Y = (float)yCandidate;
 			return true;
 		}
@@ -25,10 +22,8 @@ static bool TryFindBelow(Vec3 currentPosition, Vec3* descendPosition)
 	return false;
 }
 
-static void Descend_Command(const cc_string* args, int argsCount)
-{
-	if (argsCount >= 1)
-	{
+static void Descend_Command(const cc_string* args, int argsCount) {
+	if (argsCount >= 1) {
 		PlayerMessage("&fUsage: &b/Descend");
 		return;
 	}
@@ -41,8 +36,7 @@ static void Descend_Command(const cc_string* args, int argsCount)
 
 	bool success = TryFindBelow(currentPosition, &descendPosition);
 
-	if (!success)
-	{
+	if (!success) {
 		PlayerMessage("&fThere are no blocks below to descend to.");
 		return;
 	}
@@ -68,4 +62,3 @@ struct ChatCommand DescendCommand = {
 	},
 	NULL
 };
-
