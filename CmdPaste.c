@@ -17,15 +17,16 @@
 #include "ParsingUtils.h"
 #include "Vectors.h"
 #include "WorldUtils.h"
+#include "Array.h"
 
 typedef enum PasteMode_ {
     NORMAL,
     AIR,
 } PasteMode;
 
-typedef struct PasteArgs_ {
+typedef struct PasteArguments_ {
     PasteMode mode;
-} PasteArgs;
+} PasteArguments;
 
 
 static void ShowBlocksPasted(int amount) {
@@ -47,7 +48,7 @@ static void PasteSelectionHandler(IVec3* marks, int count, void* object) {
     }
 
 	Draw_Start("Paste");
-	PasteArgs* pasteArgs = (PasteArgs*)object;
+	PasteArguments* pasteArgs = (PasteArguments*)object;
 	BlocksBuffer buffer = GetCopiedBuffer();
 	IVec3 origin = Substract(marks[0], buffer.anchor);
 	int index = -1;
@@ -71,7 +72,7 @@ static void PasteSelectionHandler(IVec3* marks, int count, void* object) {
 }
 
 static void CleanResources(void* args) {
-	PasteArgs* pasteArgs = (PasteArgs*)args;
+	PasteArguments* pasteArgs = (PasteArguments*)args;
 	free(pasteArgs);
 }
 
@@ -86,24 +87,27 @@ static void Paste_Command(const cc_string* args, int argsCount) {
 		return;
 	}
 
-	PasteArgs* pasteArgs = allocateZeros(1, sizeof(PasteArgs));
+	PasteArguments* pasteArgs = allocateZeros(1, sizeof(PasteArguments));
 
 	if (argsCount == 0) {
 		pasteArgs->mode = NORMAL;
 	} else if (argsCount == 1) {
 		cc_string modesString[] = {
-			String_FromConst(":normal"),
-			String_FromConst(":air"),
+			String_FromConst("normal"),
+			String_FromConst("air"),
 		};
 
 		int modesCount = 2;
-		int i_mode;
+		int modeIndex = Array_IndexOfStringCaseless(&args[0], modesString, modesCount);
 
-		if (!TryParseMode((cc_string*)modesString, modesCount, &args[0], &i_mode)) {
+		if (modeIndex == -1) {
+			Message_ShowUnknownMode(&args[0]);
+			Message_ShowAvailableModes(modesString, modesCount);
+			free(pasteArgs);
 			return;
 		}
 
-		pasteArgs->mode = (PasteMode)i_mode;
+		pasteArgs->mode = (PasteMode)modeIndex;
 	}
 
     MakeSelection(PasteSelectionHandler, 1, pasteArgs, CleanResources);
@@ -116,8 +120,8 @@ struct ChatCommand PasteCommand = {
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
 		"&b/Paste [mode] &f- Pastes the stored copy.",
-		"&fSet the mode to &b:air &fto also paste air blocks.",
-		"&fList of modes: &b:normal&f (default), &b:air&f.",
+		"&fSet the mode to &bair &fto also paste air blocks.",
+		"&fList of modes: &bnormal&f (default), &bair&f.",
 		NULL,
 		NULL
 	},

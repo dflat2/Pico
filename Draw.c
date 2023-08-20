@@ -1,5 +1,6 @@
 #include "CC_API/Game.h"
 
+#include "Brush.h"
 #include "UndoTree.h"
 #include "WorldUtils.h"
 
@@ -30,6 +31,11 @@ void Draw_Block(int x, int y, int z, BlockID block) {
 	if (UndoTree_Enabled()) {
 		UndoTree_AddBlockChangeEntry(x, y, z, block - current);
 	}
+}
+
+void Draw_Brush(int x, int y, int z, Brush* brush) {
+	BlockID block = Brush_Paint(brush, x, y, z);
+	Draw_Block(x, y, z, block);
 }
 
 int Draw_End() {

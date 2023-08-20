@@ -28,3 +28,32 @@ void Message_BlocksAffected(int blocksAffected) {
 
 	PlayerMessage(message);
 }
+
+void Message_ShowUnknownMode(const cc_string* mode) {
+    char message[64];
+    cc_string cc_message = { message, .length = 0, .capacity = sizeof(message) };
+    String_Format1(&cc_message, "&fUnkown mode: &b%s&f.", mode);
+    Chat_Add(&cc_message);
+}
+
+void Message_ShowAvailableModes(const cc_string* modes, int modesCount) {
+    char buffer[128];
+    cc_string message = { buffer, .length = 0, .capacity = sizeof(buffer) };
+    String_AppendConst(&message, "&fAvailable modes: &b");
+
+    for (int i = 0; i < modesCount - 1; i++) {
+        String_AppendString(&message, &modes[i]);
+        String_AppendConst(&message, "&f, &b");
+    }
+
+    String_AppendString(&message, &modes[modesCount - 1]);
+    String_AppendConst(&message, "&f.");
+    Chat_Add(&message);
+}
+
+void Message_ShowUnknownBlock(const cc_string* block) {
+    char buffer[128];
+    cc_string message = { buffer, .length = 0, .capacity = sizeof(buffer) };
+    String_Format1(&message, "&fCould not find block specified: &b%s&f.", block);
+    Chat_Add(&message);
+}
