@@ -1,13 +1,8 @@
 #include <stdio.h>
-#include <stdlib.h>
 
-#include "CC_API/BlockID.h"
 #include "CC_API/Block.h"
 #include "CC_API/Chat.h"
-#include "CC_API/Core.h"
 #include "CC_API/Entity.h"
-#include "CC_API/Vectors.h"
-#include "CC_API/World.h"
 
 #include "Messaging.h"
 #include "MemoryAllocation.h"

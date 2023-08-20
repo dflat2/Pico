@@ -1,9 +1,3 @@
-#include <stdbool.h>
-#include <stdlib.h>
-
-#include "CC_API/Vectors.h"
-#include "CC_API/Core.h"
-
 #include "Vectors.h"
 #include "BlocksBuffer.h"
 #include "MemoryAllocation.h"

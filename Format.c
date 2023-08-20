@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "CC_API/Vectors.h"
 #include "CC_API/Block.h"
-#include "CC_API/String.h"
 
 void Format_HHMMSS(time_t time, char* buffer, size_t size) {
 	struct tm* timeStruct = localtime(&time);

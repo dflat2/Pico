@@ -1,9 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "CC_API/String.h"
 #include "CC_API/Chat.h"
-#include "CC_API/Core.h"
 
 #include "Brush.h"
 #include "Brushes.h"

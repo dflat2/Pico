@@ -1,6 +1,4 @@
-#include "CC_API/Core.h"
 #include "CC_API/Chat.h"
-#include "CC_API/Entity.h"
 
 #include "MarkSelection.h"
 #include "WorldUtils.h"

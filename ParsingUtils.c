@@ -1,8 +1,4 @@
-#include <string.h>
-
 #include "CC_API/String.h"
-#include "CC_API/Inventory.h"
-#include "CC_API/Chat.h"
 #include "CC_API/Block.h"
 
 #include "Messaging.h"

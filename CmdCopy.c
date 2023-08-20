@@ -1,20 +1,11 @@
-#include <stdlib.h>
-#include <math.h>
 #include <stdio.h>
 
 #include "CC_API/Chat.h"
-#include "CC_API/Core.h"
-#include "CC_API/Game.h"
-#include "CC_API/Inventory.h"
 #include "CC_API/Vectors.h"
 
 #include "BlocksBuffer.h"
 #include "MarkSelection.h"
-#include "MemoryAllocation.h"
 #include "Messaging.h"
-#include "ParsingUtils.h"
-#include "Vectors.h"
-#include "WorldUtils.h"
 
 static void ShowBlocksCopied(int amount) {
 	char message[128];

@@ -8,15 +8,12 @@
     #define EXPORT __attribute__((visibility("default")))
 #endif
 
-#include <stdio.h>
-
 #include "CC_API/Chat.h"
 #include "CC_API/Game.h"
 #include "CC_API/Entity.h"
 #include "CC_API/Event.h"
 #include "CC_API/Server.h"
 
-#include "Messaging.h"
 #include "Commands.h"
 #include "UndoTree.h"
 

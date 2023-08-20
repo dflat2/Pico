@@ -1,5 +1,3 @@
-#include "CC_API/String.h"
-
 #include "Array.h"
 
 int Array_IndexOfStringCaseless(const cc_string* element, const cc_string* list, int listCount) {

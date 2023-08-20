@@ -1,9 +1,7 @@
 #include <stdlib.h>
-#include <math.h>
 #include <stdio.h>
 
 #include "CC_API/Chat.h"
-#include "CC_API/Game.h"
 #include "CC_API/BlockID.h"
 
 #include "Draw.h"

@@ -1,13 +1,10 @@
-#include <stdlib.h>
 #include <stdio.h>
 
-#include "CC_API/Vectors.h"
 #include "CC_API/Event.h"
 #include "CC_API/Game.h"
 
 #include "MarkSelection.h"
 #include "Messaging.h"
-#include "WorldUtils.h"
 #include "MemoryAllocation.h"
 
 static bool s_InProgress = false;

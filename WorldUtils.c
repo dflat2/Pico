@@ -1,9 +1,7 @@
 #include "CC_API/World.h"
 #include "CC_API/Block.h"
-#include "CC_API/BlockID.h"
 #include "CC_API/Entity.h"
 #include "CC_API/Chat.h"
-#include "CC_API/Inventory.h"
 
 IVec3 GetCurrentPlayerPosition() {
 	struct LocalPlayer* player = (struct LocalPlayer*)Entities.List[ENTITIES_SELF_ID];

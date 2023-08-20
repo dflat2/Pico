@@ -1,4 +1,3 @@
-#include "CC_API/Core.h"
 #include "CC_API/Chat.h"
 
 #include "MarkSelection.h"

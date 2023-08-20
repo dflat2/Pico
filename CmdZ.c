@@ -1,11 +1,5 @@
-#include <stdlib.h>
-#include <math.h>
-
 #include "CC_API/Chat.h"
-#include "CC_API/Core.h"
-#include "CC_API/Game.h"
 #include "CC_API/Inventory.h"
-#include "CC_API/Block.h"
 
 #include "Draw.h"
 #include "MarkSelection.h"

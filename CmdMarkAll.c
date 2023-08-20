@@ -1,7 +1,4 @@
-#include <stdlib.h>
-
 #include "CC_API/Chat.h"
-#include "CC_API/Vectors.h"
 #include "CC_API/World.h"
 
 #include "Messaging.h"

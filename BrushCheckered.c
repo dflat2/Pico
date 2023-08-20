@@ -1,11 +1,8 @@
-#include <stdlib.h>
-
 #include "CC_API/Core.h"
 
 #include "ParsingUtils.h"
 #include "Messaging.h"
 #include "MemoryAllocation.h"
-#include "Brush.h"
 
 typedef struct BrushCheckeredArgs_ {
 	BlockID block1;

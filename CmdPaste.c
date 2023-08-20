@@ -1,11 +1,6 @@
-#include <stdlib.h>
-#include <math.h>
 #include <stdio.h>
 
-#include "CC_API/BlockID.h"
 #include "CC_API/Chat.h"
-#include "CC_API/Core.h"
-#include "CC_API/Game.h"
 #include "CC_API/Inventory.h"
 #include "CC_API/Vectors.h"
 
@@ -14,7 +9,6 @@
 #include "MarkSelection.h"
 #include "MemoryAllocation.h"
 #include "Messaging.h"
-#include "ParsingUtils.h"
 #include "Vectors.h"
 #include "WorldUtils.h"
 #include "Array.h"
