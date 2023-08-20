@@ -1,5 +1,4 @@
 #include <string.h>
-#include <stdio.h>
 
 #include "CC_API/String.h"
 #include "CC_API/Inventory.h"
@@ -101,7 +100,13 @@ bool Parse_TryParseBlockOrBrush(const cc_string* arguments, int argumentsCount, 
 
 	if (!startsWithAtSign) {
 		BlockID block = 0;
-		return TryParseBlock(&arguments[0], &block);
+
+		if (!TryParseBlock(&arguments[0], &block)) {
+			return false;
+		}
+
+		Brush_TryCreateSolid(block, out_brush);
+		return true;
 	}
 
 	return Parse_TryParseBrush(arguments, argumentsCount, out_brush);

@@ -24,7 +24,7 @@ static void* BrushCheckered_Parse(const cc_string* args, int argsCount) {
 	BlockID block1;
 	BlockID block2;
 
-	if (!TryParseBlock(&args[0], &block1) || !TryParseBlock(&args[0], &block2)) {
+	if (!TryParseBlock(&args[0], &block1) || !TryParseBlock(&args[1], &block2)) {
 		return NULL;
 	}
 

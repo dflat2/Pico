@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <math.h>
-#include <stdio.h>
 
 #include "CC_API/Chat.h"
 #include "CC_API/Core.h"
@@ -152,7 +151,7 @@ static bool TryParseArguments(const cc_string* args, int argsCount, ZArguments* 
 	size_t modesCount = sizeof(modesString) / sizeof(modesString[0]);
 
 	bool hasBlockOrBrush = (argsCount >= 2) ||
-		((argsCount == 1) && (Array_ContainsString(&args[0], modesString, modesCount)));
+		((argsCount == 1) && (!Array_ContainsString(&args[0], modesString, modesCount)));
 	bool hasMode = (argsCount >= 1) && Array_ContainsString(&args[0], modesString, modesCount);
 
 	if (hasMode) {
