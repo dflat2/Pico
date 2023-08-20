@@ -98,33 +98,3 @@ BlockID GetBlock(int x, int y, int z) {
 	int i = World_Pack(x, y, z);
 	return (BlockID)World_GetRawBlock(i);
 }
-
-bool CanPassThrough(BlockID id) {
-	enum CollideType collision = Blocks.Collide[id];
-	return (collision == COLLIDE_NONE) ||
-		   (collision == COLLIDE_LIQUID) ||
-		   (collision == COLLIDE_WATER) ||
-		   (collision == COLLIDE_LAVA) ||
-		   (collision == COLLIDE_CLIMB);
-}
-
-bool IsSolidBlock(BlockID id) {
-	return !CanPassThrough(id);
-}
-
-bool CanStandOnBlock(int x, int y, int z) {
-	BlockID below = IsInWorldBoundaries(x, y - 1, z) ? GetBlock(x, y - 1, z) : BLOCK_AIR;
-	BlockID feet = IsInWorldBoundaries(x, y, z) ? GetBlock(x, y, z) : BLOCK_AIR;
-	BlockID head = IsInWorldBoundaries(x, y + 1, z) ? GetBlock(x, y + 1, z) : BLOCK_AIR;
-
-	// y == 0 is always solid because it's bedrock, though outside of the world boundaries.
-	if (y == 0) {
-		return CanPassThrough(feet) && CanPassThrough(head);
-	}
-
-	return IsSolidBlock(below) && CanPassThrough(feet) && CanPassThrough(head);
-}
-
-BlockID CurrentHoldingBlock() {
-	return 0; 
-}
