@@ -7,6 +7,23 @@
 #include "Messaging.h"
 #include "Draw.h"
 
+static void Place_Command(const cc_string* args, int argsCount);
+static void Place(IVec3 position, BlockID block);
+
+struct ChatCommand PlaceCommand = {
+	"Place",
+	Place_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/Place [block] [x y z]",
+		"&fPlaces &b[block] &fat coordinates &b[x y z]&f.",
+		"&fPlaces &b[block] &fat your feet if no coordinates are given.",
+		NULL,
+		NULL
+	},
+	NULL
+};
+
 static void Place(IVec3 position, BlockID block) {
 	cc_string cc_blockName = Block_UNSAFE_GetName(block);
 	char blockName[64];
@@ -66,17 +83,3 @@ static void Place_Command(const cc_string* args, int argsCount) {
 
 	Place(position, block);
 }
-
-struct ChatCommand PlaceCommand = {
-	"Place",
-	Place_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Place [block] [x y z]",
-		"&fPlaces &b[block] &fat coordinates &b[x y z]&f.",
-		"&fPlaces &b[block] &fat your feet if no coordinates are given.",
-		NULL,
-		NULL
-	},
-	NULL
-};

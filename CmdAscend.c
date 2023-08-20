@@ -5,6 +5,23 @@
 #include "Messaging.h"
 #include "WorldUtils.h"
 
+static void Ascend_Command(const cc_string* args, int argsCount);
+static bool TryFindAbove(Vec3 currentPosition, Vec3* ascendPosition);
+
+struct ChatCommand AscendCommand = {
+	"Ascend",
+	Ascend_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/Ascend",
+		"&fTeleports you to the first free space above you.",
+		NULL,
+		NULL,
+		NULL
+	},
+	NULL
+};
+
 static bool TryFindAbove(Vec3 currentPosition, Vec3* ascendPosition) {
 	int x = (int) currentPosition.X;
 	int y = (int) currentPosition.Y;
@@ -49,17 +66,3 @@ static void Ascend_Command(const cc_string* args, int argsCount) {
 	playerEntity.VTABLE->SetLocation(&playerEntity, &update);
 	Message_Player("&fTeleported you up.");
 }
-
-struct ChatCommand AscendCommand = {
-	"Ascend",
-	Ascend_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Ascend",
-		"&fTeleports you to the first free space above you.",
-		NULL,
-		NULL,
-		NULL
-	},
-	NULL
-};

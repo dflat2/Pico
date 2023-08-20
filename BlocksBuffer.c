@@ -6,30 +6,14 @@
 static BlocksBuffer s_buffer = { 0 };
 static bool s_bufferIsEmpty = true;
 
-static void FreeBuffer() {
-	if (s_bufferIsEmpty) {
-		return;
-	}
-
-	free(s_buffer.content);
-	s_bufferIsEmpty = true;
-}
-
-bool BlocksBuffer_IsEmpty() {
-	return s_bufferIsEmpty;
-}
+static void FreeBuffer();
 
 BlocksBuffer BlocksBuffer_GetCopied() {
 	return s_buffer;
 }
 
-void BlocksBuffer_SetCopied(BlocksBuffer buffer) {
-	if (!s_bufferIsEmpty) {
-		FreeBuffer();
-	}
-
-	s_buffer = buffer;
-	s_bufferIsEmpty = false;
+bool BlocksBuffer_IsEmpty() {
+	return s_bufferIsEmpty;
 }
 
 int BlocksBuffer_Copy(IVec3 mark1, IVec3 mark2) {
@@ -63,4 +47,22 @@ int BlocksBuffer_Copy(IVec3 mark1, IVec3 mark2) {
 
 	BlocksBuffer_SetCopied(buffer);
 	return buffer.width * buffer.height * buffer.length;
+}
+
+void BlocksBuffer_SetCopied(BlocksBuffer buffer) {
+	if (!s_bufferIsEmpty) {
+		FreeBuffer();
+	}
+
+	s_buffer = buffer;
+	s_bufferIsEmpty = false;
+}
+
+static void FreeBuffer() {
+	if (s_bufferIsEmpty) {
+		return;
+	}
+
+	free(s_buffer.content);
+	s_bufferIsEmpty = true;
 }

@@ -9,13 +9,32 @@
 #include "MarkSelection.h"
 #include "Vectors.h"
 
+static void Measure_Command(const cc_string* args, int argsCount);
+static void CleanResources(void* arguments);
+static void MeasureSelectionHandler(IVec3* marks, int count, void* object);
+static void CountBlocks(int x1, int y1, int z1, int x2, int y2, int z2, BlockID* blocks, int count);
+static void ShowCountedBlocks(int* counts, BlockID* blocks, int count);
+
+struct ChatCommand MeasureCommand = {
+	"Measure",
+	Measure_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/Measure",
+		"&fDisplay the dimensions between two points.",
+		"&b/Measure <block>",
+		"&fAdditionally, counts the number of &b<block>&fs.",
+		NULL
+	},
+	NULL
+};
+
 typedef struct MeasureExtraArguments_ {
 	BlockID* blocks;
 	unsigned count;
 } MeasureExtraArguments;
 
-static void ShowCountedBlocks(int* counts, BlockID* blocks, int count)
-{
+static void ShowCountedBlocks(int* counts, BlockID* blocks, int count) {
 	cc_string currentBlockName;
 	char buffer[128];
 	cc_string currentMessage = { buffer, 0, 128 };
@@ -96,12 +115,10 @@ static void Measure_Command(const cc_string* args, int argsCount) {
 	BlockID* blocks = allocate(argsCount, sizeof(blocks));
 	int currentBlock;
 
-	for (int i = 0; i < argsCount; i++)
-	{
+	for (int i = 0; i < argsCount; i++) {
 		currentBlock = Block_Parse(&args[i]);
 
-		if (currentBlock == -1)
-		{
+		if (currentBlock == -1) {
 			char message[64];
 			cc_string ccMessage = { message, 0, 64 };
 			String_Format1(&ccMessage, "&fThere is no block &b%s&f.", (void*)&args[i]);
@@ -120,17 +137,3 @@ static void Measure_Command(const cc_string* args, int argsCount) {
 	MarkSelection_Make(MeasureSelectionHandler, 2, arguments, CleanResources);
 	Message_Player("&fPlace or break two blocks to determine the edges.");
 }
-
-struct ChatCommand MeasureCommand = {
-	"Measure",
-	Measure_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Measure",
-		"&fDisplay the dimensions between two points.",
-		"&b/Measure <block>",
-		"&fAdditionally, counts the number of &b<block>&fs.",
-		NULL
-	},
-	NULL
-};

@@ -8,6 +8,76 @@
 #include "MemoryAllocation.h"
 #include "Format.h"
 
+static void UndoList_Command(const cc_string* args, int argsCount);
+static void UndoTree_Command(const cc_string* args, int argsCount);
+static void Checkout_SubCommand(const cc_string* args, int argsCount);
+static void Later_SubCommand(const cc_string* args, int argsCount);
+static void Earlier_SubCommand(const cc_string* args, int argsCount);
+static void Redo_SubCommand(const cc_string* args, int argsCount);
+static void Descend_SubCommand(const cc_string* args, int argsCount);
+static void Ascend_SubCommand(const cc_string* args, int argsCount);
+static void UndoTreeShowUsages();
+static void ShowCheckedOut(int commit, int timestamp);
+static void Redo_Command(const cc_string* args, int argsCount);
+static void Undo_Command(const cc_string* args, int argsCount);
+static void ShowUndoDisabled(const char* action);
+
+struct ChatCommand RedoCommand = {
+	"Redo",
+	Redo_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/Redo &f- Reverts last movement on the undo tree.",
+		"This command does the same thing as &b/UndoTree redo&f.",
+		NULL,
+		NULL,
+		NULL
+	},
+	NULL
+};
+
+struct ChatCommand UndoCommand = {
+	"Undo",
+	Undo_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/Undo &f- Undoes the last operation.",
+		"This command does the same thing as &b/UndoTree ascend&f.",
+		"Please note that you cannot undo block physics.",
+		NULL,
+		NULL,
+	},
+	NULL
+};
+
+struct ChatCommand UndoTreeCommand = {
+	"UndoTree",
+	UndoTree_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/UndoTree ascend/descend/redo",
+		"&b/UndoTree earlier/later <duration>",
+		"&b/UndoTree checkout <operation>",
+		"Navigates the undo tree. Read the manual for more information.",
+		NULL
+	},
+	NULL
+};
+
+struct ChatCommand UndoListCommand = {
+	"UndoList",
+	UndoList_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/UndoList &f- Lists the leaves of the undo tree.",
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	},
+	NULL
+};
+
 static void ShowUndoDisabled(const char* action) {
 	char cannotDoMsg[64];
 	snprintf(cannotDoMsg, sizeof(cannotDoMsg), "Cannot &b%s&f, as the undo system is disabled.", action);
@@ -267,60 +337,3 @@ static void UndoList_Command(const cc_string* args, int argsCount) {
 	Message_Player("List of leaves in the undo tree:");
 	UndoTree_ShowLeaves();
 }
-
-struct ChatCommand RedoCommand = {
-	"Redo",
-	Redo_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Redo &f- Reverts last movement on the undo tree.",
-		"This command does the same thing as &b/UndoTree redo&f.",
-		NULL,
-		NULL,
-		NULL
-	},
-	NULL
-};
-
-struct ChatCommand UndoCommand = {
-	"Undo",
-	Undo_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Undo &f- Undoes the last operation.",
-		"This command does the same thing as &b/UndoTree ascend&f.",
-		"Please note that you cannot undo block physics.",
-		NULL,
-		NULL,
-	},
-	NULL
-};
-
-struct ChatCommand UndoTreeCommand = {
-	"UndoTree",
-	UndoTree_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/UndoTree ascend/descend/redo",
-		"&b/UndoTree earlier/later <duration>",
-		"&b/UndoTree checkout <operation>",
-		"Navigates the undo tree. Read the manual for more information.",
-		NULL
-	},
-	NULL
-};
-
-struct ChatCommand UndoListCommand = {
-	"UndoList",
-	UndoList_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/UndoList &f- Lists the leaves of the undo tree.",
-		NULL,
-		NULL,
-		NULL,
-		NULL
-	},
-	NULL
-};
-

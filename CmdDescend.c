@@ -3,6 +3,22 @@
 
 #include "Messaging.h"
 #include "WorldUtils.h"
+static void Descend_Command(const cc_string* args, int argsCount);
+static bool TryFindBelow(Vec3 currentPosition, Vec3* descendPosition);
+
+struct ChatCommand DescendCommand = {
+	"Descend",
+	Descend_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/Descend",
+		"&fTeleports you to the first free space below you.",
+		NULL,
+		NULL,
+		NULL
+	},
+	NULL
+};
 
 static bool TryFindBelow(Vec3 currentPosition, Vec3* descendPosition) {
 	int x = (int) currentPosition.X;
@@ -48,17 +64,3 @@ static void Descend_Command(const cc_string* args, int argsCount) {
 	playerEntity.VTABLE->SetLocation(&playerEntity, &update);
 	Message_Player("&fTeleported you down.");
 }
-
-struct ChatCommand DescendCommand = {
-	"Descend",
-	Descend_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Descend",
-		"&fTeleports you to the first free space below you.",
-		NULL,
-		NULL,
-		NULL
-	},
-	NULL
-};

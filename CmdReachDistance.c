@@ -3,6 +3,24 @@
 
 #include "Messaging.h"
 
+static void ReachDistance_Command(const cc_string* args, int argsCount);
+static void ResetReachDistance(struct LocalPlayer* player);
+static void SetReachDistance(struct LocalPlayer* player, float reachDistance);
+
+struct ChatCommand ReachDistanceCommand = {
+	"ReachDistance",
+	ReachDistance_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/ReachDistance [distance]",
+		"&fSets your reach distance to &bdistance&f.",
+		"&fResets to default (&b5.0&f) if no &bdistance &fis given.",
+		NULL,
+		NULL
+	},
+	NULL
+};
+
 #define DEFAULT_REACH_DISTANCE 5.0f
 
 static void SetReachDistance(struct LocalPlayer* player, float reachDistance) {
@@ -53,17 +71,3 @@ static void ReachDistance_Command(const cc_string* args, int argsCount) {
 	String_Format1(&message, "&fYour reach distance has been set to &b%f2&f.", &distance);
 	Chat_Add(&message);
 }
-
-struct ChatCommand ReachDistanceCommand = {
-	"ReachDistance",
-	ReachDistance_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/ReachDistance [distance]",
-		"&fSets your reach distance to &bdistance&f.",
-		"&fResets to default (&b5.0&f) if no &bdistance &fis given.",
-		NULL,
-		NULL
-	},
-	NULL
-};

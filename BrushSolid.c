@@ -7,6 +7,17 @@ typedef struct BrushSolidArgs_ {
 	BlockID block;
 } BrushSolidArgs;
 
+static void* BrushSolid_Parse(const cc_string* args, int argsCount);
+static BlockID BrushSolid_Paint(int x, int y, int z, void* object);
+static void BrushSolid_Clean(void* object);
+
+BrushBuilder BrushSolid_Builder = {
+	.name = "@Solid",
+	.ArgumentsParser = &BrushSolid_Parse,
+	.Painter = &BrushSolid_Paint,
+	.Cleaner = &BrushSolid_Clean
+}; 
+
 static void* BrushSolid_Parse(const cc_string* args, int argsCount) {
 	if (argsCount == 0) {
 		Message_Player("&b@Solid&f: please provide a block.");
@@ -36,10 +47,3 @@ static void BrushSolid_Clean(void* object) {
 	BrushSolidArgs* args = (BrushSolidArgs*)object;
 	free(args);
 }
-
-BrushBuilder BrushSolid_Builder = {
-	.name = "@Solid",
-	.ArgumentsParser = &BrushSolid_Parse,
-	.Painter = &BrushSolid_Paint,
-	.Cleaner = &BrushSolid_Clean
-}; 

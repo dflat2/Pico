@@ -10,19 +10,45 @@
 #include "Array.h"
 
 typedef char ZMode;
-
-typedef struct ZArguments_ {
-	ZMode mode;
-	Brush* brush;
-} ZArguments;
-
 static const ZMode SOLID_MODE = 0;
 static const ZMode HOLLOW_MODE = 1;
 static const ZMode WALLS_MODE = 2;
 static const ZMode WIRE_MODE = 3;
 static const ZMode CORNERS_MODE = 4;
 
+typedef struct ZArguments_ {
+	ZMode mode;
+	Brush* brush;
+} ZArguments;
+
 typedef void (*CuboidOperation)(IVec3 min, IVec3 max, Brush* brush);
+
+static void Z_Command(const cc_string* args, int argsCount);
+static bool TryParseArguments(const cc_string* args, int argsCount, ZArguments* out_arguments);
+static void ShowUsage();
+static void CleanResources(void* args);
+static void ZSelectionHandler(IVec3* marks, int count, void* object);
+static CuboidOperation GetFunction(char mode);
+static void DoCuboidCorners(IVec3 min, IVec3 max, Brush* brush);
+static void DoCuboidWire(IVec3 min, IVec3 max, Brush* brush);
+static void DoCuboidWalls(IVec3 min, IVec3 max, Brush* brush);
+static void DoCuboidHollow(IVec3 min, IVec3 max, Brush* brush);
+static void DoCuboidSolid(IVec3 min, IVec3 max, Brush* brush);
+static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zmax, Brush* brush);
+
+struct ChatCommand ZCommand = {
+	"Z",
+	Z_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/Z [mode] [brush/block]",
+        "&fDraws a cuboid between two points.",
+		"&fList of modes: &bsolid&f (default), &bhollow&f, &bwalls&f, &bwire&f, &bcorners&f.",
+		NULL,
+		NULL
+	},
+	NULL
+};
 
 static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zmax, Brush* brush) {
     for (int i = xmin; i <= xmax; i++) {
@@ -209,17 +235,3 @@ static void Z_Command(const cc_string* args, int argsCount) {
     MarkSelection_Make(ZSelectionHandler, 2, arguments, CleanResources);
     Message_Player("&fPlace or break two blocks to determine the edges.");
 }
-
-struct ChatCommand ZCommand = {
-	"Z",
-	Z_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Z [mode] [brush/block]",
-        "&fDraws a cuboid between two points.",
-		"&fList of modes: &bsolid&f (default), &bhollow&f, &bwalls&f, &bwire&f, &bcorners&f.",
-		NULL,
-		NULL
-	},
-	NULL
-};

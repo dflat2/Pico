@@ -8,6 +8,25 @@
 #include "Messaging.h"
 #include "Vectors.h"
 
+static void CutSelectionHandler(IVec3* marks, int count, void* object);
+static void Cut_Command(const cc_string* args, int argsCount);
+static void DoCut(IVec3 mark1, IVec3 mark2);
+static void ShowBlocksCut(int amount);
+
+struct ChatCommand CutCommand = {
+	"Cut",
+	Cut_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/Cut &f- Copies and cut the blocks in an area.",
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	},
+	NULL
+};
+
 static void ShowBlocksCut(int amount) {
 	char message[128];
 
@@ -50,17 +69,3 @@ static void Cut_Command(const cc_string* args, int argsCount) {
     MarkSelection_Make(CutSelectionHandler, 2, NULL, NULL);
     Message_Player("&fPlace or break two blocks to determine the edges.");
 }
-
-struct ChatCommand CutCommand = {
-	"Cut",
-	Cut_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Cut &f- Copies and cut the blocks in an area.",
-		NULL,
-		NULL,
-		NULL,
-		NULL
-	},
-	NULL
-};

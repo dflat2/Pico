@@ -4,6 +4,22 @@
 #include "Messaging.h"
 #include "MarkSelection.h"
 
+static void MarkAll_Command(const cc_string* args, int argsCount);
+
+struct ChatCommand MarkAllCommand = {
+	"MarkAll",
+	MarkAll_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/MarkAll",
+		"&fPlaces markers in min and max corners of the map.",
+		NULL,
+        NULL,
+        NULL
+	},
+	NULL
+};
+
 static void MarkAll_Command(const cc_string* args, int argsCount) {
 	if (argsCount != 0) {
 		Message_Player("&fUsage: &b/MarkAll&f.");
@@ -25,17 +41,3 @@ static void MarkAll_Command(const cc_string* args, int argsCount) {
     MarkSelection_DoMark(low);
     MarkSelection_DoMark(high);
 }
-
-struct ChatCommand MarkAllCommand = {
-	"MarkAll",
-	MarkAll_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/MarkAll",
-		"&fPlaces markers in min and max corners of the map.",
-		NULL,
-        NULL,
-        NULL
-	},
-	NULL
-};

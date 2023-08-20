@@ -8,6 +8,24 @@
 #include "Messaging.h"
 #include "Vectors.h"
 
+static void Center_Command(const cc_string* args, int argsCount);
+static void CenterSelectionHandler(IVec3* marks, int count, void* object);
+static void Center(IVec3 a, IVec3 b);
+
+struct ChatCommand CenterCommand = {
+	"Center",
+	Center_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/Center",
+		"&fPlaces gold blocks at the center of your selection.",
+		NULL,
+		NULL,
+		NULL
+	},
+	NULL
+};
+
 static void Center(IVec3 a, IVec3 b) {
     IVec3 min = Min(a, b);
     IVec3 max = Max(a, b);
@@ -60,17 +78,3 @@ static void Center_Command(const cc_string* args, int argsCount) {
     MarkSelection_Make(CenterSelectionHandler, 2, NULL, NULL);
     Message_Player("&fPlace or break two blocks to determine the edges.");
 }
-
-struct ChatCommand CenterCommand = {
-	"Center",
-	Center_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Center",
-		"&fPlaces gold blocks at the center of your selection.",
-		NULL,
-		NULL,
-		NULL
-	},
-	NULL
-};

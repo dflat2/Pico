@@ -34,19 +34,19 @@ typedef struct UndoNode_ {
 	UndoNode* redoChild;
 } UndoNode;
 
-static void DescribeNode(UndoNode* node, char* message, size_t length);
-static void InitRoot();
-static void FreeUndoNode(UndoNode* node);
-static bool BuildingNode();
-static void Ascend();
-static void Descend();
-static UndoNode* FindNode(int commit);
-static void Ancestors(UndoNode* node, List* out_ancestors);
-static void CheckoutFromNode(UndoNode* target, int* ascended, int* descended);
-static void Attach(UndoNode* parent, UndoNode* child);
-static void SetRedoChild(UndoNode* node);
-static void ShowCurrentNode();
 static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID block);
+static void ShowCurrentNode();
+static void SetRedoChild(UndoNode* node);
+static void Attach(UndoNode* parent, UndoNode* child);
+static void CheckoutFromNode(UndoNode* target, int* ascended, int* descended);
+static void Ancestors(UndoNode* node, List* out_ancestors);
+static UndoNode* FindNode(int commit);
+static void Descend();
+static void Ascend();
+static bool BuildingNode();
+static void FreeUndoNode(UndoNode* node);
+static void InitRoot();
+static void GetLeaves(List* out_leaves);
 
 static UndoNode* s_root = NULL;
 static UndoNode* s_here = NULL;
@@ -285,28 +285,6 @@ void UndoTree_Commit() {
 	ShowCurrentNode();
 }
 
-static void GetLeaves(List* out_leaves) {
-	UndoNode* currentNode;
-	List* stack = List_CreateEmpty();
-	List_Append(stack, s_root);
-
-	while (!List_IsEmpty(stack)) {
-		currentNode = (UndoNode*) List_Pop(stack);
-
-		int childrenCount = List_Count(currentNode->children);
-
-		for (int i = 0; i < childrenCount; i++) {
-			List_Append(stack, List_Get(currentNode->children, i));
-		}
-
-		if (childrenCount == 0) {
-			List_Append(out_leaves, currentNode);
-		}
-	}
-
-	List_Free(stack);
-}
-
 void UndoTree_ShowLeaves() {
 	List* leaves = List_CreateEmpty();
 	GetLeaves(leaves);
@@ -335,6 +313,28 @@ void UndoTree_ShowLeaves() {
 
 long UndoTree_CurrentTimestamp() {
 	return s_here->timestamp;
+}
+
+static void GetLeaves(List* out_leaves) {
+	UndoNode* currentNode;
+	List* stack = List_CreateEmpty();
+	List_Append(stack, s_root);
+
+	while (!List_IsEmpty(stack)) {
+		currentNode = (UndoNode*) List_Pop(stack);
+
+		int childrenCount = List_Count(currentNode->children);
+
+		for (int i = 0; i < childrenCount; i++) {
+			List_Append(stack, List_Get(currentNode->children, i));
+		}
+
+		if (childrenCount == 0) {
+			List_Append(out_leaves, currentNode);
+		}
+	}
+
+	List_Free(stack);
 }
 
 static void InitRoot() {

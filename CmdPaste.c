@@ -11,6 +11,25 @@
 #include "WorldUtils.h"
 #include "Array.h"
 
+static void Paste_Command(const cc_string* args, int argsCount);
+static void CleanResources(void* args);
+static void PasteSelectionHandler(IVec3* marks, int count, void* object);
+static void ShowBlocksPasted(int amount);
+
+struct ChatCommand PasteCommand = {
+	"Paste",
+	Paste_Command,
+	COMMAND_FLAG_SINGLEPLAYER_ONLY,
+	{
+		"&b/Paste [mode] &f- Pastes the stored copy.",
+		"&fSet the mode to &bair &fto also paste air blocks.",
+		"&fList of modes: &bnormal&f (default), &bair&f.",
+		NULL,
+		NULL
+	},
+	NULL
+};
+
 typedef enum PasteMode_ {
     NORMAL,
     AIR,
@@ -19,7 +38,6 @@ typedef enum PasteMode_ {
 typedef struct PasteArguments_ {
     PasteMode mode;
 } PasteArguments;
-
 
 static void ShowBlocksPasted(int amount) {
 	char message[128];
@@ -105,17 +123,3 @@ static void Paste_Command(const cc_string* args, int argsCount) {
     MarkSelection_Make(PasteSelectionHandler, 1, pasteArgs, CleanResources);
     Message_Player("&fPlace a block in the corner of where you want to paste.");
 }
-
-struct ChatCommand PasteCommand = {
-	"Paste",
-	Paste_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Paste [mode] &f- Pastes the stored copy.",
-		"&fSet the mode to &bair &fto also paste air blocks.",
-		"&fList of modes: &bnormal&f (default), &bair&f.",
-		NULL,
-		NULL
-	},
-	NULL
-};

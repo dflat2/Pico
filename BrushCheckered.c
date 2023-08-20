@@ -8,6 +8,17 @@ typedef struct BrushCheckeredArgs_ {
 	BlockID block2;
 } BrushCheckeredArgs;
 
+static BlockID BrushCheckered_Paint(int x, int y, int z, void* object);
+static void BrushCheckered_Clean(void* object);
+static void* BrushCheckered_Parse(const cc_string* args, int argsCount);
+
+BrushBuilder BrushCheckered_Builder = {
+	.name = "@Checkered",
+	.ArgumentsParser = &BrushCheckered_Parse,
+	.Painter = &BrushCheckered_Paint,
+	.Cleaner = &BrushCheckered_Clean
+}; 
+
 static void* BrushCheckered_Parse(const cc_string* args, int argsCount) {
 	if (argsCount < 2) {
 		Message_Player("&b@Checkered&f: please provide two blocks for the checkers.");
@@ -44,10 +55,3 @@ static void BrushCheckered_Clean(void* object) {
 	BrushCheckeredArgs* args = (BrushCheckeredArgs*)object;
 	free(args);
 }
-
-BrushBuilder BrushCheckered_Builder = {
-	.name = "@Checkered",
-	.ArgumentsParser = &BrushCheckered_Parse,
-	.Painter = &BrushCheckered_Paint,
-	.Cleaner = &BrushCheckered_Clean
-}; 

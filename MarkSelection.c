@@ -16,6 +16,12 @@ static void* s_ExtraParameters = NULL;
 static ResourceCleaner s_ResourceCleaner = NULL;
 
 static void ValidateSelection();
+static void ResetSelectionState();
+static void FreeResources();
+static void CallHandler();
+static void UnregisterBlockChanged();
+static void RegisterBlockChanged();
+static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock);
 
 void MarkSelection_DoMark(IVec3 coords) {
     if (!s_InProgress) {
@@ -34,6 +40,34 @@ void MarkSelection_DoMark(IVec3 coords) {
         ValidateSelection();
         return;
     }
+}
+void MarkSelection_Abort() {
+    FreeResources();
+    ResetSelectionState();
+    UnregisterBlockChanged();
+}
+
+int MarkSelection_RemainingMarks() {
+    if (!s_InProgress) {
+        return 0;
+    }
+
+    return s_TotalMarks - s_CurrentMark;
+}
+
+void MarkSelection_Make(SelectionHandler handler, int count, void* extraParameters, ResourceCleaner resourceCleaner) {
+    if (s_InProgress) {
+        MarkSelection_Abort();
+    }
+
+    s_InProgress = true;
+    s_CurrentMark = 0;
+    s_TotalMarks = count;
+    s_Marks = allocate(count, sizeof(IVec3));
+    s_Handler = handler;
+    s_ExtraParameters = extraParameters;
+    s_ResourceCleaner = resourceCleaner;
+    RegisterBlockChanged();
 }
 
 static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock) {
@@ -71,36 +105,7 @@ static void ResetSelectionState() {
     s_ResourceCleaner = NULL;
 }
 
-void MarkSelection_Abort() {
-    FreeResources();
-    ResetSelectionState();
-    UnregisterBlockChanged();
-}
-
 static void ValidateSelection() {
     CallHandler();
     MarkSelection_Abort();
-}
-
-int MarkSelection_RemainingMarks() {
-    if (!s_InProgress) {
-        return 0;
-    }
-
-    return s_TotalMarks - s_CurrentMark;
-}
-
-void MarkSelection_Make(SelectionHandler handler, int count, void* extraParameters, ResourceCleaner resourceCleaner) {
-    if (s_InProgress) {
-        MarkSelection_Abort();
-    }
-
-    s_InProgress = true;
-    s_CurrentMark = 0;
-    s_TotalMarks = count;
-    s_Marks = allocate(count, sizeof(IVec3));
-    s_Handler = handler;
-    s_ExtraParameters = extraParameters;
-    s_ResourceCleaner = resourceCleaner;
-    RegisterBlockChanged();
 }
