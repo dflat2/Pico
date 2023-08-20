@@ -22,12 +22,12 @@ static void ReachDistance_Command(const cc_string* args, int argsCount) {
 
 	if (argsCount == 0) {
 		ResetReachDistance(player);
-		PlayerMessage("&fYour reach distance has been reset to &b5.0&f.");
+		Message_Player("&fYour reach distance has been reset to &b5.0&f.");
 		return;
 	}
 
 	if (argsCount >= 2) {
-		PlayerMessage("&fUsage: &b/ReachDistance [distance]");
+		Message_Player("&fUsage: &b/ReachDistance [distance]");
 		return;
 	}
 
@@ -36,13 +36,13 @@ static void ReachDistance_Command(const cc_string* args, int argsCount) {
 
 	if (!success)
 	{
-		PlayerMessage("&fUsage: &b/ReachDistance [distance]&f.");
+		Message_Player("&fUsage: &b/ReachDistance [distance]&f.");
 		return;
 	}
 
 	if (distance < 0.0f)
 	{
-		PlayerMessage("&fDistance must be positive or 0.");
+		Message_Player("&fDistance must be positive or 0.");
 		return;
 	}
 

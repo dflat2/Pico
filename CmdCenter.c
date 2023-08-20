@@ -40,7 +40,7 @@ static void Center(IVec3 a, IVec3 b) {
              centerCuboidMin.X, centerCuboidMin.Y, centerCuboidMin.Z,
              centerCuboidMax.X, centerCuboidMax.Y, centerCuboidMax.Z);
 
-    PlayerMessage(message);
+    Message_Player(message);
 }
 
 static void CenterSelectionHandler(IVec3* marks, int count, void* object) {
@@ -53,12 +53,12 @@ static void CenterSelectionHandler(IVec3* marks, int count, void* object) {
 
 static void Center_Command(const cc_string* args, int argsCount) {
 	if (argsCount != 0) {
-		PlayerMessage("&fUsage: &b/Center");
+		Message_Player("&fUsage: &b/Center");
 		return;
 	}
 
-    MakeSelection(CenterSelectionHandler, 2, NULL, NULL);
-    PlayerMessage("&fPlace or break two blocks to determine the edges.");
+    MarkSelection_Make(CenterSelectionHandler, 2, NULL, NULL);
+    Message_Player("&fPlace or break two blocks to determine the edges.");
 }
 
 struct ChatCommand CenterCommand = {

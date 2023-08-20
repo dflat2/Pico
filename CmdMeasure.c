@@ -60,7 +60,7 @@ static void MeasureSelectionHandler(IVec3* marks, int count, void* object) {
 	snprintf(&message[0], 64, "&fMeasuring from &b(%d, %d, %d)&f to &b(%d, %d, %d)&f.",
 	        marks[0].X, marks[0].Y, marks[0].Z,
 			marks[1].X, marks[1].Y, marks[1].Z);
-	PlayerMessage(&message[0]);
+	Message_Player(&message[0]);
 
 	int width = abs(marks[0].X - marks[1].X) + 1;
 	int height = abs(marks[0].Y - marks[1].Y) + 1;
@@ -68,7 +68,7 @@ static void MeasureSelectionHandler(IVec3* marks, int count, void* object) {
 	int volume = width * height * length;
 
 	snprintf(&message[0], 64, "&b%d &fwide, &b%d &fhigh, &b%d &flong, &b%d &fblocks.", width, height, length, volume);
-	PlayerMessage(&message[0]);
+	Message_Player(&message[0]);
 
 	if (object == NULL) {
 		return;
@@ -90,7 +90,7 @@ static void CleanResources(void* arguments) {
 
 static void Measure_Command(const cc_string* args, int argsCount) {
 	if (argsCount == 0) {
-		MakeSelection(MeasureSelectionHandler, 2, NULL, NULL);
+		MarkSelection_Make(MeasureSelectionHandler, 2, NULL, NULL);
 	}
 
 	BlockID* blocks = allocate(argsCount, sizeof(blocks));
@@ -117,8 +117,8 @@ static void Measure_Command(const cc_string* args, int argsCount) {
 	arguments->blocks = blocks;
 	arguments->count = argsCount;
 
-	MakeSelection(MeasureSelectionHandler, 2, arguments, CleanResources);
-	PlayerMessage("&fPlace or break two blocks to determine the edges.");
+	MarkSelection_Make(MeasureSelectionHandler, 2, arguments, CleanResources);
+	Message_Player("&fPlace or break two blocks to determine the edges.");
 }
 
 struct ChatCommand MeasureCommand = {

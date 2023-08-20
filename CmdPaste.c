@@ -30,18 +30,18 @@ static void ShowBlocksPasted(int amount) {
 		snprintf(message, sizeof(message), "&b%d &fblocks were pasted.", amount);
 	}
 
-	PlayerMessage(message);
+	Message_Player(message);
 }
 
 
 static void PasteSelectionHandler(IVec3* marks, int count, void* object) {
-    if (count != 1 || BufferIsEmpty()) {
+    if (count != 1 || BlocksBuffer_IsEmpty()) {
         return;
     }
 
 	Draw_Start("Paste");
 	PasteArguments* pasteArgs = (PasteArguments*)object;
-	BlocksBuffer buffer = GetCopiedBuffer();
+	BlocksBuffer buffer = BlocksBuffer_GetCopied();
 	IVec3 origin = Substract(marks[0], buffer.anchor);
 	int index = -1;
 
@@ -69,13 +69,13 @@ static void CleanResources(void* args) {
 }
 
 static void Paste_Command(const cc_string* args, int argsCount) {
-	if (BufferIsEmpty()) {
-		PlayerMessage("&fYou haven't copied anything yet.");
+	if (BlocksBuffer_IsEmpty()) {
+		Message_Player("&fYou haven't copied anything yet.");
 		return;
 	}
 
 	if (argsCount >= 2) {
-		PlayerMessage("Usage: &b/Paste [mode]&f.");
+		Message_Player("Usage: &b/Paste [mode]&f.");
 		return;
 	}
 
@@ -102,8 +102,8 @@ static void Paste_Command(const cc_string* args, int argsCount) {
 		pasteArgs->mode = (PasteMode)modeIndex;
 	}
 
-    MakeSelection(PasteSelectionHandler, 1, pasteArgs, CleanResources);
-    PlayerMessage("&fPlace a block in the corner of where you want to paste.");
+    MarkSelection_Make(PasteSelectionHandler, 1, pasteArgs, CleanResources);
+    Message_Player("&fPlace a block in the corner of where you want to paste.");
 }
 
 struct ChatCommand PasteCommand = {

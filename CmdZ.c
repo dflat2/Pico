@@ -134,7 +134,7 @@ static void CleanResources(void* args) {
 }
 
 static void ShowUsage() {
-	PlayerMessage("Usage: &b/Z [mode] [brush/block]&f.");
+	Message_Player("Usage: &b/Z [mode] [brush/block]&f.");
 }
 
 static bool TryParseArguments(const cc_string* args, int argsCount, ZArguments* out_arguments) {
@@ -206,8 +206,8 @@ static void Z_Command(const cc_string* args, int argsCount) {
 		return;
 	}
 
-    MakeSelection(ZSelectionHandler, 2, arguments, CleanResources);
-    PlayerMessage("&fPlace or break two blocks to determine the edges.");
+    MarkSelection_Make(ZSelectionHandler, 2, arguments, CleanResources);
+    Message_Player("&fPlace or break two blocks to determine the edges.");
 }
 
 struct ChatCommand ZCommand = {

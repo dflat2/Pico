@@ -27,12 +27,12 @@ static void Place(IVec3 position, BlockID block) {
 		snprintf(message, sizeof(message), "&b(%d, %d, %d)&f is already &b%s&f. No block affected.", position.X, position.Y, position.Z, blockName);
 	}
 
-	PlayerMessage(message);
+	Message_Player(message);
 }
 
 static void Place_Command(const cc_string* args, int argsCount) {
 	if (argsCount == 2 || argsCount >= 5) {
-		PlayerMessage("&fUsage: &b/Place &for &b/Place <block> <x> <y> <z>&f.");
+		Message_Player("&fUsage: &b/Place &for &b/Place <block> <x> <y> <z>&f.");
 		return;
 	}
 

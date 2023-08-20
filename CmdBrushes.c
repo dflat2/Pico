@@ -3,10 +3,10 @@
 #include "Messaging.h"
 
 static void Brushes_Command(const cc_string* args, int argsCount) {
-	PlayerMessage("Available brushes:");
-	PlayerMessage(" &b@Checkered <block1> <block2>");
-	PlayerMessage(" &b@Rainbow");
-	PlayerMessage(" &b@Solid <block>");
+	Message_Player("Available brushes:");
+	Message_Player(" &b@Checkered <block1> <block2>");
+	Message_Player(" &b@Rainbow");
+	Message_Player(" &b@Solid <block>");
 }
 
 struct ChatCommand BrushesCommand = {

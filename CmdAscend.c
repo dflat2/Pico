@@ -25,7 +25,7 @@ static bool TryFindAbove(Vec3 currentPosition, Vec3* ascendPosition) {
 
 static void Ascend_Command(const cc_string* args, int argsCount) {
 	if (argsCount >= 1) {
-		PlayerMessage("&fUsage: &b/Ascend");
+		Message_Player("&fUsage: &b/Ascend");
 		return;
 	}
 
@@ -38,7 +38,7 @@ static void Ascend_Command(const cc_string* args, int argsCount) {
 	bool success = TryFindAbove(currentPosition, &ascendPosition);
 
 	if (!success) {
-		PlayerMessage("&fThere are no blocks above to ascend to.");
+		Message_Player("&fThere are no blocks above to ascend to.");
 		return;
 	}
 
@@ -47,7 +47,7 @@ static void Ascend_Command(const cc_string* args, int argsCount) {
 	update.pos = ascendPosition;
 
 	playerEntity.VTABLE->SetLocation(&playerEntity, &update);
-	PlayerMessage("&fTeleported you up.");
+	Message_Player("&fTeleported you up.");
 }
 
 struct ChatCommand AscendCommand = {

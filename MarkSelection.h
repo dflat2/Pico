@@ -6,9 +6,9 @@
 
 typedef void (*SelectionHandler)(IVec3* marks, int count, void* object);
 typedef void (*ResourceCleaner)(void* object);
-void MakeSelection(SelectionHandler handler, int count, void* extraParameters, ResourceCleaner resourceCleaner);
-void AbortSelection();
-void DoMark(IVec3 coordinates);
-int RemainingMarks();
+void MarkSelection_Make(SelectionHandler handler, int count, void* extraParameters, ResourceCleaner resourceCleaner);
+void MarkSelection_Abort();
+void MarkSelection_DoMark(IVec3 coordinates);
+int MarkSelection_RemainingMarks();
 
 #endif /* MARK_SELECTION_H */

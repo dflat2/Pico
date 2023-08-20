@@ -3,7 +3,7 @@
 #include "CC_API/Chat.h"
 #include "CC_API/String.h"
 
-void PlayerMessage(const char* message) {
+void Message_Player(const char* message) {
 	cc_string ccStringMessage = String_FromReadonly(message);
 	Chat_Add(&ccStringMessage);
 }
@@ -24,7 +24,7 @@ void Message_BlocksAffected(int blocksAffected) {
 		snprintf(message, sizeof(message), "&b%d&f blocks affected.", blocksAffected);
 	}
 
-	PlayerMessage(message);
+	Message_Player(message);
 }
 
 void Message_ShowUnknownMode(const cc_string* mode) {

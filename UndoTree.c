@@ -329,7 +329,7 @@ void UndoTree_ShowLeaves() {
 		char message[64];
 		snprintf(message, sizeof(message), "[&e%s&f]&e %s @%s/%s", formattedCommit, currentNode->description, formattedTime, formattedBlocks);
 
-		PlayerMessage(message);
+		Message_Player(message);
 	}
 }
 
@@ -475,7 +475,7 @@ static void ShowCurrentNode() {
 }
 
 static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID block) {
-	if (RemainingMarks() > 0) {
+	if (MarkSelection_RemainingMarks() > 0) {
 		return;
 	}
 

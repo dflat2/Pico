@@ -24,7 +24,7 @@ static bool TryFindBelow(Vec3 currentPosition, Vec3* descendPosition) {
 
 static void Descend_Command(const cc_string* args, int argsCount) {
 	if (argsCount >= 1) {
-		PlayerMessage("&fUsage: &b/Descend");
+		Message_Player("&fUsage: &b/Descend");
 		return;
 	}
 
@@ -37,7 +37,7 @@ static void Descend_Command(const cc_string* args, int argsCount) {
 	bool success = TryFindBelow(currentPosition, &descendPosition);
 
 	if (!success) {
-		PlayerMessage("&fThere are no blocks below to descend to.");
+		Message_Player("&fThere are no blocks below to descend to.");
 		return;
 	}
 
@@ -46,7 +46,7 @@ static void Descend_Command(const cc_string* args, int argsCount) {
 	update.pos = descendPosition;
 
 	playerEntity.VTABLE->SetLocation(&playerEntity, &update);
-	PlayerMessage("&fTeleported you down.");
+	Message_Player("&fTeleported you down.");
 }
 
 struct ChatCommand DescendCommand = {

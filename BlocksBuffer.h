@@ -12,9 +12,9 @@ typedef struct BlocksBuffer_ {
 	IVec3 anchor;
 } BlocksBuffer;
 
-BlocksBuffer GetCopiedBuffer();
-bool BufferIsEmpty();
-void SetCopiedBuffer(BlocksBuffer buffer);
-int Copy(IVec3 mark1, IVec3 mark2);
+BlocksBuffer BlocksBuffer_GetCopied();
+bool BlocksBuffer_IsEmpty();
+void BlocksBuffer_SetCopied(BlocksBuffer buffer);
+int BlocksBuffer_Copy(IVec3 mark1, IVec3 mark2);
 
 #endif /* BLOCKS_BUFFER_H */

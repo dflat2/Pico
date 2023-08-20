@@ -15,15 +15,15 @@ static void FreeBuffer() {
 	s_bufferIsEmpty = true;
 }
 
-bool BufferIsEmpty() {
+bool BlocksBuffer_IsEmpty() {
 	return s_bufferIsEmpty;
 }
 
-BlocksBuffer GetCopiedBuffer() {
+BlocksBuffer BlocksBuffer_GetCopied() {
 	return s_buffer;
 }
 
-void SetCopiedBuffer(BlocksBuffer buffer) {
+void BlocksBuffer_SetCopied(BlocksBuffer buffer) {
 	if (!s_bufferIsEmpty) {
 		FreeBuffer();
 	}
@@ -32,7 +32,7 @@ void SetCopiedBuffer(BlocksBuffer buffer) {
 	s_bufferIsEmpty = false;
 }
 
-int Copy(IVec3 mark1, IVec3 mark2) {
+int BlocksBuffer_Copy(IVec3 mark1, IVec3 mark2) {
 	IVec3 min = Min(mark1, mark2);
 	IVec3 max = Max(mark1, mark2);
 	IVec3 anchor = Substract(mark1, min);
@@ -61,6 +61,6 @@ int Copy(IVec3 mark1, IVec3 mark2) {
 		.anchor = anchor
 	};
 
-	SetCopiedBuffer(buffer);
+	BlocksBuffer_SetCopied(buffer);
 	return buffer.width * buffer.height * buffer.length;
 }

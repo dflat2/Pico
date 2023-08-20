@@ -17,7 +17,7 @@ static void ShowBlocksCut(int amount) {
 		snprintf(message, sizeof(message), "&b%d &fblocks were cut.", amount);
 	}
 
-	PlayerMessage(message);
+	Message_Player(message);
 }
 
 static void DoCut(IVec3 mark1, IVec3 mark2) {
@@ -41,14 +41,14 @@ static void CutSelectionHandler(IVec3* marks, int count, void* object) {
     if (count != 2) {
         return;
     }
-	int amountCut = Copy(marks[0], marks[1]);
+	int amountCut = BlocksBuffer_Copy(marks[0], marks[1]);
 	DoCut(marks[0], marks[1]);
 	ShowBlocksCut(amountCut);
 }
 
 static void Cut_Command(const cc_string* args, int argsCount) {
-    MakeSelection(CutSelectionHandler, 2, NULL, NULL);
-    PlayerMessage("&fPlace or break two blocks to determine the edges.");
+    MarkSelection_Make(CutSelectionHandler, 2, NULL, NULL);
+    Message_Player("&fPlace or break two blocks to determine the edges.");
 }
 
 struct ChatCommand CutCommand = {

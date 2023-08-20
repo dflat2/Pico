@@ -6,12 +6,12 @@
 
 static void Mark_Command(const cc_string* args, int argsCount) {
     if (argsCount == 0) {
-        DoMark(SnapToWorldBoundaries(GetCurrentPlayerPosition()));
+        MarkSelection_DoMark(SnapToWorldBoundaries(GetCurrentPlayerPosition()));
         return;
     }
 
     if (argsCount != 3) {
-        PlayerMessage("&fUsage: &b/Mark <x> <y> <z> &for &b/Mark&f.");
+        Message_Player("&fUsage: &b/Mark <x> <y> <z> &for &b/Mark&f.");
         return;
     }
 
@@ -21,7 +21,7 @@ static void Mark_Command(const cc_string* args, int argsCount) {
         return;
     }
     
-    DoMark(SnapToWorldBoundaries(target));
+    MarkSelection_DoMark(SnapToWorldBoundaries(target));
 }
 
 struct ChatCommand MarkCommand = {

@@ -15,20 +15,20 @@ static void ShowBlocksCopied(int amount) {
 		snprintf(message, sizeof(message), "&b%d &fblocks were copied.", amount);
 	}
 
-	PlayerMessage(message);
+	Message_Player(message);
 }
 
 static void CopySelectionHandler(IVec3* marks, int count, void* object) {
     if (count != 2) {
         return;
     }
-	int amountCopied = Copy(marks[0], marks[1]);
+	int amountCopied = BlocksBuffer_Copy(marks[0], marks[1]);
 	ShowBlocksCopied(amountCopied);
 }
 
 static void Copy_Command(const cc_string* args, int argsCount) {
-    MakeSelection(CopySelectionHandler, 2, NULL, NULL);
-    PlayerMessage("&fPlace or break two blocks to determine the edges.");
+    MarkSelection_Make(CopySelectionHandler, 2, NULL, NULL);
+    Message_Player("&fPlace or break two blocks to determine the edges.");
 }
 
 struct ChatCommand CopyCommand = {

@@ -4,8 +4,8 @@
 #include "Messaging.h"
 
 static void Abort_Command(const cc_string* args, int argsCount) {
-    AbortSelection();
-    PlayerMessage("&fEvery toggle or action was aborted.");
+    MarkSelection_Abort();
+    Message_Player("&fEvery toggle or action was aborted.");
 }
 
 struct ChatCommand AbortCommand = {

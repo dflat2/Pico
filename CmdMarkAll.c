@@ -6,24 +6,24 @@
 
 static void MarkAll_Command(const cc_string* args, int argsCount) {
 	if (argsCount != 0) {
-		PlayerMessage("&fUsage: &b/MarkAll&f.");
+		Message_Player("&fUsage: &b/MarkAll&f.");
 		return;
 	}
 
-	if (RemainingMarks() == 0) {
-		PlayerMessage("&fCannot mark, no selection in progress.");
+	if (MarkSelection_RemainingMarks() == 0) {
+		Message_Player("&fCannot mark, no selection in progress.");
 		return;
 	}
-	else if (RemainingMarks() == 1) {
-		PlayerMessage("&fCannot &b/MarkAll &funless there are at least two remaining marks.");
+	else if (MarkSelection_RemainingMarks() == 1) {
+		Message_Player("&fCannot &b/MarkAll &funless there are at least two remaining marks.");
 		return;
 	}
 
     IVec3 low = { .X = 0, .Y = 0, .Z = 0 };
     IVec3 high = { .X = World.Width - 1, .Y = World.Height - 1, .Z = World.Length - 1 };
 
-    DoMark(low);
-    DoMark(high);
+    MarkSelection_DoMark(low);
+    MarkSelection_DoMark(high);
 }
 
 struct ChatCommand MarkAllCommand = {

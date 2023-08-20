@@ -9,10 +9,10 @@ typedef struct BrushSolidArgs_ {
 
 static void* BrushSolid_Parse(const cc_string* args, int argsCount) {
 	if (argsCount == 0) {
-		PlayerMessage("&b@Solid&f: please provide a block.");
+		Message_Player("&b@Solid&f: please provide a block.");
 		return NULL;;
 	} else if (argsCount >= 2) {
-		PlayerMessage("&b@Solid&f: please provide only one block.");
+		Message_Player("&b@Solid&f: please provide only one block.");
 		return NULL;;
 	}
 

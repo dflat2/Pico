@@ -7,7 +7,7 @@ static const int s_blocksCount = BLOCK_PINK - BLOCK_RED + 1;
 
 static void* BrushRainbow_Parse(const cc_string* args, int argsCount) {
 	if (argsCount > 0) {
-		PlayerMessage("&b@Rainbow&f: no arguments required.");
+		Message_Player("&b@Rainbow&f: no arguments required.");
 		return NULL;
 	}
 

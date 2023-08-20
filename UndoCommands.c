@@ -11,14 +11,14 @@
 static void ShowUndoDisabled(const char* action) {
 	char cannotDoMsg[64];
 	snprintf(cannotDoMsg, sizeof(cannotDoMsg), "Cannot &b%s&f, as the undo system is disabled.", action);
-	PlayerMessage(cannotDoMsg);
-	PlayerMessage("It can be enabled with &b/Configure UndoTreeEnabled:True&f.");
+	Message_Player(cannotDoMsg);
+	Message_Player("It can be enabled with &b/Configure UndoTreeEnabled:True&f.");
 }
 
 static void Undo_Command(const cc_string* args, int argsCount) {
 	if (argsCount != 0) {
-		PlayerMessage("&b/Undo&f doesn't take any argument.");
-		PlayerMessage("If you meant to go back in time, use &b/UndoTree earlier <duration>&f.");
+		Message_Player("&b/Undo&f doesn't take any argument.");
+		Message_Player("If you meant to go back in time, use &b/UndoTree earlier <duration>&f.");
 		return;
 	}
 	
@@ -28,16 +28,16 @@ static void Undo_Command(const cc_string* args, int argsCount) {
 	}
 
 	if (!UndoTree_Ascend()) {
-		PlayerMessage("There is nothing to undo.");
+		Message_Player("There is nothing to undo.");
 		return;
 	}
 
-	PlayerMessage("Undo performed.");
+	Message_Player("Undo performed.");
 }
 
 static void Redo_Command(const cc_string* args, int argsCount) {
 	if (argsCount != 0) {
-		PlayerMessage("&b/Redo&f doesn't take any argument.");
+		Message_Player("&b/Redo&f doesn't take any argument.");
 		return;
 	}
 
@@ -47,11 +47,11 @@ static void Redo_Command(const cc_string* args, int argsCount) {
 	}
 
 	if (!UndoTree_Redo()) {
-		PlayerMessage("You have nothing to redo.");
+		Message_Player("You have nothing to redo.");
 		return;
 	}
 
-	PlayerMessage("Redo performed.");
+	Message_Player("Redo performed.");
 }
 
 static void ShowCheckedOut(int commit, int timestamp) {
@@ -59,19 +59,19 @@ static void ShowCheckedOut(int commit, int timestamp) {
     Format_HHMMSS(timestamp, timestampString, sizeof(timestampString));
 	char successMsg[64];
 	snprintf(successMsg, sizeof(successMsg), "Checked out operation &b%d&f [&b%s&f].", commit, timestampString);
-	PlayerMessage(successMsg);
+	Message_Player(successMsg);
 }
 
 static void UndoTreeShowUsages() {
-	PlayerMessage("Usages:");
-	PlayerMessage("&b/UndoTree ascend/descend/redo");
-	PlayerMessage("&b/UndoTree earlier/later <duration>");
-	PlayerMessage("&b/UndoTree checkout <operation>");
+	Message_Player("Usages:");
+	Message_Player("&b/UndoTree ascend/descend/redo");
+	Message_Player("&b/UndoTree earlier/later <duration>");
+	Message_Player("&b/UndoTree checkout <operation>");
 }
 
 static void Ascend_SubCommand(const cc_string* args, int argsCount) {
 	if (argsCount != 0) {
-		PlayerMessage("Usage: &b/UndoTree ascend&f.");
+		Message_Player("Usage: &b/UndoTree ascend&f.");
 		return;
 	}
 	
@@ -81,16 +81,16 @@ static void Ascend_SubCommand(const cc_string* args, int argsCount) {
 	}
 
 	if (!UndoTree_Ascend()) {
-		PlayerMessage("Already at the root node.");
+		Message_Player("Already at the root node.");
 		return;
 	}
 
-	PlayerMessage("Ascend performed.");
+	Message_Player("Ascend performed.");
 }
 
 static void Descend_SubCommand(const cc_string* args, int argsCount) {
 	if (argsCount != 0) {
-		PlayerMessage("Usage: &b/UndoTree descend&f.");
+		Message_Player("Usage: &b/UndoTree descend&f.");
 		return;
 	}
 	
@@ -100,16 +100,16 @@ static void Descend_SubCommand(const cc_string* args, int argsCount) {
 	}
 
 	if (!UndoTree_Descend()) {
-		PlayerMessage("No node to descend to.");
+		Message_Player("No node to descend to.");
 		return;
 	}
 
-	PlayerMessage("Descend performed.");
+	Message_Player("Descend performed.");
 }
 
 static void Redo_SubCommand(const cc_string* args, int argsCount) {
 	if (argsCount != 0) {
-		PlayerMessage("Usage: &b/UndoTree redo&f.");
+		Message_Player("Usage: &b/UndoTree redo&f.");
 		return;
 	}
 
@@ -119,16 +119,16 @@ static void Redo_SubCommand(const cc_string* args, int argsCount) {
 	}
 
 	if (!UndoTree_Redo()) {
-		PlayerMessage("You have nothing to redo.");
+		Message_Player("You have nothing to redo.");
 		return;
 	}
 
-	PlayerMessage("Redo performed.");
+	Message_Player("Redo performed.");
 }
 
 static void Earlier_SubCommand(const cc_string* args, int argsCount) {
 	if (argsCount != 1) {
-		PlayerMessage("Usage: &b/UndoTree earlier <duration>&f.");
+		Message_Player("Usage: &b/UndoTree earlier <duration>&f.");
 		return;
 	}
 
@@ -146,7 +146,7 @@ static void Earlier_SubCommand(const cc_string* args, int argsCount) {
 
 	int commit;
 	if (!UndoTree_Earlier(duration_Second, &commit)) {
-		PlayerMessage("Already at the earliest moment.");
+		Message_Player("Already at the earliest moment.");
 		return;
 	} 
 
@@ -156,7 +156,7 @@ static void Earlier_SubCommand(const cc_string* args, int argsCount) {
 
 static void Later_SubCommand(const cc_string* args, int argsCount) {
 	if (argsCount != 1) {
-		PlayerMessage("Usage: &b/UndoTree earlier <duration>&f.");
+		Message_Player("Usage: &b/UndoTree earlier <duration>&f.");
 		return;
 	}
 
@@ -180,7 +180,7 @@ static void Later_SubCommand(const cc_string* args, int argsCount) {
 		char maxString[] = "00:00:00";
 		Format_HHMMSS(UndoTree_CurrentTimestamp() + duration_Second, maxString, sizeof(maxString));
 		snprintf(noOpMsg, sizeof(noOpMsg), "No operation to checkout between &b%s&f and &b%s&f.", fromString, maxString); 
-		PlayerMessage(noOpMsg);
+		Message_Player(noOpMsg);
 		return;
 	} 
 
@@ -190,7 +190,7 @@ static void Later_SubCommand(const cc_string* args, int argsCount) {
 
 static void Checkout_SubCommand(const cc_string* args, int argsCount) {
 	if (argsCount != 1) {
-		PlayerMessage("Usage: &b/UndoTree checkout <operation>&f.");
+		Message_Player("Usage: &b/UndoTree checkout <operation>&f.");
 		return;
 	}
 
@@ -202,7 +202,7 @@ static void Checkout_SubCommand(const cc_string* args, int argsCount) {
 	int operation;
 
 	if (!Convert_ParseInt(&(args[0]), &operation) || operation < 0) {
-		PlayerMessage("&b<operation>&f must be a positive integer.");
+		Message_Player("&b<operation>&f must be a positive integer.");
 		return;
 	}
 
@@ -212,7 +212,7 @@ static void Checkout_SubCommand(const cc_string* args, int argsCount) {
 	if (!UndoTree_Checkout(operation, &ascended, &descended)) {
 		char operationNotFoundMsg[64];
 		snprintf(operationNotFoundMsg, sizeof(operationNotFoundMsg), "Could not find operation &b%d&f.", operation);
-		PlayerMessage(operationNotFoundMsg);
+		Message_Player(operationNotFoundMsg);
 		return;
 	}
 
@@ -224,7 +224,7 @@ static void Checkout_SubCommand(const cc_string* args, int argsCount) {
 		snprintf(successMsg, sizeof(successMsg), "Checked out operation &b%d&f.", operation);
 	}
 
-	PlayerMessage(successMsg);
+	Message_Player(successMsg);
 }
 
 static void UndoTree_Command(const cc_string* args, int argsCount) {
@@ -260,11 +260,11 @@ static void UndoList_Command(const cc_string* args, int argsCount) {
 	}
 
 	if (argsCount != 0) {
-		PlayerMessage("Usage: &b/UndoList&f.");
+		Message_Player("Usage: &b/UndoList&f.");
 		return;
 	}
 
-	PlayerMessage("List of leaves in the undo tree:");
+	Message_Player("List of leaves in the undo tree:");
 	UndoTree_ShowLeaves();
 }
 

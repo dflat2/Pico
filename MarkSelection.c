@@ -17,9 +17,9 @@ static ResourceCleaner s_ResourceCleaner = NULL;
 
 static void ValidateSelection();
 
-void DoMark(IVec3 coords) {
+void MarkSelection_DoMark(IVec3 coords) {
     if (!s_InProgress) {
-        PlayerMessage("&fCannot mark, no selection in progress.");
+        Message_Player("&fCannot mark, no selection in progress.");
         return;
     }
 
@@ -28,7 +28,7 @@ void DoMark(IVec3 coords) {
 
     char message[64];
     snprintf(message, 64, "&fMark placed at &b(%d, %d, %d)&f.", coords.X, coords.Y, coords.Z);
-    PlayerMessage(message);
+    Message_Player(message);
 
     if (s_CurrentMark == s_TotalMarks) {
         ValidateSelection();
@@ -38,7 +38,7 @@ void DoMark(IVec3 coords) {
 
 static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock) {
     Game_UpdateBlock(coords.X, coords.Y, coords.Z, oldBlock);
-    DoMark(coords);
+    MarkSelection_DoMark(coords);
 }
 
 static void RegisterBlockChanged() {
@@ -71,7 +71,7 @@ static void ResetSelectionState() {
     s_ResourceCleaner = NULL;
 }
 
-void AbortSelection() {
+void MarkSelection_Abort() {
     FreeResources();
     ResetSelectionState();
     UnregisterBlockChanged();
@@ -79,10 +79,10 @@ void AbortSelection() {
 
 static void ValidateSelection() {
     CallHandler();
-    AbortSelection();
+    MarkSelection_Abort();
 }
 
-int RemainingMarks() {
+int MarkSelection_RemainingMarks() {
     if (!s_InProgress) {
         return 0;
     }
@@ -90,9 +90,9 @@ int RemainingMarks() {
     return s_TotalMarks - s_CurrentMark;
 }
 
-void MakeSelection(SelectionHandler handler, int count, void* extraParameters, ResourceCleaner resourceCleaner) {
+void MarkSelection_Make(SelectionHandler handler, int count, void* extraParameters, ResourceCleaner resourceCleaner) {
     if (s_InProgress) {
-        AbortSelection();
+        MarkSelection_Abort();
     }
 
     s_InProgress = true;

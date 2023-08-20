@@ -10,10 +10,10 @@ typedef struct BrushCheckeredArgs_ {
 
 static void* BrushCheckered_Parse(const cc_string* args, int argsCount) {
 	if (argsCount < 2) {
-		PlayerMessage("&b@Checkered&f: please provide two blocks for the checkers.");
+		Message_Player("&b@Checkered&f: please provide two blocks for the checkers.");
 		return NULL;
 	} else if (argsCount >= 3) {
-		PlayerMessage("&b@Checkered&f: only two blocks are required.");
+		Message_Player("&b@Checkered&f: only two blocks are required.");
 		return NULL;
 	}
 
