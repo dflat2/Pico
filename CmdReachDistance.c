@@ -2,12 +2,13 @@
 #include "CC_API/Entity.h"
 
 #include "Messaging.h"
+#include "SPCCommand.h"
 
 static void ReachDistance_Command(const cc_string* args, int argsCount);
 static void ResetReachDistance(struct LocalPlayer* player);
 static void SetReachDistance(struct LocalPlayer* player, float reachDistance);
 
-struct ChatCommand ReachDistanceCommand = {
+static struct ChatCommand ReachDistanceCommand = {
 	"ReachDistance",
 	ReachDistance_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -20,6 +21,12 @@ struct ChatCommand ReachDistanceCommand = {
 	},
 	NULL
 };
+
+SPCCommand ReachDistanceSPCCommand = {
+	.chatCommand = &ReachDistanceCommand,
+	.canStatic = false
+};
+
 
 #define DEFAULT_REACH_DISTANCE 5.0f
 

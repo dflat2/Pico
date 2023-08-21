@@ -5,12 +5,13 @@
 #include "BlocksBuffer.h"
 #include "MarkSelection.h"
 #include "Messaging.h"
+#include "SPCCommand.h"
 
 static void Copy_Command(const cc_string* args, int argsCount);
 static void CopySelectionHandler(IVec3* marks, int count, void* object);
 static void ShowBlocksCopied(int amount);
 
-struct ChatCommand CopyCommand = {
+static struct ChatCommand CopyCommand = {
 	"Copy",
 	Copy_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -23,6 +24,12 @@ struct ChatCommand CopyCommand = {
 	},
 	NULL
 };
+
+SPCCommand CopySPCCommand = {
+	.chatCommand = &CopyCommand,
+	.canStatic = false
+};
+
 
 static void ShowBlocksCopied(int amount) {
 	char message[128];

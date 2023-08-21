@@ -4,6 +4,7 @@
 #include "CC_API/World.h"
 
 #include "Messaging.h"
+#include "SPCCommand.h"
 #include "WorldUtils.h"
 
 static void Ascend_Command(const cc_string* args, int argsCount);
@@ -14,7 +15,7 @@ static bool CanStandOnBlock(int x, int y, int z);
 static bool IsSolidBlock(BlockID id);
 static bool CanPassThrough(BlockID id);
 
-struct ChatCommand AscendCommand = {
+static struct ChatCommand AscendCommand = {
 	"Ascend",
 	Ascend_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -28,7 +29,12 @@ struct ChatCommand AscendCommand = {
 	NULL
 };
 
-struct ChatCommand DescendCommand = {
+SPCCommand AscendSPCCommand = {
+	.chatCommand = &AscendCommand,
+	.canStatic = false,
+};
+
+static struct ChatCommand DescendCommand = {
 	"Descend",
 	Descend_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -40,6 +46,11 @@ struct ChatCommand DescendCommand = {
 		NULL
 	},
 	NULL
+};
+
+SPCCommand DescendSPCCommand = {
+	.chatCommand = &DescendCommand,
+	.canStatic = false,
 };
 
 static void Ascend_Command(const cc_string* args, int argsCount) {
@@ -156,8 +167,4 @@ static bool CanStandOnBlock(int x, int y, int z) {
 	}
 
 	return IsSolidBlock(below) && CanPassThrough(feet) && CanPassThrough(head);
-}
-
-BlockID CurrentHoldingBlock() {
-	return 0; 
 }

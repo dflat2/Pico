@@ -7,6 +7,7 @@
 #include "ParsingUtils.h"
 #include "MemoryAllocation.h"
 #include "Format.h"
+#include "SPCCommand.h"
 
 static void UndoList_Command(const cc_string* args, int argsCount);
 static void UndoTree_Command(const cc_string* args, int argsCount);
@@ -22,7 +23,7 @@ static void Redo_Command(const cc_string* args, int argsCount);
 static void Undo_Command(const cc_string* args, int argsCount);
 static void ShowUndoDisabled(const char* action);
 
-struct ChatCommand RedoCommand = {
+static struct ChatCommand RedoCommand = {
 	"Redo",
 	Redo_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -36,7 +37,7 @@ struct ChatCommand RedoCommand = {
 	NULL
 };
 
-struct ChatCommand UndoCommand = {
+static struct ChatCommand UndoCommand = {
 	"Undo",
 	Undo_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -50,7 +51,7 @@ struct ChatCommand UndoCommand = {
 	NULL
 };
 
-struct ChatCommand UndoTreeCommand = {
+static struct ChatCommand UndoTreeCommand = {
 	"UndoTree",
 	UndoTree_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -64,7 +65,7 @@ struct ChatCommand UndoTreeCommand = {
 	NULL
 };
 
-struct ChatCommand UndoListCommand = {
+static struct ChatCommand UndoListCommand = {
 	"UndoList",
 	UndoList_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -76,6 +77,25 @@ struct ChatCommand UndoListCommand = {
 		NULL
 	},
 	NULL
+};
+
+SPCCommand RedoSPCCommand = {
+	.chatCommand = &RedoCommand,
+	.canStatic = false
+};
+SPCCommand UndoSPCCommand = {
+	.chatCommand = &UndoCommand,
+	.canStatic = false
+};
+
+SPCCommand UndoTreeSPCCommand = {
+	.chatCommand = &UndoTreeCommand,
+	.canStatic = false
+};
+
+SPCCommand UndoListSPCCommand = {
+	.chatCommand = &UndoListCommand,
+	.canStatic = false
 };
 
 static void ShowUndoDisabled(const char* action) {

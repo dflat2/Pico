@@ -8,6 +8,7 @@
 #include "Vectors.h"
 #include "ParsingUtils.h"
 #include "Array.h"
+#include "SPCCommand.h"
 
 typedef char ZMode;
 static const ZMode SOLID_MODE = 0;
@@ -36,7 +37,7 @@ static void DoCuboidHollow(IVec3 min, IVec3 max, Brush* brush);
 static void DoCuboidSolid(IVec3 min, IVec3 max, Brush* brush);
 static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zmax, Brush* brush);
 
-struct ChatCommand ZCommand = {
+static struct ChatCommand ZCommand = {
 	"Z",
 	Z_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -49,6 +50,12 @@ struct ChatCommand ZCommand = {
 	},
 	NULL
 };
+
+SPCCommand ZSPCCommand = {
+	.chatCommand = &ZCommand,
+	.canStatic = true
+};
+
 
 static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zmax, Brush* brush) {
     for (int i = xmin; i <= xmax; i++) {

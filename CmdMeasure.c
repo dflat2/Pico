@@ -8,6 +8,7 @@
 #include "WorldUtils.h"
 #include "MarkSelection.h"
 #include "Vectors.h"
+#include "SPCCommand.h"
 
 static void Measure_Command(const cc_string* args, int argsCount);
 static void CleanResources(void* arguments);
@@ -15,7 +16,7 @@ static void MeasureSelectionHandler(IVec3* marks, int count, void* object);
 static void CountBlocks(int x1, int y1, int z1, int x2, int y2, int z2, BlockID* blocks, int count);
 static void ShowCountedBlocks(int* counts, BlockID* blocks, int count);
 
-struct ChatCommand MeasureCommand = {
+static struct ChatCommand MeasureCommand = {
 	"Measure",
 	Measure_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -28,6 +29,12 @@ struct ChatCommand MeasureCommand = {
 	},
 	NULL
 };
+
+SPCCommand MeasureSPCCommand = {
+	.chatCommand = &MeasureCommand,
+	.canStatic = true
+};
+
 
 typedef struct MeasureExtraArguments_ {
 	BlockID* blocks;

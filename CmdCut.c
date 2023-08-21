@@ -7,13 +7,14 @@
 #include "MarkSelection.h"
 #include "Messaging.h"
 #include "Vectors.h"
+#include "SPCCommand.h"
 
 static void CutSelectionHandler(IVec3* marks, int count, void* object);
 static void Cut_Command(const cc_string* args, int argsCount);
 static void DoCut(IVec3 mark1, IVec3 mark2);
 static void ShowBlocksCut(int amount);
 
-struct ChatCommand CutCommand = {
+static struct ChatCommand CutCommand = {
 	"Cut",
 	Cut_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -26,6 +27,12 @@ struct ChatCommand CutCommand = {
 	},
 	NULL
 };
+
+SPCCommand CutSPCCommand = {
+	.chatCommand = &CutCommand,
+	.canStatic = false
+};
+
 
 static void ShowBlocksCut(int amount) {
 	char message[128];

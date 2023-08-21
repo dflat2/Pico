@@ -1,10 +1,11 @@
 #include "CC_API/Chat.h"
 
 #include "Messaging.h"
+#include "SPCCommand.h"
 
 static void Brushes_Command(const cc_string* args, int argsCount);
 
-struct ChatCommand BrushesCommand = {
+static struct ChatCommand BrushesCommand = {
 	"Brushes",
 	Brushes_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY, {
@@ -16,6 +17,12 @@ struct ChatCommand BrushesCommand = {
 	},
 	NULL
 };
+
+SPCCommand BrushesSPCCommand = {
+	.chatCommand = &BrushesCommand,
+	.canStatic = false
+};
+
 
 static void Brushes_Command(const cc_string* args, int argsCount) {
 	Message_Player("Available brushes:");
