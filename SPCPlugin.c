@@ -17,6 +17,7 @@
 #include "Commands.h"
 #include "SPCCommand.h"
 #include "UndoTree.h"
+#include "MarkSelection.h"
 
 static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
     const cc_string clientCuboid = String_FromReadonly("/client cuboid");
@@ -51,9 +52,6 @@ static void EnableUndoWhenMapLoaded() {
     Event_Register(event, NULL, callback);
 }
 
-static void RegisterCommands() {
-}
-
 static void SinglePlayerCommandsPlugin_Init(void) {
 	if (!Server.IsSinglePlayer) {
 		return;
@@ -62,6 +60,7 @@ static void SinglePlayerCommandsPlugin_Init(void) {
 	SPCCommand_RegisterAll();
 	RegisterChatSending();
 	EnableUndoWhenMapLoaded();
+	MarkSelection_Abort();
 }
 
 EXPORT int Plugin_ApiVersion = 1;

@@ -30,6 +30,7 @@ static void FreeStatic();
 static void FreeExtraParameters();
 static void FreeMarks();
 static void CallStaticFunction();
+static void ShowMode(const char* mode);
 
 void MarkSelection_DoMark(IVec3 coords) {
     if (!s_InProgress) {
@@ -54,6 +55,7 @@ void MarkSelection_Abort() {
     FreeResources();
     ResetSelectionState();
     UnregisterBlockChanged();
+	ShowMode("Normal");
 }
 
 int MarkSelection_RemainingMarks() {
@@ -82,6 +84,7 @@ void MarkSelection_SetStatic(void (*DoCommand)(const cc_string* args, int argsCo
 	
 	s_StaticArgsCount = argsCount;
 	CallStaticFunction();
+	ShowMode("Static");
 }
 
 void MarkSelection_Make(SelectionHandler handler, int count, void* extraParameters, ResourceCleaner resourceCleaner) {
@@ -177,4 +180,13 @@ static void CallStaticFunction() {
 	}
 
 	s_StaticCommand(s_StaticArgs, s_StaticArgsCount);
+}
+
+static void ShowMode(const char* mode) {
+	cc_string cc_mode = String_FromReadonly(mode);
+	char buffer[64];
+	cc_string message = String_FromArray(buffer);
+	String_AppendConst(&message, "Mode: &b");
+	String_AppendString(&message, &cc_mode);
+	Chat_AddOf(&message, MSG_TYPE_BOTTOMRIGHT_1);
 }
