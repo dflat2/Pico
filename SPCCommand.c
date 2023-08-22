@@ -20,11 +20,11 @@ extern SPCCommand PasteSPCCommand;
 extern SPCCommand PlaceSPCCommand;
 extern SPCCommand ReachDistanceSPCCommand;
 extern SPCCommand RedoSPCCommand;
-extern SPCCommand UndoSPCCommand;
+extern SPCCommand StaticSPCCommand;
 extern SPCCommand UndoListSPCCommand;
+extern SPCCommand UndoSPCCommand;
 extern SPCCommand UndoTreeSPCCommand;
 extern SPCCommand ZSPCCommand;
-
 
 void SPCCommand_RegisterAll() {
 	Register(&AbortSPCCommand);
@@ -41,13 +41,14 @@ void SPCCommand_RegisterAll() {
 	Register(&PlaceSPCCommand);
 	Register(&ReachDistanceSPCCommand);
 	Register(&RedoSPCCommand);
-	Register(&UndoSPCCommand);
+	Register(&StaticSPCCommand);
 	Register(&UndoListSPCCommand);
+	Register(&UndoSPCCommand);
 	Register(&UndoTreeSPCCommand);
 	Register(&ZSPCCommand);
 }
 
-SPCCommand* SPCCommand_Find(cc_string* commandName) {
+SPCCommand* SPCCommand_Find(const cc_string* commandName) {
 	if (s_Commands == NULL) {
 		return NULL;
 	}

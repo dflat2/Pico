@@ -6,6 +6,7 @@
 #include "MarkSelection.h"
 #include "Messaging.h"
 #include "MemoryAllocation.h"
+#include "SPCCommand.h"
 
 static bool s_InProgress = false;
 static int s_CurrentMark = 0;
@@ -14,6 +15,9 @@ static IVec3* s_Marks = NULL;
 static SelectionHandler s_Handler = NULL;
 static void* s_ExtraParameters = NULL;
 static ResourceCleaner s_ResourceCleaner = NULL;
+static void (*s_StaticCommand)(const cc_string* arguments, int argumentsCount);
+static cc_string* s_StaticArgs = NULL;
+static int s_StaticArgsCount = 0;
 
 static void ValidateSelection();
 static void ResetSelectionState();
@@ -22,6 +26,10 @@ static void CallHandler();
 static void UnregisterBlockChanged();
 static void RegisterBlockChanged();
 static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock);
+static void FreeStatic();
+static void FreeExtraParameters();
+static void FreeMarks();
+static void CallStaticFunction();
 
 void MarkSelection_DoMark(IVec3 coords) {
     if (!s_InProgress) {
@@ -38,9 +46,10 @@ void MarkSelection_DoMark(IVec3 coords) {
 
     if (s_CurrentMark == s_TotalMarks) {
         ValidateSelection();
-        return;
     }
+
 }
+
 void MarkSelection_Abort() {
     FreeResources();
     ResetSelectionState();
@@ -53,6 +62,26 @@ int MarkSelection_RemainingMarks() {
     }
 
     return s_TotalMarks - s_CurrentMark;
+}
+
+void MarkSelection_SetStatic(void (*DoCommand)(const cc_string* args, int argsCount), const cc_string* args, int argsCount) {
+	MarkSelection_Abort();
+	s_StaticCommand = DoCommand;
+	
+	if (argsCount != 0) {
+		s_StaticArgs = allocateZeros(argsCount, sizeof(cc_string));
+	} else {
+		s_StaticArgs = NULL;
+	}
+
+	for (int i = 0; i < argsCount; i++) {
+		s_StaticArgs[i].buffer = allocate(64, sizeof(char));
+		s_StaticArgs[i].capacity = 64;
+		String_Copy(&s_StaticArgs[i], &args[i]);
+	}
+	
+	s_StaticArgsCount = argsCount;
+	CallStaticFunction();
 }
 
 void MarkSelection_Make(SelectionHandler handler, int count, void* extraParameters, ResourceCleaner resourceCleaner) {
@@ -87,12 +116,37 @@ static void CallHandler() {
     s_Handler(s_Marks, s_TotalMarks, s_ExtraParameters);
 }
 
-static void FreeResources() {
-    free(s_Marks);
+static void FreeStatic() {
+	if (s_StaticCommand == NULL) {
+		return;
+	}
 
+	for (int i = 0; i < s_StaticArgsCount; i++) {
+		free(s_StaticArgs[i].buffer);
+	}
+
+	free(s_StaticArgs);
+	s_StaticArgs = NULL;
+	s_StaticCommand = NULL;
+}
+
+static void FreeMarks() {
+	free(s_Marks);
+	s_Marks = NULL;
+}
+
+static void FreeExtraParameters() {
     if (s_ResourceCleaner != NULL) {
         ((ResourceCleaner) s_ResourceCleaner)(s_ExtraParameters);
     }
+
+	s_ExtraParameters = NULL;
+}
+
+static void FreeResources() {
+	FreeMarks();
+	FreeExtraParameters();
+	FreeStatic();
 }
 
 static void ResetSelectionState() {
@@ -107,5 +161,20 @@ static void ResetSelectionState() {
 
 static void ValidateSelection() {
     CallHandler();
-    MarkSelection_Abort();
+	FreeMarks();
+	FreeExtraParameters();
+    ResetSelectionState();
+    UnregisterBlockChanged();
+
+	if (s_StaticCommand != NULL) {
+		CallStaticFunction();
+	}
+}
+
+static void CallStaticFunction() {
+	if (s_StaticCommand == NULL) {
+		return;
+	}
+
+	s_StaticCommand(s_StaticArgs, s_StaticArgsCount);
 }

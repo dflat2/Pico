@@ -10,6 +10,6 @@ typedef struct SPCCommand_ {
 } SPCCommand;
 
 void SPCCommand_RegisterAll();
-SPCCommand* SPCCommand_Find(cc_string* commandName);
+SPCCommand* SPCCommand_Find(const cc_string* commandName);
 
 #endif /* SPC_COMMAND_H */
