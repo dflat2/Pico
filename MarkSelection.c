@@ -2,11 +2,13 @@
 
 #include "CC_API/Event.h"
 #include "CC_API/Game.h"
+#include "CC_API/Inventory.h"
 
 #include "MarkSelection.h"
 #include "Messaging.h"
 #include "MemoryAllocation.h"
 #include "SPCCommand.h"
+#include "Draw.h"
 
 static bool s_InProgress = false;
 static int s_CurrentMark = 0;
@@ -18,6 +20,7 @@ static ResourceCleaner s_ResourceCleaner = NULL;
 static void (*s_StaticCommand)(const cc_string* arguments, int argumentsCount);
 static cc_string* s_StaticArgs = NULL;
 static int s_StaticArgsCount = 0;
+static bool s_Painting = false;
 
 static void ValidateSelection();
 static void ResetSelectionState();
@@ -88,9 +91,9 @@ void MarkSelection_SetStatic(void (*DoCommand)(const cc_string* args, int argsCo
 }
 
 void MarkSelection_Make(SelectionHandler handler, int count, void* extraParameters, ResourceCleaner resourceCleaner) {
-    if (s_InProgress) {
-        MarkSelection_Abort();
-    }
+	if (s_InProgress || s_Painting) {
+		MarkSelection_Abort();
+	}
 
     s_InProgress = true;
     s_CurrentMark = 0;
@@ -102,9 +105,38 @@ void MarkSelection_Make(SelectionHandler handler, int count, void* extraParamete
     RegisterBlockChanged();
 }
 
+void MarkSelection_TogglePaint() {
+	if (s_Painting) {
+		MarkSelection_Abort();
+		return;
+	}
+
+	MarkSelection_Abort();
+	s_Painting = true;
+	RegisterBlockChanged();
+	Message_Player("Mode: &bPaint&f.");
+	ShowMode("Paint");
+}
+
+bool MarkSelection_Painting() {
+	return s_Painting;
+}
+
 static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock) {
-    Game_UpdateBlock(coords.X, coords.Y, coords.Z, oldBlock);
-    MarkSelection_DoMark(coords);
+	if (s_InProgress) {
+		Game_UpdateBlock(coords.X, coords.Y, coords.Z, oldBlock);
+		MarkSelection_DoMark(coords);
+	} else if (s_Painting && newBlock == BLOCK_AIR) {
+		Draw_Start("Paint");
+		Game_UpdateBlock(coords.X, coords.Y, coords.Z, oldBlock);
+		Draw_Block(coords.X, coords.Y, coords.Z, Inventory_SelectedBlock);
+		Draw_End();
+	} else if (s_Painting) {
+		Draw_Start("Place");
+		Game_UpdateBlock(coords.X, coords.Y, coords.Z, oldBlock);
+		Draw_Block(coords.X, coords.Y, coords.Z, newBlock);
+		Draw_End();
+	}
 }
 
 static void RegisterBlockChanged() {
@@ -160,6 +192,7 @@ static void ResetSelectionState() {
     s_Handler = NULL;
     s_ExtraParameters = NULL;
     s_ResourceCleaner = NULL;
+	s_Painting = false;
 }
 
 static void ValidateSelection() {

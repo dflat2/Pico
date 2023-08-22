@@ -16,6 +16,7 @@ extern SPCCommand DescendSPCCommand;
 extern SPCCommand MarkAllSPCCommand;
 extern SPCCommand MarkSPCCommand;
 extern SPCCommand MeasureSPCCommand;
+extern SPCCommand PaintSPCCommand;
 extern SPCCommand PasteSPCCommand;
 extern SPCCommand PlaceSPCCommand;
 extern SPCCommand ReachDistanceSPCCommand;
@@ -37,6 +38,7 @@ void SPCCommand_RegisterAll() {
 	Register(&MarkAllSPCCommand);
 	Register(&MarkSPCCommand);
 	Register(&MeasureSPCCommand);
+	Register(&PaintSPCCommand);
 	Register(&PasteSPCCommand);
 	Register(&PlaceSPCCommand);
 	Register(&ReachDistanceSPCCommand);
