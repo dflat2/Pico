@@ -208,8 +208,7 @@ static bool TryParseArguments(const cc_string* args, int argsCount, ZArguments* 
 			brushIndex = 0;
 		}
 
-
-		// Checks that there are no trailing blocks in the command, e.g. `/Z Stone Air` doesn't make sens.
+		// Checks that there are no trailing blocks in the command, e.g. `/Z Stone Air` doesn't make sense.
 		bool isBlock = args[brushIndex].buffer[0] != '@';
 		if (isBlock && argsCount > (brushIndex + 1)) {
 			ShowUsage();
@@ -223,7 +222,7 @@ static bool TryParseArguments(const cc_string* args, int argsCount, ZArguments* 
 		out_arguments->brush = brush;
 		return true;
 	} else {
-		if (!Brush_TryCreateSolid(Inventory_SelectedBlock, brush)) {
+		if (!Brush_TryCreateNormal(BLOCK_AIR, true, brush)) {
 			return false;
 		}
 		out_arguments->brush = brush;

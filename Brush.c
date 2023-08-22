@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "CC_API/String.h"
 #include "CC_API/Chat.h"
 
@@ -50,15 +52,20 @@ bool Brush_TryCreate(const cc_string* name, const cc_string* args, int argsCount
 	return true;
 }
 
-bool Brush_TryCreateSolid(BlockID block, Brush* out_brush) {
+bool Brush_TryCreateNormal(BlockID block, bool useInventory, Brush* out_brush) {
 	if (s_list == NULL) {
 		FillList();
+	}
+
+	if (useInventory) {
+		cc_string solid = String_FromReadonly("@Solid");
+		return Brush_TryCreate(&solid, NULL, 0, out_brush);
 	}
 
 	int intBlock = (int)block;
 	cc_string solid = String_FromReadonly("@Solid");
 	char buffer[64];
-	cc_string blockString = { buffer, 0, 64 };
+	cc_string blockString = String_FromArray(buffer);
 	String_Format1(&blockString, "%i", &intBlock);
 	return Brush_TryCreate(&solid, &blockString, 1, out_brush);
 }

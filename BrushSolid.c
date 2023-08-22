@@ -1,3 +1,5 @@
+#include "CC_API/BlockID.h"
+#include "CC_API/Inventory.h"
 
 #include "ParsingUtils.h"
 #include "Messaging.h"
@@ -5,6 +7,7 @@
 
 typedef struct BrushSolidArgs_ {
 	BlockID block;
+	bool useHoldingBlock;
 } BrushSolidArgs;
 
 static void* BrushSolid_Parse(const cc_string* args, int argsCount);
@@ -19,27 +22,33 @@ BrushBuilder BrushSolid_Builder = {
 }; 
 
 static void* BrushSolid_Parse(const cc_string* args, int argsCount) {
-	if (argsCount == 0) {
-		Message_Player("&b@Solid&f: please provide a block.");
+	if (argsCount >= 2) {
+		Message_Player("&b@Solid &fusage: &bSolid <block>&f.");
 		return NULL;;
-	} else if (argsCount >= 2) {
-		Message_Player("&b@Solid&f: please provide only one block.");
-		return NULL;;
-	}
-
-	BlockID block;
-
-	if (!TryParseBlock(&args[0], &block)) {
-		return NULL;
 	}
 
 	BrushSolidArgs* brushSolidArgs = allocate(1, sizeof(BrushSolidArgs));
-	brushSolidArgs->block = block;
+	brushSolidArgs->useHoldingBlock = false;
+
+	if (argsCount == 0) {
+		brushSolidArgs->block = BLOCK_AIR;
+		brushSolidArgs->useHoldingBlock = true;
+	} else if (!TryParseBlock(&args[0], &brushSolidArgs->block)) {
+		free(brushSolidArgs);
+		return NULL;
+	}
+
 	return brushSolidArgs;
 }
 
 static BlockID BrushSolid_Paint(int x, int y, int z, void* object) {
 	BrushSolidArgs* args = (BrushSolidArgs*)object;
+
+	if (args->useHoldingBlock) {
+		args->useHoldingBlock = false;
+		args->block = Inventory_SelectedBlock;
+	}
+	
 	return args->block;
 }
 

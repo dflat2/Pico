@@ -100,7 +100,7 @@ bool Parse_TryParseBlockOrBrush(const cc_string* arguments, int argumentsCount, 
 			return false;
 		}
 
-		Brush_TryCreateSolid(block, out_brush);
+		Brush_TryCreateNormal(block, false, out_brush);
 		return true;
 	}
 
