@@ -14,7 +14,6 @@
 #include "CC_API/Event.h"
 #include "CC_API/Server.h"
 
-#include "Commands.h"
 #include "SPCCommand.h"
 #include "UndoTree.h"
 #include "MarkSelection.h"
