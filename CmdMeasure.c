@@ -116,7 +116,9 @@ static void CleanResources(void* arguments) {
 
 static void Measure_Command(const cc_string* args, int argsCount) {
 	if (argsCount == 0) {
+		Message_Player("&fPlace or break two blocks to determine the edges.");
 		MarkSelection_Make(MeasureSelectionHandler, 2, NULL, NULL);
+		return;
 	}
 
 	BlockID* blocks = allocate(argsCount, sizeof(blocks));
@@ -131,6 +133,7 @@ static void Measure_Command(const cc_string* args, int argsCount) {
 			String_Format1(&ccMessage, "&fThere is no block &b%s&f.", (void*)&args[i]);
 			Chat_Add(&ccMessage);
 			free(blocks);
+			MarkSelection_Abort();
 			return;
 		}
 

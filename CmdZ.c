@@ -236,6 +236,7 @@ static void Z_Command(const cc_string* args, int argsCount) {
 	
 	if (!TryParseArguments(args, argsCount, arguments)) {
 		free(arguments);
+		MarkSelection_Abort();
 		return;
 	}
 

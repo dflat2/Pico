@@ -96,11 +96,13 @@ static void CleanResources(void* args) {
 static void Paste_Command(const cc_string* args, int argsCount) {
 	if (BlocksBuffer_IsEmpty()) {
 		Message_Player("&fYou haven't copied anything yet.");
+		MarkSelection_Abort();
 		return;
 	}
 
 	if (argsCount >= 2) {
 		Message_Player("Usage: &b/Paste [mode]&f.");
+		MarkSelection_Abort();
 		return;
 	}
 
@@ -121,6 +123,7 @@ static void Paste_Command(const cc_string* args, int argsCount) {
 			Message_ShowUnknownMode(&args[0]);
 			Message_ShowAvailableModes(modesString, modesCount);
 			free(pasteArgs);
+			MarkSelection_Abort();
 			return;
 		}
 

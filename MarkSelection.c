@@ -83,8 +83,8 @@ void MarkSelection_SetStatic(void (*DoCommand)(const cc_string* args, int argsCo
 	}
 	
 	s_StaticArgsCount = argsCount;
-	CallStaticFunction();
 	ShowMode("Static");
+	CallStaticFunction();
 }
 
 void MarkSelection_Make(SelectionHandler handler, int count, void* extraParameters, ResourceCleaner resourceCleaner) {

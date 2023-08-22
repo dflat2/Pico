@@ -79,6 +79,7 @@ static void CenterSelectionHandler(IVec3* marks, int count, void* object) {
 static void Center_Command(const cc_string* args, int argsCount) {
 	if (argsCount != 0) {
 		Message_Player("&fUsage: &b/Center");
+		MarkSelection_Abort();
 		return;
 	}
 
