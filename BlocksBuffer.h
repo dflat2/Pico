@@ -4,6 +4,8 @@
 #include "CC_API/Vectors.h"
 #include "CC_API/Core.h"
 
+#include "Axis.h"
+
 typedef struct BlocksBuffer_ {
 	int width;
 	int height;
@@ -11,6 +13,9 @@ typedef struct BlocksBuffer_ {
 	BlockID* content;
 	IVec3 anchor;
 } BlocksBuffer;
+
+void BlocksBuffer_Rotate(BlocksBuffer* buffer, Axis axis, int count);
+void BlocksBuffer_Flip(BlocksBuffer* buffer, Axis axis);
 
 BlocksBuffer BlocksBuffer_GetCopied();
 bool BlocksBuffer_IsEmpty();

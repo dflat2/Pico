@@ -7,6 +7,16 @@ static BlocksBuffer s_buffer = { 0 };
 static bool s_bufferIsEmpty = true;
 
 static void FreeBuffer();
+static int Pack(int x, int y, int z, int width, int height);
+
+typedef enum S3_ {
+	XYZ = 0x00,
+	XZY = 0x01,
+	ZYX = 0x02,
+	YXZ = 0x03,
+	ZXY = 0x04,
+	YZX = 0x05
+} S3;
 
 BlocksBuffer BlocksBuffer_GetCopied() {
 	return s_buffer;
@@ -58,6 +68,14 @@ void BlocksBuffer_SetCopied(BlocksBuffer buffer) {
 	s_bufferIsEmpty = false;
 }
 
+void BlocksBuffer_Rotate(BlocksBuffer* buffer, Axis axis, int count) {
+
+}
+
+void BlocksBuffer_Flip(BlocksBuffer* buffer, Axis axis) {
+
+}
+
 static void FreeBuffer() {
 	if (s_bufferIsEmpty) {
 		return;
@@ -65,4 +83,13 @@ static void FreeBuffer() {
 
 	free(s_buffer.content);
 	s_bufferIsEmpty = true;
+}
+
+static void FillTransformedBuffer(BlockID* destination, BlockID* source,
+		                          bool flipX, bool flipY, bool flipZ, S3 permutation,
+							      int width, int height, int length) {
+}
+
+static int Pack(int x, int y, int z, int width, int height) {
+	return x + (y * width) + z * (width * height);
 }
