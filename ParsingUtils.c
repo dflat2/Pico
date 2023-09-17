@@ -81,30 +81,26 @@ void Parse_ShowExamplesDeltaTime() {
 	Message_Player("Example: &b1h30m&f means one hour and thirty minutes.");
 }
 
-bool Parse_TryParseBrush(const cc_string* arguments, int argumentsCount, Brush* out_brush) {
+bool Parse_TryParseBrush(const cc_string* arguments, int argumentsCount) {
 	bool startsWithAtSign = String_IndexOfAt(&arguments[0], 0, '@') == 0;
 	if (!startsWithAtSign) {
 		return FAILURE;
 	}
 
-	return Brush_TryCreate(&arguments[0], &arguments[1], argumentsCount - 1, out_brush);
+	return Brush_TryLoad(&arguments[0], &arguments[1], argumentsCount - 1);
 }
 
-bool Parse_TryParseBlockOrBrush(const cc_string* arguments, int argumentsCount, Brush* out_brush) {
+bool Parse_TryParseBlockOrBrush(const cc_string* arguments, int argumentsCount) {
 	bool startsWithAtSign = String_IndexOfAt(&arguments[0], 0, '@') == 0;
 
 	if (!startsWithAtSign) {
-		BlockID block = 0;
-
-		if (!TryParseBlock(&arguments[0], &block)) {
+		if (!Brush_TryLoadSolid(&arguments[0])) {
 			return false;
 		}
-
-		Brush_TryCreateNormal(block, false, out_brush);
 		return true;
 	}
 
-	return Parse_TryParseBrush(arguments, argumentsCount, out_brush);
+	return Parse_TryParseBrush(arguments, argumentsCount);
 }
 
 

@@ -8,7 +8,7 @@
 #include "SPCCommand.h"
 
 static void Copy_Command(const cc_string* args, int argsCount);
-static void CopySelectionHandler(IVec3* marks, int count, void* object);
+static void CopySelectionHandler(IVec3* marks, int count);
 static void ShowBlocksCopied(int amount);
 
 static struct ChatCommand CopyCommand = {
@@ -43,7 +43,7 @@ static void ShowBlocksCopied(int amount) {
 	Message_Player(message);
 }
 
-static void CopySelectionHandler(IVec3* marks, int count, void* object) {
+static void CopySelectionHandler(IVec3* marks, int count) {
     if (count != 2) {
         return;
     }
@@ -52,6 +52,6 @@ static void CopySelectionHandler(IVec3* marks, int count, void* object) {
 }
 
 static void Copy_Command(const cc_string* args, int argsCount) {
-    MarkSelection_Make(CopySelectionHandler, 2, NULL, NULL);
+    MarkSelection_Make(CopySelectionHandler, 2);
     Message_Player("&fPlace or break two blocks to determine the edges.");
 }

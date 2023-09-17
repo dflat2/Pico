@@ -33,8 +33,8 @@ void Draw_Block(int x, int y, int z, BlockID block) {
 	}
 }
 
-void Draw_Brush(int x, int y, int z, Brush* brush) {
-	BlockID block = Brush_Paint(brush, x, y, z);
+void Draw_Brush(int x, int y, int z) {
+	BlockID block = Brush_Paint(x, y, z);
 	Draw_Block(x, y, z, block);
 }
 

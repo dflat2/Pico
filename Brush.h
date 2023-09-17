@@ -5,19 +5,15 @@
 
 #include "CC_API/Core.h"
 
-typedef struct BrushBuilder_ {
+typedef struct Brush_ {
 	char* name;
-	void* (*ArgumentsParser)(const cc_string* args, int argsCount);
-	BlockID (*Painter)(int x, int y, int z, void* arguments);
-	void (*Cleaner)(void* arguments);
-} BrushBuilder;
+	bool (*TryParseArguments)(const cc_string* args, int argsCount);
+	BlockID (*Paint)(int x, int y, int z);
+} Brush;
 
-typedef struct Brush_ Brush;
-
-void Brush_Free(Brush* brush);
-BlockID Brush_Paint(Brush* brush, int x, int y, int z);
-bool Brush_TryCreate(const cc_string* name, const cc_string* args, int argsCount, Brush* out_brush);
-bool Brush_TryCreateNormal(BlockID block, bool useInventory, Brush* out_brush);
-Brush* Brush_CreateEmpty();
+BlockID Brush_Paint(int x, int y, int z);
+bool Brush_TryLoad(const cc_string* name, const cc_string* args, int argsCount);
+bool Brush_TryLoadSolid(const cc_string* blockName);
+void Brush_LoadInventory();
 
 #endif /* BRUSH_H */

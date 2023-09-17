@@ -3,27 +3,26 @@
 #include "Messaging.h"
 #include "Brush.h"
 
-static void* BrushRainbow_Parse(const cc_string* args, int argsCount);
-static BlockID BrushRainbow_Paint(int x, int y, int z, void* object);
+static bool BrushRainbow_TryParseArguments(const cc_string* args, int argsCount);
+static BlockID BrushRainbow_Paint(int x, int y, int z);
 
-BrushBuilder BrushRainbow_Builder = {
+Brush BrushRainbow = {
 	.name = "@Rainbow",
-	.ArgumentsParser = &BrushRainbow_Parse,
-	.Painter = &BrushRainbow_Paint,
-	.Cleaner = NULL
+	.TryParseArguments = &BrushRainbow_TryParseArguments,
+	.Paint = &BrushRainbow_Paint,
 }; 
 
-static const int s_blocksCount = BLOCK_PINK - BLOCK_RED + 1;
+static const int s_BlocksCount = BLOCK_PINK - BLOCK_RED + 1;
 
-static void* BrushRainbow_Parse(const cc_string* args, int argsCount) {
+static bool BrushRainbow_TryParseArguments(const cc_string* args, int argsCount) {
 	if (argsCount > 0) {
 		Message_Player("&b@Rainbow&f: no arguments required.");
-		return NULL;
+		return false;
 	}
 
-	return NULL;
+	return true;
 }
 
-static BlockID BrushRainbow_Paint(int x, int y, int z, void* object) {
-	return BLOCK_RED + ((x + y + z) % s_blocksCount);
+static BlockID BrushRainbow_Paint(int x, int y, int z) {
+	return BLOCK_RED + ((x + y + z) % s_BlocksCount);
 }

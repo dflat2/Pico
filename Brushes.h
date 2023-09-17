@@ -3,8 +3,9 @@
 
 #include "Brush.h"
 
-extern BrushBuilder BrushCheckered_Builder;
-extern BrushBuilder BrushRainbow_Builder;
-extern BrushBuilder BrushSolid_Builder;
+extern Brush BrushCheckered;
+extern Brush BrushRainbow;
+extern Brush BrushSolid;
+extern Brush BrushInventory;
 
-#endif /* BRUSHES_H */
+#endif

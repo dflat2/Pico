@@ -19,23 +19,19 @@ typedef enum LineMode_ {
 	MODE_BEZIER
 } LineMode;
 
-typedef struct LineArguments_ {
-	LineMode mode;
-	Brush* brush;
-} LineArguments;
+static LineMode s_Mode;
 
 static void Line_Command(const cc_string* args, int argsCount);
-static bool TryParseArguments(const cc_string* args, int argsCount, LineArguments* out_arguments);
+static bool TryParseArguments(const cc_string* args, int argsCount);
 static void ShowUsage();
-static void CleanResources(void* args);
-static void LineSelectionHandler(IVec3* marks, int count, void* object);
-static void DoLine(IVec3 from, IVec3 to, Brush* brush);
-static void DoWall(IVec3 from, IVec3 to, Brush* brush);
-static void DoBezier(IVec3 from, IVec3 direction, IVec3 to, Brush* brush);
+static void LineSelectionHandler(IVec3* marks, int count);
+static void DoLine(IVec3 from, IVec3 to);
+static void DoWall(IVec3 from, IVec3 to);
+static void DoBezier(IVec3 from, IVec3 direction, IVec3 to);
 static int GreatestInteger2(int a, int b);
 static int GreatestInteger3(int a, int b, int c);
 static FVec3 Bezier(FVec3 from, FVec3 controlPoint, FVec3 to, float t);
-static void Line(IVec3 from, IVec3 to, Brush* brush);
+static void Line(IVec3 from, IVec3 to);
 
 static struct ChatCommand LineCommand = {
 	"Line",
@@ -68,7 +64,7 @@ static int GreatestInteger3(int a, int b, int c) {
 	return GreatestInteger2(a, GreatestInteger2(b, c));
 }
 
-static void Line(IVec3 from, IVec3 to, Brush* brush) {
+static void Line(IVec3 from, IVec3 to) {
 	int deltaX = to.X - from.X;
 	int deltaY = to.Y - from.Y;
 	int deltaZ = to.Z - from.Z;
@@ -88,23 +84,23 @@ static void Line(IVec3 from, IVec3 to, Brush* brush) {
 	float z = from.Z;
 
 	for (int _ = 0; _ < steps; _++) {
-		Draw_Brush(round(x), round(y), round(z), brush);
+		Draw_Brush(round(x), round(y), round(z));
 		x += incrementX;
 		y += incrementY;
 		z += incrementZ;
 	}
 
-	Draw_Brush(to.X, to.Y, to.Z, brush);
+	Draw_Brush(to.X, to.Y, to.Z);
 }
 
-static void DoLine(IVec3 from, IVec3 to, Brush* brush) {
+static void DoLine(IVec3 from, IVec3 to) {
 	Draw_Start("Line normal");
-	Line(from, to, brush);
+	Line(from, to);
 	int blocksAffected = Draw_End();
 	Message_BlocksAffected(blocksAffected);
 }
 
-static void DoWall(IVec3 from, IVec3 to, Brush* brush) {
+static void DoWall(IVec3 from, IVec3 to) {
 	Draw_Start("Line wall");
 
 	int deltaX = to.X - from.X;
@@ -135,7 +131,7 @@ static void DoWall(IVec3 from, IVec3 to, Brush* brush) {
 
 	for (int _ = 0; _ < steps; _++) {
 		for (int y = yMin; y <= yMax; y++) {
-			Draw_Brush(round(x), round(y), round(z), brush);
+			Draw_Brush(round(x), round(y), round(z));
 		}
 
 		x += incrementX;
@@ -143,7 +139,7 @@ static void DoWall(IVec3 from, IVec3 to, Brush* brush) {
 	}
 
 	for (int y = yMin; y <= yMax; y++) {
-		Draw_Brush(to.X, round(y), to.Z, brush);
+		Draw_Brush(to.X, round(y), to.Z);
 	}
 
 	int blocksAffected = Draw_End();
@@ -163,7 +159,7 @@ static FVec3 Bezier(FVec3 from, FVec3 controlPoint, FVec3 to, float t) {
 	return result;
 }
 
-static void DoBezier(IVec3 from, IVec3 controlPoint, IVec3 to, Brush* brush) {
+static void DoBezier(IVec3 from, IVec3 controlPoint, IVec3 to) {
 	Draw_Start("Line bezier");
 	const int subDivisions = 64;
 
@@ -179,7 +175,7 @@ static void DoBezier(IVec3 from, IVec3 controlPoint, IVec3 to, Brush* brush) {
 			Bezier(floatFrom, floatControlPoint, floatTo, i / (float)subDivisions)
 		);
 
-		Line(lineStart, lineEnd, brush);
+		Line(lineStart, lineEnd);
 		lineStart = lineEnd;
 	}
 
@@ -187,29 +183,21 @@ static void DoBezier(IVec3 from, IVec3 controlPoint, IVec3 to, Brush* brush) {
 	Message_BlocksAffected(blocksAffected);
 }
 
-static void LineSelectionHandler(IVec3* marks, int count, void* object) {
-    LineArguments* arguments = (LineArguments*)object;
-
-	if (arguments->mode == MODE_NORMAL) {
-		DoLine(marks[0], marks[1], arguments->brush);
-	} else if (arguments->mode == MODE_WALL) {
-		DoWall(marks[0], marks[1], arguments->brush);
-	} else if (arguments->mode == MODE_BEZIER) {
-		DoBezier(marks[0], marks[1], marks[2], arguments->brush);
+static void LineSelectionHandler(IVec3* marks, int count) {
+	if (s_Mode == MODE_NORMAL) {
+		DoLine(marks[0], marks[1]);
+	} else if (s_Mode == MODE_WALL) {
+		DoWall(marks[0], marks[1]);
+	} else if (s_Mode == MODE_BEZIER) {
+		DoBezier(marks[0], marks[1], marks[2]);
 	}
-}
-
-static void CleanResources(void* object) {
-	LineArguments* arguments = (LineArguments*) object;
-	Brush_Free(arguments->brush);
-	free(arguments);
 }
 
 static void ShowUsage() {
 	Message_Player("Usage: &b/Line normal/wall/bezier [brush/block]&f.");
 }
 
-static bool TryParseArguments(const cc_string* args, int argsCount, LineArguments* out_arguments) {
+static bool TryParseArguments(const cc_string* args, int argsCount) {
     cc_string modesString[] = {
         String_FromConst("normal"),
         String_FromConst("wall"),
@@ -223,18 +211,16 @@ static bool TryParseArguments(const cc_string* args, int argsCount, LineArgument
 	bool hasMode = (argsCount >= 1) && Array_ContainsString(&args[0], modesString, modesCount);
 
 	if (hasMode) {
-		out_arguments->mode = Array_IndexOfStringCaseless(&args[0], modesString, modesCount);
+		s_Mode = Array_IndexOfStringCaseless(&args[0], modesString, modesCount);
 	} else {
-		out_arguments->mode = MODE_NORMAL;
+		s_Mode = MODE_NORMAL;
 	}
 
-	if (hasMode && out_arguments->mode == -1) {
+	if (hasMode && s_Mode == -1) {
 		Message_ShowUnknownMode(&args[0]);
 		Message_ShowAvailableModes(modesString, modesCount);
 		return false;
 	}
-
-	Brush* brush = Brush_CreateEmpty();
 
 	if (hasBlockOrBrush) {
 		int brushIndex;
@@ -252,35 +238,28 @@ static bool TryParseArguments(const cc_string* args, int argsCount, LineArgument
 			return false;
 		}
 
-		if (!Parse_TryParseBlockOrBrush(&args[brushIndex], argsCount - brushIndex, brush)) {
+		if (!Parse_TryParseBlockOrBrush(&args[brushIndex], argsCount - brushIndex)) {
 			return false;
 		}
 
-		out_arguments->brush = brush;
 		return true;
 	} else {
-		if (!Brush_TryCreateNormal(BLOCK_AIR, true, brush)) {
-			return false;
-		}
-		out_arguments->brush = brush;
+		Brush_LoadInventory();
 		return true;
 	}
 }
 
 static void Line_Command(const cc_string* args, int argsCount) {
-	LineArguments* arguments = allocate(1, sizeof(LineArguments));
-	
-	if (!TryParseArguments(args, argsCount, arguments)) {
-		free(arguments);
+	if (!TryParseArguments(args, argsCount)) {
 		MarkSelection_Abort();
 		return;
 	}
 
-	if (arguments->mode != MODE_BEZIER) {
-		MarkSelection_Make(LineSelectionHandler, 2, arguments, CleanResources);
+	if (s_Mode != MODE_BEZIER) {
+		MarkSelection_Make(LineSelectionHandler, 2);
 		Message_Player("&fPlace or break two blocks to determine the endpoints.");
 	} else {
-		MarkSelection_Make(LineSelectionHandler, 3, arguments, CleanResources);
+		MarkSelection_Make(LineSelectionHandler, 3);
 		Message_Player("Place or break two blocks to determine the endpoints, then another for the direction.");
 	}
 }

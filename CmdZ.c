@@ -10,32 +10,29 @@
 #include "Array.h"
 #include "SPCCommand.h"
 
-typedef char ZMode;
-static const ZMode SOLID_MODE = 0;
-static const ZMode HOLLOW_MODE = 1;
-static const ZMode WALLS_MODE = 2;
-static const ZMode WIRE_MODE = 3;
-static const ZMode CORNERS_MODE = 4;
+typedef enum ZMode_ {
+	MODE_SOLID = 0,
+	MODE_HOLLOW = 1,
+	MODE_WALLS = 2,
+	MODE_WIRE = 3,
+	MODE_CORNERS = 4
+} ZMode;
 
-typedef struct ZArguments_ {
-	ZMode mode;
-	Brush* brush;
-} ZArguments;
+static ZMode s_Mode;
 
-typedef void (*CuboidOperation)(IVec3 min, IVec3 max, Brush* brush);
+typedef void (*CuboidOperation)(IVec3 min, IVec3 max);
 
 static void Z_Command(const cc_string* args, int argsCount);
-static bool TryParseArguments(const cc_string* args, int argsCount, ZArguments* out_arguments);
+static bool TryParseArguments(const cc_string* args, int argsCount);
 static void ShowUsage();
-static void CleanResources(void* args);
-static void ZSelectionHandler(IVec3* marks, int count, void* object);
+static void ZSelectionHandler(IVec3* marks, int count);
 static CuboidOperation GetFunction(char mode);
-static void DoCuboidCorners(IVec3 min, IVec3 max, Brush* brush);
-static void DoCuboidWire(IVec3 min, IVec3 max, Brush* brush);
-static void DoCuboidWalls(IVec3 min, IVec3 max, Brush* brush);
-static void DoCuboidHollow(IVec3 min, IVec3 max, Brush* brush);
-static void DoCuboidSolid(IVec3 min, IVec3 max, Brush* brush);
-static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zmax, Brush* brush);
+static void DoCuboidCorners(IVec3 min, IVec3 max);
+static void DoCuboidWire(IVec3 min, IVec3 max);
+static void DoCuboidWalls(IVec3 min, IVec3 max);
+static void DoCuboidHollow(IVec3 min, IVec3 max);
+static void DoCuboidSolid(IVec3 min, IVec3 max);
+static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zmax);
 
 static struct ChatCommand ZCommand = {
 	"Z",
@@ -57,77 +54,77 @@ SPCCommand ZSPCCommand = {
 };
 
 
-static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zmax, Brush* brush) {
+static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zmax) {
     for (int i = xmin; i <= xmax; i++) {
         for (int j = ymin; j <= ymax; j++) {
             for (int k = zmin; k <= zmax; k++) {
-                Draw_Brush(i, j, k, brush);
+                Draw_Brush(i, j, k);
             }
         }
     }
 }
 
-static void DoCuboidSolid(IVec3 min, IVec3 max, Brush* brush) {
+static void DoCuboidSolid(IVec3 min, IVec3 max) {
 	Draw_Start("Cuboid solid");
-    DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, max.Z, brush);
+    DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, max.Z);
 
 	int blocksAffected = Draw_End();
 	Message_BlocksAffected(blocksAffected);
 }
 
-static void DoCuboidHollow(IVec3 min, IVec3 max, Brush* brush) {
+static void DoCuboidHollow(IVec3 min, IVec3 max) {
 	Draw_Start("Cuboid hollow");
-    DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, max.Z, brush);
-    DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, min.Z, brush);
-    DrawCuboid(min.X, min.Y, min.Z, max.X, min.Y, max.Z, brush);
-    DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, max.Z, brush);
-    DrawCuboid(min.X, max.Y, min.Z, max.X, max.Y, max.Z, brush);
-    DrawCuboid(min.X, min.Y, max.Z, max.X, max.Y, max.Z, brush);
+    DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, max.Z);
+    DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, min.Z);
+    DrawCuboid(min.X, min.Y, min.Z, max.X, min.Y, max.Z);
+    DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, max.Z);
+    DrawCuboid(min.X, max.Y, min.Z, max.X, max.Y, max.Z);
+    DrawCuboid(min.X, min.Y, max.Z, max.X, max.Y, max.Z);
 
 	int blocksAffected = Draw_End();
 	Message_BlocksAffected(blocksAffected);
 }
 
-static void DoCuboidWalls(IVec3 min, IVec3 max, Brush* brush) {
+static void DoCuboidWalls(IVec3 min, IVec3 max) {
 	Draw_Start("Cuboid walls");
-    DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, max.Z, brush);
-    DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, min.Z, brush);
-    DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, max.Z, brush);
-    DrawCuboid(min.X, min.Y, max.Z, max.X, max.Y, max.Z, brush);
+    DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, max.Z);
+    DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, min.Z);
+    DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, max.Z);
+    DrawCuboid(min.X, min.Y, max.Z, max.X, max.Y, max.Z);
 
 	int blocksAffected = Draw_End();
 	Message_BlocksAffected(blocksAffected);
 }
 
-static void DoCuboidWire(IVec3 min, IVec3 max, Brush* brush) {
+static void DoCuboidWire(IVec3 min, IVec3 max) {
 	Draw_Start("Cuboid wire");
-    DrawCuboid(min.X, min.Y, min.Z, max.X, min.Y, min.Z, brush);
-    DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, min.Z, brush);
-    DrawCuboid(min.X, min.Y, min.Z, min.X, min.Y, max.Z, brush);
-    DrawCuboid(min.X, min.Y, max.Z, max.X, min.Y, max.Z, brush);
-    DrawCuboid(min.X, min.Y, max.Z, min.X, max.Y, max.Z, brush);
-    DrawCuboid(min.X, max.Y, min.Z, max.X, max.Y, min.Z, brush);
-    DrawCuboid(min.X, max.Y, min.Z, min.X, max.Y, max.Z, brush);
-    DrawCuboid(min.X, max.Y, max.Z, max.X, max.Y, max.Z, brush);
-    DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, min.Z, brush);
-    DrawCuboid(max.X, min.Y, min.Z, max.X, min.Y, max.Z, brush);
-    DrawCuboid(max.X, min.Y, max.Z, max.X, max.Y, max.Z, brush);
-    DrawCuboid(max.X, max.Y, min.Z, max.X, max.Y, max.Z, brush);
+    DrawCuboid(min.X, min.Y, min.Z, max.X, min.Y, min.Z);
+    DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, min.Z);
+    DrawCuboid(min.X, min.Y, min.Z, min.X, min.Y, max.Z);
+    DrawCuboid(min.X, min.Y, max.Z, max.X, min.Y, max.Z);
+    DrawCuboid(min.X, min.Y, max.Z, min.X, max.Y, max.Z);
+    DrawCuboid(min.X, max.Y, min.Z, max.X, max.Y, min.Z);
+    DrawCuboid(min.X, max.Y, min.Z, min.X, max.Y, max.Z);
+    DrawCuboid(min.X, max.Y, max.Z, max.X, max.Y, max.Z);
+    DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, min.Z);
+    DrawCuboid(max.X, min.Y, min.Z, max.X, min.Y, max.Z);
+    DrawCuboid(max.X, min.Y, max.Z, max.X, max.Y, max.Z);
+    DrawCuboid(max.X, max.Y, min.Z, max.X, max.Y, max.Z);
 
 	int blocksAffected = Draw_End();
 	Message_BlocksAffected(blocksAffected);
 }
 
-static void DoCuboidCorners(IVec3 min, IVec3 max, Brush* brush) {
+static void DoCuboidCorners(IVec3 min, IVec3 max) {
 	Draw_Start("Cuboid corners");
-    Draw_Brush(min.X, min.Y, min.Z, brush);
-    Draw_Brush(min.X, min.Y, max.Z, brush);
-    Draw_Brush(min.X, max.Y, min.Z, brush);
-    Draw_Brush(min.X, max.Y, max.Z, brush);
-    Draw_Brush(max.X, min.Y, min.Z, brush);
-    Draw_Brush(max.X, min.Y, max.Z, brush);
-    Draw_Brush(max.X, max.Y, min.Z, brush);
-    Draw_Brush(max.X, max.Y, max.Z, brush);
+    Draw_Brush(min.X, min.Y, min.Z);
+    Draw_Brush(min.X, min.Y, max.Z);
+    Draw_Brush(min.X, max.Y, min.Z);
+    Draw_Brush(min.X, max.Y, max.Z);
+    Draw_Brush(max.X, min.Y, min.Z);
+    Draw_Brush(max.X, min.Y, max.Z);
+    Draw_Brush(max.X, max.Y, min.Z);
+    Draw_Brush(max.X, max.Y, max.Z);
 
 	int blocksAffected = Draw_End();
 	Message_BlocksAffected(blocksAffected);
@@ -135,42 +132,35 @@ static void DoCuboidCorners(IVec3 min, IVec3 max, Brush* brush) {
 
 static CuboidOperation GetFunction(char mode) {
     switch (mode) {
-        case SOLID_MODE:
+        case MODE_SOLID:
             return DoCuboidSolid;
-        case HOLLOW_MODE:
+        case MODE_HOLLOW:
             return DoCuboidHollow;
-        case WALLS_MODE:
+        case MODE_WALLS:
             return DoCuboidWalls;
-        case WIRE_MODE:
+        case MODE_WIRE:
             return DoCuboidWire;
-        case CORNERS_MODE:
+        case MODE_CORNERS:
             return DoCuboidCorners;
         default:
             return DoCuboidSolid;
     };
 }
 
-static void ZSelectionHandler(IVec3* marks, int count, void* object) {
+static void ZSelectionHandler(IVec3* marks, int count) {
     if (count != 2) {
         return;
     }
 
-    ZArguments* arguments = (ZArguments*)object;
-    CuboidOperation Operation = GetFunction(arguments->mode);
-    Operation(Min(marks[0], marks[1]), Max(marks[0], marks[1]), arguments->brush);
-}
-
-static void CleanResources(void* args) {
-	ZArguments* arguments = (ZArguments*) args;
-	Brush_Free(arguments->brush);
-	free(arguments);
+    CuboidOperation Operation = GetFunction(s_Mode);
+    Operation(Min(marks[0], marks[1]), Max(marks[0], marks[1]));
 }
 
 static void ShowUsage() {
 	Message_Player("Usage: &b/Z [mode] [brush/block]&f.");
 }
 
-static bool TryParseArguments(const cc_string* args, int argsCount, ZArguments* out_arguments) {
+static bool TryParseArguments(const cc_string* args, int argsCount) {
     cc_string modesString[] = {
         String_FromConst("solid"),
         String_FromConst("hollow"),
@@ -186,18 +176,16 @@ static bool TryParseArguments(const cc_string* args, int argsCount, ZArguments* 
 	bool hasMode = (argsCount >= 1) && Array_ContainsString(&args[0], modesString, modesCount);
 
 	if (hasMode) {
-		out_arguments->mode = Array_IndexOfStringCaseless(&args[0], modesString, modesCount);
+		s_Mode = Array_IndexOfStringCaseless(&args[0], modesString, modesCount);
 	} else {
-		out_arguments->mode = SOLID_MODE;
+		s_Mode = MODE_SOLID;
 	}
 
-	if (hasMode && out_arguments->mode == -1) {
+	if (hasMode && s_Mode == -1) {
 		Message_ShowUnknownMode(&args[0]);
 		Message_ShowAvailableModes(modesString, modesCount);
 		return false;
 	}
-
-	Brush* brush = Brush_CreateEmpty();
 
 	if (hasBlockOrBrush) {
 		int brushIndex;
@@ -215,30 +203,23 @@ static bool TryParseArguments(const cc_string* args, int argsCount, ZArguments* 
 			return false;
 		}
 
-		if (!Parse_TryParseBlockOrBrush(&args[brushIndex], argsCount - brushIndex, brush)) {
+		if (!Parse_TryParseBlockOrBrush(&args[brushIndex], argsCount - brushIndex)) {
 			return false;
 		}
 
-		out_arguments->brush = brush;
 		return true;
 	} else {
-		if (!Brush_TryCreateNormal(BLOCK_AIR, true, brush)) {
-			return false;
-		}
-		out_arguments->brush = brush;
+		Brush_LoadInventory();
 		return true;
 	}
 }
 
 static void Z_Command(const cc_string* args, int argsCount) {
-	ZArguments* arguments = allocate(1, sizeof(ZArguments));
-	
-	if (!TryParseArguments(args, argsCount, arguments)) {
-		free(arguments);
+	if (!TryParseArguments(args, argsCount)) {
 		MarkSelection_Abort();
 		return;
 	}
 
-    MarkSelection_Make(ZSelectionHandler, 2, arguments, CleanResources);
+    MarkSelection_Make(ZSelectionHandler, 2);
     Message_Player("&fPlace or break two blocks to determine the edges.");
 }

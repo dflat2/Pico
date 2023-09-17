@@ -15,8 +15,6 @@ static int s_CurrentMark = 0;
 static int s_TotalMarks = 0;
 static IVec3* s_Marks = NULL;
 static SelectionHandler s_Handler = NULL;
-static void* s_ExtraParameters = NULL;
-static ResourceCleaner s_ResourceCleaner = NULL;
 static void (*s_StaticCommand)(const cc_string* arguments, int argumentsCount);
 static cc_string* s_StaticArgs = NULL;
 static int s_StaticArgsCount = 0;
@@ -30,7 +28,6 @@ static void UnregisterBlockChanged();
 static void RegisterBlockChanged();
 static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock);
 static void FreeStatic();
-static void FreeExtraParameters();
 static void FreeMarks();
 static void CallStaticFunction();
 static void ShowMode(const char* mode);
@@ -90,7 +87,7 @@ void MarkSelection_SetStatic(void (*DoCommand)(const cc_string* args, int argsCo
 	CallStaticFunction();
 }
 
-void MarkSelection_Make(SelectionHandler handler, int count, void* extraParameters, ResourceCleaner resourceCleaner) {
+void MarkSelection_Make(SelectionHandler handler, int count) {
 	if (s_InProgress || s_Painting) {
 		MarkSelection_Abort();
 	}
@@ -100,8 +97,6 @@ void MarkSelection_Make(SelectionHandler handler, int count, void* extraParamete
     s_TotalMarks = count;
     s_Marks = allocate(count, sizeof(IVec3));
     s_Handler = handler;
-    s_ExtraParameters = extraParameters;
-    s_ResourceCleaner = resourceCleaner;
     RegisterBlockChanged();
 }
 
@@ -148,7 +143,7 @@ static void UnregisterBlockChanged() {
 }
 
 static void CallHandler() {
-    s_Handler(s_Marks, s_TotalMarks, s_ExtraParameters);
+    s_Handler(s_Marks, s_TotalMarks);
 }
 
 static void FreeStatic() {
@@ -170,17 +165,8 @@ static void FreeMarks() {
 	s_Marks = NULL;
 }
 
-static void FreeExtraParameters() {
-    if (s_ResourceCleaner != NULL) {
-        ((ResourceCleaner) s_ResourceCleaner)(s_ExtraParameters);
-    }
-
-	s_ExtraParameters = NULL;
-}
-
 static void FreeResources() {
 	FreeMarks();
-	FreeExtraParameters();
 	FreeStatic();
 }
 
@@ -190,15 +176,12 @@ static void ResetSelectionState() {
     s_TotalMarks = 0;
     s_Marks = NULL;
     s_Handler = NULL;
-    s_ExtraParameters = NULL;
-    s_ResourceCleaner = NULL;
 	s_Painting = false;
 }
 
 static void ValidateSelection() {
     CallHandler();
 	FreeMarks();
-	FreeExtraParameters();
     ResetSelectionState();
     UnregisterBlockChanged();
 
