@@ -68,3 +68,53 @@ double Distance(IVec3 a, IVec3 b) {
     IVec3 difference = Substract(a, b);
     return sqrt(Dot(difference, difference));
 }
+
+FVec3 FVec3_ScalarMultiply(const FVec3 vector, float t) {
+	FVec3 result = {
+		.X = vector.X * t,
+		.Y = vector.Y * t,
+		.Z = vector.Z * t
+	};
+
+	return result;
+}
+
+FVec3 FVec3_Add(const FVec3 a, const FVec3 b) {
+	FVec3 result = {
+		.X = a.X + b.X,
+		.Y = a.Y + b.Y,
+		.Z = a.Z + b.Z
+	};
+
+	return result;
+}
+
+FVec3 FVec3_Substract(const FVec3 a, const FVec3 b) {
+	FVec3 result = {
+		.X = a.X - b.X,
+		.Y = a.Y - b.Y,
+		.Z = a.Z - b.Z
+	};
+
+	return result;
+}
+
+FVec3 IVec3_ConvertFVec3(const IVec3 a) {
+	FVec3 result = {
+		(float)a.X,
+		(float)a.Y,
+		(float)a.Z
+	};
+
+	return result;
+}
+
+IVec3 FVec3_ConvertIVec3(const FVec3 a) {
+	IVec3 result = {
+		round(a.X),
+		round(a.Y),
+		round(a.Z)
+	};
+
+	return result;
+}

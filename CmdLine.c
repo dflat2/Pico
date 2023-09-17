@@ -34,6 +34,8 @@ static void DoWall(IVec3 from, IVec3 to, Brush* brush);
 static void DoBezier(IVec3 from, IVec3 direction, IVec3 to, Brush* brush);
 static int GreatestInteger2(int a, int b);
 static int GreatestInteger3(int a, int b, int c);
+static FVec3 Bezier(FVec3 from, FVec3 controlPoint, FVec3 to, float t);
+static void Line(IVec3 from, IVec3 to, Brush* brush);
 
 static struct ChatCommand LineCommand = {
 	"Line",
@@ -66,9 +68,7 @@ static int GreatestInteger3(int a, int b, int c) {
 	return GreatestInteger2(a, GreatestInteger2(b, c));
 }
 
-static void DoLine(IVec3 from, IVec3 to, Brush* brush) {
-	Draw_Start("Line normal");
-
+static void Line(IVec3 from, IVec3 to, Brush* brush) {
 	int deltaX = to.X - from.X;
 	int deltaY = to.Y - from.Y;
 	int deltaZ = to.Z - from.Z;
@@ -76,8 +76,6 @@ static void DoLine(IVec3 from, IVec3 to, Brush* brush) {
 	int steps = GreatestInteger3(abs(deltaX), abs(deltaY), abs(deltaZ));
 
 	if (steps == 0) {
-		Draw_End();
-		Message_BlocksAffected(0);
 		return;
 	}
 
@@ -97,7 +95,11 @@ static void DoLine(IVec3 from, IVec3 to, Brush* brush) {
 	}
 
 	Draw_Brush(to.X, to.Y, to.Z, brush);
+}
 
+static void DoLine(IVec3 from, IVec3 to, Brush* brush) {
+	Draw_Start("Line normal");
+	Line(from, to, brush);
 	int blocksAffected = Draw_End();
 	Message_BlocksAffected(blocksAffected);
 }
@@ -148,24 +150,52 @@ static void DoWall(IVec3 from, IVec3 to, Brush* brush) {
 	Message_BlocksAffected(blocksAffected);
 }
 
-static void DoBezier(IVec3 from, IVec3 direction, IVec3 to, Brush* brush) {
+static FVec3 Bezier(FVec3 from, FVec3 controlPoint, FVec3 to, float t) {
+	// linear1 = (1 - t) * from + (t) * controlPoint
+	FVec3 linear1 = FVec3_Add(FVec3_ScalarMultiply(from, 1 - t), FVec3_ScalarMultiply(controlPoint, t));
+
+	// linear2 = (1 - t) * controlPoint + (t) * to
+	FVec3 linear2 = FVec3_Add(FVec3_ScalarMultiply(controlPoint, 1 - t), FVec3_ScalarMultiply(to, t));
+
+	// result = (1 - t) * linear1 + (t) * linear2
+	FVec3 result = FVec3_Add(FVec3_ScalarMultiply(linear1, 1 - t), FVec3_ScalarMultiply(linear2, t));
+
+	return result;
+}
+
+static void DoBezier(IVec3 from, IVec3 controlPoint, IVec3 to, Brush* brush) {
 	Draw_Start("Line bezier");
+	const int subDivisions = 64;
+
+	FVec3 floatFrom = IVec3_ConvertFVec3(from);
+	FVec3 floatControlPoint = IVec3_ConvertFVec3(controlPoint);
+	FVec3 floatTo = IVec3_ConvertFVec3(to);
+
+	IVec3 lineStart = from;
+	IVec3 lineEnd;
+
+	for (int i = 1; i <= subDivisions; i++) {
+		lineEnd = FVec3_ConvertIVec3(
+			Bezier(floatFrom, floatControlPoint, floatTo, i / (float)subDivisions)
+		);
+
+		Line(lineStart, lineEnd, brush);
+		lineStart = lineEnd;
+	}
 
 	int blocksAffected = Draw_End();
 	Message_BlocksAffected(blocksAffected);
 }
 
 static void LineSelectionHandler(IVec3* marks, int count, void* object) {
-    if (count != 2) {
-        return;
-    }
-
     LineArguments* arguments = (LineArguments*)object;
 
 	if (arguments->mode == MODE_NORMAL) {
 		DoLine(marks[0], marks[1], arguments->brush);
 	} else if (arguments->mode == MODE_WALL) {
 		DoWall(marks[0], marks[1], arguments->brush);
+	} else if (arguments->mode == MODE_BEZIER) {
+		DoBezier(marks[0], marks[1], marks[2], arguments->brush);
 	}
 }
 
