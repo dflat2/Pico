@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "CC_API/Chat.h"
+#include "CC_API/World.h"
 #include "CC_API/Inventory.h"
 
 #include "Draw.h"
@@ -13,6 +14,8 @@
 #include "SPCCommand.h"
 #include "List.h"
 #include "WorldUtils.h"
+#include "BinaryMap.h"
+#include "IVec3FastQueue.h"
 
 typedef enum FillMode_ {
 	MODE_3D = 0,
@@ -21,27 +24,12 @@ typedef enum FillMode_ {
 	MODE_2DZ = 3,
 } FillMode;
 
-typedef struct IVec3QueueNode_ {
-	struct IVec3QueueNode_* next;
-	IVec3 content;
-} IVec3QueueNode;
-
-typedef struct IVec3Queue_ {
-	IVec3QueueNode* first;
-} IVec3Queue;
-
 static FillMode s_Mode;
 
 static void Fill_Command(const cc_string* args, int argsCount);
 static bool TryParseArguments(const cc_string* args, int argsCount);
 static void ShowUsage();
 static void FillSelectionHandler(IVec3* marks, int count);
-static IVec3Queue* IVec3Queue_CreateEmpty();
-static bool IVec3Queue_IsEmpty(IVec3Queue* queue);
-static void IVec3Queue_Free(IVec3Queue* queue);
-static void IVec3Queue_Enqueue(IVec3Queue* queue, IVec3 vector);
-static IVec3 IVec3Queue_Dequeue(IVec3Queue* queue);
-static bool IVec3Queue_Contains(IVec3Queue* queue, IVec3 vector);
 
 static struct ChatCommand FillCommand = {
 	"Fill",
@@ -119,7 +107,7 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 	}
 }
 
-void EnqueueNonVisitedNeighbors(IVec3Queue* queue, IVec3 target, BlockID filledOverBlock, IVec3Queue* visited) {
+void EnqueueNonVisitedNeighbors(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlock, BinaryMap* binaryMap) {
 	IVec3 allNeighbors[6] = {
 		{ target.X - 1, target.Y, target.Z },
 		{ target.X + 1, target.Y, target.Z },
@@ -142,42 +130,48 @@ void EnqueueNonVisitedNeighbors(IVec3Queue* queue, IVec3 target, BlockID filledO
 			continue;
 		}
 
-		if (IVec3Queue_Contains(visited, neighbor)) {
+		if (BinaryMap_Get(binaryMap, neighbor.X, neighbor.Y, neighbor.Z)) {
 			continue;
 		}
 
-		IVec3Queue_Enqueue(queue, neighbor);
-		IVec3Queue_Enqueue(visited, neighbor);
+		IVec3FastQueue_TryEnqueue(queue, neighbor);
+		BinaryMap_Set(binaryMap, neighbor.X, neighbor.Y, neighbor.Z);
 	}
 }
 
 static void FillSelectionHandler(IVec3* marks, int count) {
 	IVec3 fillOrigin = marks[0];
 	BlockID filledOverBlock = GetBlock(fillOrigin.X, fillOrigin.Y, fillOrigin.Z);
-	IVec3Queue* queue = IVec3Queue_CreateEmpty();
-	IVec3Queue* visited = IVec3Queue_CreateEmpty();
+	BinaryMap* binaryMap = BinaryMap_CreateEmpty(World.Width, World.Height, World.Length);
+	IVec3FastQueue* queue = IVec3FastQueue_CreateEmpty();
 
-	IVec3Queue_Enqueue(queue, fillOrigin);
-	IVec3Queue_Enqueue(visited, fillOrigin);
+	BinaryMap_Set(binaryMap, fillOrigin.X, fillOrigin.Y, fillOrigin.Z);
+	IVec3FastQueue_TryEnqueue(queue, fillOrigin);
+
 	IVec3 current;
 
-	while (!IVec3Queue_IsEmpty(queue)) {
-		current = IVec3Queue_Dequeue(queue);
-		EnqueueNonVisitedNeighbors(queue, current, filledOverBlock, visited);
+	while (!IVec3FastQueue_IsEmpty(queue)) {
+		current = IVec3FastQueue_Dequeue(queue);
+		EnqueueNonVisitedNeighbors(queue, current, filledOverBlock, binaryMap);
 	}
 
 	Draw_Start("Fill");
 
-	while (!IVec3Queue_IsEmpty(visited)) {
-		current = IVec3Queue_Dequeue(visited);
-		Draw_Brush(current.X, current.Y, current.Z);
+	for (int x = 0; x < World.Width; x++) {
+		for (int y = 0; y < World.Height; y++) {
+			for (int z = 0; z < World.Length; z++) {
+				if (BinaryMap_Get(binaryMap, x, y, z)) {
+					Draw_Brush(x, y, z);
+				}
+			}
+		}
 	}
 
 	int blocksAffected = Draw_End();
 	Message_BlocksAffected(blocksAffected);
 
-	IVec3Queue_Free(visited);
-	IVec3Queue_Free(queue);
+	BinaryMap_Free(binaryMap);
+	IVec3FastQueue_Free(queue);
 }
 
 static void Fill_Command(const cc_string* args, int argsCount) {
@@ -188,68 +182,4 @@ static void Fill_Command(const cc_string* args, int argsCount) {
 
     MarkSelection_Make(FillSelectionHandler, 1);
     Message_Player("&fPlace or break a block.");
-}
-
-static IVec3Queue* IVec3Queue_CreateEmpty() {
-	IVec3Queue* queue = malloc(sizeof(IVec3Queue));
-
-	if (queue == NULL) {
-		return NULL;
-	}
-
-	queue->first = NULL;
-	return queue;
-}
-
-static bool IVec3Queue_IsEmpty(IVec3Queue* queue) {
-	return queue->first == NULL;
-}
-
-static void IVec3Queue_Free(IVec3Queue* queue) {
-	while (!IVec3Queue_IsEmpty(queue)) {
-		IVec3Queue_Dequeue(queue);
-	}
-
-	free(queue);
-}
-
-static void IVec3Queue_Enqueue(IVec3Queue* queue, IVec3 vector) {
-	IVec3QueueNode* newElement = malloc(sizeof(IVec3QueueNode));
-	newElement->content = vector;
-	newElement->next = NULL;
-
-	if (IVec3Queue_IsEmpty(queue)) {
-		queue->first = newElement;
-		return;
-	}
-
-	IVec3QueueNode* current = queue->first;
-
-	while (current->next != NULL) {
-		current = current->next;
-	}
-
-	current->next = newElement;
-}
-
-static IVec3 IVec3Queue_Dequeue(IVec3Queue* queue) {
-	IVec3QueueNode* first = queue->first;
-	IVec3 result = first->content;
-	queue->first = first->next;
-	free(first);
-	return result;
-}
-
-static bool IVec3Queue_Contains(IVec3Queue* queue, IVec3 vector) {
-	IVec3QueueNode* current = queue->first;
-
-	while (current != NULL) {
-		if (current->content.X == vector.X && current->content.Y == vector.Y && current->content.Z == vector.Z) {
-			return true;
-		}
-
-		current = current->next;
-	}
-
-	return false;
 }
