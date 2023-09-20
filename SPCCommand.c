@@ -13,6 +13,7 @@ extern SPCCommand CenterSPCCommand;
 extern SPCCommand CopySPCCommand;
 extern SPCCommand CutSPCCommand;
 extern SPCCommand DescendSPCCommand;
+extern SPCCommand FillSPCCommand;
 extern SPCCommand LineSPCCommand;
 extern SPCCommand MarkAllSPCCommand;
 extern SPCCommand MarkSPCCommand;
@@ -39,6 +40,7 @@ void SPCCommand_RegisterAll() {
 	Register(&CopySPCCommand);
 	Register(&CutSPCCommand);
 	Register(&DescendSPCCommand);
+	Register(&FillSPCCommand);
 	Register(&LineSPCCommand);
 	Register(&MarkAllSPCCommand);
 	Register(&MarkSPCCommand);
