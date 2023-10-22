@@ -17,6 +17,8 @@
 #include "BinaryMap.h"
 #include "IVec3FastQueue.h"
 
+#define MAX_NEIGHBORS 6
+
 typedef enum FillMode_ {
 	MODE_3D = 0,
 	MODE_2DX = 1,
@@ -26,6 +28,7 @@ typedef enum FillMode_ {
 
 static FillMode s_Mode;
 
+static bool TryExpand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlock, BinaryMap* map);
 static void Fill_Command(const cc_string* args, int argsCount);
 static bool TryParseArguments(const cc_string* args, int argsCount);
 static void ShowUsage();
@@ -107,36 +110,50 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 	}
 }
 
-void EnqueueNonVisitedNeighbors(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlock, BinaryMap* binaryMap) {
-	IVec3 allNeighbors[6] = {
-		{ target.X - 1, target.Y, target.Z },
-		{ target.X + 1, target.Y, target.Z },
-		{ target.X, target.Y - 1, target.Z },
-		{ target.X, target.Y + 1, target.Z },
-		{ target.X, target.Y, target.Z - 1 },
-		{ target.X, target.Y, target.Z + 1 },
-	};
+static bool TryExpand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlock, BinaryMap* binaryMap) {
+	IVec3 neighbors[MAX_NEIGHBORS];
+	short count = 0;
+
+	if (s_Mode == MODE_3D || s_Mode == MODE_2DY || s_Mode == MODE_2DZ) {
+		neighbors[count].X = target.X - 1; neighbors[count].Y = target.Y; neighbors[count].Z = target.Z;
+		count++;
+		neighbors[count].X = target.X + 1; neighbors[count].Y = target.Y; neighbors[count].Z = target.Z;
+		count++;
+	}
+	
+	if (s_Mode == MODE_3D || s_Mode == MODE_2DX || s_Mode == MODE_2DZ) {
+		neighbors[count].X = target.X; neighbors[count].Y = target.Y - 1; neighbors[count].Z = target.Z;
+		count++;
+		neighbors[count].X = target.X; neighbors[count].Y = target.Y + 1; neighbors[count].Z = target.Z;
+		count++;
+	}
+	
+	if (s_Mode == MODE_3D || s_Mode == MODE_2DX || s_Mode == MODE_2DY) {
+		neighbors[count].X = target.X; neighbors[count].Y = target.Y; neighbors[count].Z = target.Z - 1;
+		count++;
+		neighbors[count].X = target.X; neighbors[count].Y = target.Y; neighbors[count].Z = target.Z + 1;
+		count++;
+	}
 
 	IVec3 neighbor;
 
-	for (int i = 0; i < 6; i++) {
-		neighbor = allNeighbors[i];
+	for (int i = 0; i < count; i++) {
+		neighbor = neighbors[i];
 
-		if (!IsInWorldBoundaries(neighbor.X, neighbor.Y, neighbor.Z)) {
+		if (!IsInWorldBoundaries(neighbor.X, neighbor.Y, neighbor.Z) ||
+			GetBlock(neighbor.X, neighbor.Y, neighbor.Z) != filledOverBlock ||
+			BinaryMap_Get(binaryMap, neighbor.X, neighbor.Y, neighbor.Z)) {
 			continue;
 		}
 
-		if (GetBlock(neighbor.X, neighbor.Y, neighbor.Z) != filledOverBlock) {
-			continue;
+		if (!IVec3FastQueue_TryEnqueue(queue, neighbor)) {
+			return false;
 		}
 
-		if (BinaryMap_Get(binaryMap, neighbor.X, neighbor.Y, neighbor.Z)) {
-			continue;
-		}
-
-		IVec3FastQueue_TryEnqueue(queue, neighbor);
 		BinaryMap_Set(binaryMap, neighbor.X, neighbor.Y, neighbor.Z);
 	}
+
+	return true;
 }
 
 static void FillSelectionHandler(IVec3* marks, int count) {
@@ -152,7 +169,7 @@ static void FillSelectionHandler(IVec3* marks, int count) {
 
 	while (!IVec3FastQueue_IsEmpty(queue)) {
 		current = IVec3FastQueue_Dequeue(queue);
-		EnqueueNonVisitedNeighbors(queue, current, filledOverBlock, binaryMap);
+		TryExpand(queue, current, filledOverBlock, binaryMap);
 	}
 
 	Draw_Start("Fill");
