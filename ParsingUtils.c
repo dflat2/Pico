@@ -2,6 +2,7 @@
 
 #include "Messaging.h"
 #include "ParsingUtils.h"
+#include "Axis.h"
 
 #define SUCCESS 1
 #define FAILURE 0
@@ -107,6 +108,28 @@ bool Parse_TryParseBlockOrBrush(const cc_string* arguments, int argumentsCount, 
 	return Parse_TryParseBrush(arguments, argumentsCount, out_brush);
 }
 
+bool Parse_TryParseAxis(const cc_string* string, Axis* out_axis) {
+	if (string->length == 0 || string->length >= 2) {
+		Message_ShowInvalidAxis(string);
+		return FAILURE;
+	}
+
+	char firstCharacter = string->buffer[0];
+
+	if (firstCharacter == 'X' || firstCharacter == 'x') {
+		*out_axis = AXIS_X;
+		return SUCCESS;
+	} else if (firstCharacter == 'Y' || firstCharacter == 'y') {
+		*out_axis = AXIS_Y;
+		return SUCCESS;
+	} else if (firstCharacter == 'Z' || firstCharacter == 'z') {
+		*out_axis = AXIS_Z;
+		return SUCCESS;
+	}
+
+	Message_ShowInvalidAxis(string);
+	return FAILURE;
+}
 
 static bool IsDigit(char character) {
     return (character >= '0' && character <= '9');

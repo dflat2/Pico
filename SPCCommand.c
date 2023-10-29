@@ -13,6 +13,7 @@ extern SPCCommand CenterSPCCommand;
 extern SPCCommand CopySPCCommand;
 extern SPCCommand CutSPCCommand;
 extern SPCCommand DescendSPCCommand;
+extern SPCCommand FlipSPCCommand;
 extern SPCCommand MarkAllSPCCommand;
 extern SPCCommand MarkSPCCommand;
 extern SPCCommand MeasureSPCCommand;
@@ -38,6 +39,7 @@ void SPCCommand_RegisterAll() {
 	Register(&CopySPCCommand);
 	Register(&CutSPCCommand);
 	Register(&DescendSPCCommand);
+	Register(&FlipSPCCommand);
 	Register(&MarkAllSPCCommand);
 	Register(&MarkSPCCommand);
 	Register(&MeasureSPCCommand);

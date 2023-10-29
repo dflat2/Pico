@@ -9,5 +9,6 @@ void Message_ShowAvailableModes(const cc_string* modes, int modesCount);
 void Message_ShowUnknownMode(const cc_string* mode);
 void Message_Player(const char* message);
 void Message_ShowUnknownBlock(const cc_string* block);
+void Message_ShowInvalidAxis(const cc_string* axis);
 
 #endif /* MESSAGING_H */

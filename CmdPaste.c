@@ -70,9 +70,9 @@ static void PasteSelectionHandler(IVec3* marks, int count, void* object) {
 	IVec3 origin = Substract(marks[0], buffer.anchor);
 	int index = -1;
 
-	for (int x = origin.X; x < origin.X + buffer.width; x++) {
-		for (int y = origin.Y; y < origin.Y + buffer.height; y++) {
-			for (int z = origin.Z; z < origin.Z + buffer.length; z++) {
+	for (int x = origin.X; x < origin.X + buffer.dimensions.X; x++) {
+		for (int y = origin.Y; y < origin.Y + buffer.dimensions.Y; y++) {
+			for (int z = origin.Z; z < origin.Z + buffer.dimensions.Z; z++) {
 				index++;
 				if (!IsInWorldBoundaries(x, y, z)) continue;
 
@@ -85,7 +85,7 @@ static void PasteSelectionHandler(IVec3* marks, int count, void* object) {
 
 	int blocksAffected = Draw_End();
 	Message_BlocksAffected(blocksAffected);
-	ShowBlocksPasted(buffer.width * buffer.height * buffer.length);
+	ShowBlocksPasted(buffer.dimensions.X * buffer.dimensions.Y * buffer.dimensions.Z);
 }
 
 static void CleanResources(void* args) {
