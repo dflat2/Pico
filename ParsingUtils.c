@@ -16,10 +16,9 @@ typedef enum TimeUnit_ {
 } TimeUnit;
 
 static bool TryParseDuration_Second(const cc_string* string, int* cursor, int* out_result_Second, TimeUnit* out_setUnit);
-static bool TryParseDuration_Second(const cc_string* string, int* cursor, int* out_result_Second, TimeUnit* out_setUnit);
 static bool TryParseTimeUnit(const cc_string* string, int* cursor, TimeUnit* out_unit);
 static bool TryParsePositiveNumber(const cc_string* string, int* cursor, int* out_number);
-static bool TryParsePositiveNumber(const cc_string* string, int* cursor, int* out_number);
+static bool TryParseNumber(const cc_string* string, int* out_number);
 static bool IsDigit(char character);
 
 bool TryParseBlock(const cc_string* blockString, BlockID* block) {
@@ -127,6 +126,22 @@ bool Parse_TryParseAxis(const cc_string* string, Axis* out_axis) {
 	return FAILURE;
 }
 
+bool Parse_TryParseDegrees(const cc_string* string, int* out_degrees) {
+	if (!TryParseNumber(string, out_degrees)) {
+		Message_ShowInvalidDegrees(string);
+		return false;
+	}
+
+	*out_degrees = (*out_degrees) % 360;
+
+	if (*out_degrees % 90 != 0) {
+		Message_ShowInvalidDegrees(string);
+		return false;
+	}
+
+	return true;
+}
+
 static bool IsDigit(char character) {
     return (character >= '0' && character <= '9');
 }
@@ -148,6 +163,26 @@ static bool TryParsePositiveNumber(const cc_string* string, int* cursor, int* ou
     }
 
     return true;
+}
+
+static bool TryParseNumber(const cc_string* string, int* out_number) {
+	bool isNegative = false;
+	int start = 0;
+
+	if (string->buffer[0] == '-') {
+		++start;
+		isNegative = true;
+	}
+
+	if (!TryParsePositiveNumber(string, &start, out_number)) {
+		return false;
+	}
+
+	if (isNegative) {
+		*out_number = -(*out_number);
+	}
+
+	return true;
 }
 
 static bool TryParseTimeUnit(const cc_string* string, int* cursor, TimeUnit* out_unit) {

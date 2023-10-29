@@ -63,3 +63,11 @@ void Message_ShowInvalidAxis(const cc_string* axis) {
     Chat_Add(&message);
 	Message_Player("An axis parameter must be &bX&f, &bY&f or &bZ&f.");
 }
+
+void Message_ShowInvalidDegrees(const cc_string* string) {
+    char buffer[64];
+    cc_string message = String_FromArray(buffer);
+    String_Format1(&message, "&fInvalid degrees: &b%s&f.", string);
+    Chat_Add(&message);
+	Message_Player("Degrees must be integers, multiples of 90.");
+}

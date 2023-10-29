@@ -23,12 +23,12 @@ static bool TryTransformBuffer(Transform transform);
 static int Pack(IVec3 vector);
 static void FreeBuffer();
 
-static const Transform RotateX90 = { XZY, .flipX = false, .flipY = true, .flipZ = false };
+static const Transform RotateX90 = { XZY, .flipX = false, .flipY = false, .flipZ = true };
 static const Transform RotateX180 = { XYZ, .flipX = false, .flipY = true, .flipZ = true };
-static const Transform RotateX270 = { XZY, .flipX = false, .flipY = false, .flipZ = true };
-static const Transform RotateY90 = { ZYX, .flipX = false, .flipY = false, .flipZ = true };
+static const Transform RotateX270 = { XZY, .flipX = false, .flipY = true, .flipZ = false };
+static const Transform RotateY90 = { ZYX, .flipX = true, .flipY = false, .flipZ = false };
 static const Transform RotateY180 = { XYZ, .flipX = true, .flipY = false, .flipZ = true };
-static const Transform RotateY270 = { ZYX, .flipX = true, .flipY = false, .flipZ = false };
+static const Transform RotateY270 = { ZYX, .flipX = false, .flipY = false, .flipZ = true };
 static const Transform RotateZ90 = { YXZ, .flipX = false, .flipY = true, .flipZ = false };
 static const Transform RotateZ180 = { XYZ, .flipX = true, .flipY = true, .flipZ = false };
 static const Transform RotateZ270 = { YXZ, .flipX = true, .flipY = false, .flipZ = false };

@@ -32,7 +32,7 @@ SPCCommand FlipSPCCommand = {
 };
 
 static void ShowUsage() {
-	Message_Player("Usage: &b/Flip X&f, &b/Flip Y &for &b/Flip Z&f..");
+	Message_Player("Usage: &b/Flip X&f, &b/Flip Y &for &b/Flip Z&f.");
 }
 
 static void Flip_Command(const cc_string* args, int argsCount) {
@@ -54,6 +54,7 @@ static void Flip_Command(const cc_string* args, int argsCount) {
 
 	if (!BlocksBuffer_TryFlip(axis)) {
 		Message_Player("Memory error");
+		return;
 	}
 
 	switch (axis) {
