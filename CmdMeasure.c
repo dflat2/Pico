@@ -11,10 +11,9 @@
 #include "SPCCommand.h"
 
 static void Measure_Command(const cc_string* args, int argsCount);
-static void CleanResources(void* arguments);
-static void MeasureSelectionHandler(IVec3* marks, int count, void* object);
-static void CountBlocks(int x1, int y1, int z1, int x2, int y2, int z2, BlockID* blocks, int count);
-static void ShowCountedBlocks(int* counts, BlockID* blocks, int count);
+static void MeasureSelectionHandler(IVec3* marks, int count);
+static void CountBlocks(int x1, int y1, int z1, int x2, int y2, int z2);
+static void ShowCountedBlocks(int* counts);
 
 static struct ChatCommand MeasureCommand = {
 	"Measure",
@@ -35,27 +34,24 @@ SPCCommand MeasureSPCCommand = {
 	.canStatic = true
 };
 
+static BlockID s_Blocks[10];
+static int s_Count;
 
-typedef struct MeasureExtraArguments_ {
-	BlockID* blocks;
-	unsigned count;
-} MeasureExtraArguments;
-
-static void ShowCountedBlocks(int* counts, BlockID* blocks, int count) {
+static void ShowCountedBlocks(int* counts) {
 	cc_string currentBlockName;
 	char buffer[128];
 	cc_string currentMessage = { buffer, 0, 128 };
 
-	for (int i = 0; i < count; i++) {
-		currentBlockName = Block_UNSAFE_GetName(blocks[i]);
+	for (int i = 0; i < s_Count; i++) {
+		currentBlockName = Block_UNSAFE_GetName(s_Blocks[i]);
 		currentMessage.length = 0;
 		String_Format2(&currentMessage, "&b%s&f: &b%i", &currentBlockName, &counts[i]);
 		Chat_Add(&currentMessage);
 	}
 }
 
-static void CountBlocks(int x1, int y1, int z1, int x2, int y2, int z2, BlockID* blocks, int count) {
-	int* counts = allocateZeros(count, sizeof(int));
+static void CountBlocks(int x1, int y1, int z1, int x2, int y2, int z2) {
+	int counts[10] = { 0 };
 	BlockID currentBlock;
 
 	for (int x = x1; x <= x2; x++) {
@@ -63,8 +59,8 @@ static void CountBlocks(int x1, int y1, int z1, int x2, int y2, int z2, BlockID*
 			for (int z = z1; z <= z2; z++) {
 				currentBlock = GetBlock(x, y, z);
 
-				for (int i = 0; i < count; i++) {
-					if (blocks[i] == currentBlock) {
+				for (int i = 0; i < s_Count; i++) {
+					if (s_Blocks[i] == currentBlock) {
 						counts[i]++;
 						break;
 					}
@@ -73,11 +69,10 @@ static void CountBlocks(int x1, int y1, int z1, int x2, int y2, int z2, BlockID*
 		}
 	}
 
-	ShowCountedBlocks(counts, blocks, count);
-	free(counts);
+	ShowCountedBlocks(counts);
 }
 
-static void MeasureSelectionHandler(IVec3* marks, int count, void* object) {
+static void MeasureSelectionHandler(IVec3* marks, int count) {
 	if (count != 2) {
 		return;
 	}
@@ -96,54 +91,32 @@ static void MeasureSelectionHandler(IVec3* marks, int count, void* object) {
 	snprintf(&message[0], 64, "&b%d &fwide, &b%d &fhigh, &b%d &flong, &b%d &fblocks.", width, height, length, volume);
 	Message_Player(&message[0]);
 
-	if (object == NULL) {
-		return;
-	}
-
 	IVec3 min = Min(marks[0], marks[1]);
 	IVec3 max = Max(marks[0], marks[1]);
 	
-	MeasureExtraArguments* arguments = (MeasureExtraArguments*) object;
-	CountBlocks(min.X, min.Y, min.Z, max.X, max.Y, max.Z,
-				arguments->blocks, arguments->count);
-}
-
-static void CleanResources(void* arguments) {
-	MeasureExtraArguments* measureExtraArguments = arguments;
-	free(measureExtraArguments->blocks);
-	free(measureExtraArguments);
+	CountBlocks(min.X, min.Y, min.Z, max.X, max.Y, max.Z);
 }
 
 static void Measure_Command(const cc_string* args, int argsCount) {
-	if (argsCount == 0) {
-		Message_Player("&fPlace or break two blocks to determine the edges.");
-		MarkSelection_Make(MeasureSelectionHandler, 2, NULL, NULL);
+	if (argsCount > 10) {
+		Message_Player("&fCannot measure more than 10 blocks.");
 		return;
 	}
 
-	BlockID* blocks = allocate(argsCount, sizeof(blocks));
+	s_Count = argsCount;
 	int currentBlock;
 
 	for (int i = 0; i < argsCount; i++) {
 		currentBlock = Block_Parse(&args[i]);
 
 		if (currentBlock == -1) {
-			char message[64];
-			cc_string ccMessage = { message, 0, 64 };
-			String_Format1(&ccMessage, "&fThere is no block &b%s&f.", (void*)&args[i]);
-			Chat_Add(&ccMessage);
-			free(blocks);
-			MarkSelection_Abort();
+			Message_ShowUnknownBlock(&args[i]);
 			return;
 		}
 
-		blocks[i] = (BlockID)currentBlock;
+		s_Blocks[i] = (BlockID)currentBlock;
 	}
 
-	MeasureExtraArguments* arguments = allocate(1, sizeof(MeasureExtraArguments));
-	arguments->blocks = blocks;
-	arguments->count = argsCount;
-
-	MarkSelection_Make(MeasureSelectionHandler, 2, arguments, CleanResources);
 	Message_Player("&fPlace or break two blocks to determine the edges.");
+	MarkSelection_Make(MeasureSelectionHandler, 2);
 }

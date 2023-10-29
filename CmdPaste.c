@@ -13,8 +13,7 @@
 #include "SPCCommand.h"
 
 static void Paste_Command(const cc_string* args, int argsCount);
-static void CleanResources(void* args);
-static void PasteSelectionHandler(IVec3* marks, int count, void* object);
+static void PasteSelectionHandler(IVec3* marks, int count);
 static void ShowBlocksPasted(int amount);
 
 static struct ChatCommand PasteCommand = {
@@ -38,13 +37,11 @@ SPCCommand PasteSPCCommand = {
 
 
 typedef enum PasteMode_ {
-    NORMAL,
-    AIR,
+    MODE_NORMAL,
+    MODE_AIR,
 } PasteMode;
 
-typedef struct PasteArguments_ {
-    PasteMode mode;
-} PasteArguments;
+static PasteMode s_Mode;
 
 static void ShowBlocksPasted(int amount) {
 	char message[128];
@@ -59,13 +56,12 @@ static void ShowBlocksPasted(int amount) {
 }
 
 
-static void PasteSelectionHandler(IVec3* marks, int count, void* object) {
+static void PasteSelectionHandler(IVec3* marks, int count) {
     if (count != 1 || BlocksBuffer_IsEmpty()) {
         return;
     }
 
 	Draw_Start("Paste");
-	PasteArguments* pasteArgs = (PasteArguments*)object;
 	BlocksBuffer buffer = BlocksBuffer_GetCopied();
 	IVec3 origin = Substract(marks[0], buffer.anchor);
 	int index = -1;
@@ -76,7 +72,7 @@ static void PasteSelectionHandler(IVec3* marks, int count, void* object) {
 				index++;
 				if (!IsInWorldBoundaries(x, y, z)) continue;
 
-				if (pasteArgs->mode == AIR || buffer.content[index] != BLOCK_AIR) {
+				if (s_Mode == MODE_AIR || buffer.content[index] != BLOCK_AIR) {
 					Draw_Block(x, y, z, buffer.content[index]);
 				}
 			}
@@ -86,11 +82,6 @@ static void PasteSelectionHandler(IVec3* marks, int count, void* object) {
 	int blocksAffected = Draw_End();
 	Message_BlocksAffected(blocksAffected);
 	ShowBlocksPasted(buffer.dimensions.X * buffer.dimensions.Y * buffer.dimensions.Z);
-}
-
-static void CleanResources(void* args) {
-	PasteArguments* pasteArgs = (PasteArguments*)args;
-	free(pasteArgs);
 }
 
 static void Paste_Command(const cc_string* args, int argsCount) {
@@ -106,10 +97,8 @@ static void Paste_Command(const cc_string* args, int argsCount) {
 		return;
 	}
 
-	PasteArguments* pasteArgs = allocateZeros(1, sizeof(PasteArguments));
-
 	if (argsCount == 0) {
-		pasteArgs->mode = NORMAL;
+		s_Mode = MODE_NORMAL;
 	} else if (argsCount == 1) {
 		cc_string modesString[] = {
 			String_FromConst("normal"),
@@ -122,14 +111,13 @@ static void Paste_Command(const cc_string* args, int argsCount) {
 		if (modeIndex == -1) {
 			Message_ShowUnknownMode(&args[0]);
 			Message_ShowAvailableModes(modesString, modesCount);
-			free(pasteArgs);
 			MarkSelection_Abort();
 			return;
 		}
 
-		pasteArgs->mode = (PasteMode)modeIndex;
+		s_Mode = (PasteMode)modeIndex;
 	}
 
-    MarkSelection_Make(PasteSelectionHandler, 1, pasteArgs, CleanResources);
+    MarkSelection_Make(PasteSelectionHandler, 1);
     Message_Player("&fPlace a block in the corner of where you want to paste.");
 }

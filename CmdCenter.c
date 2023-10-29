@@ -10,7 +10,7 @@
 #include "SPCCommand.h"
 
 static void Center_Command(const cc_string* args, int argsCount);
-static void CenterSelectionHandler(IVec3* marks, int count, void* object);
+static void CenterSelectionHandler(IVec3* marks, int count);
 static void Center(IVec3 a, IVec3 b);
 
 static struct ChatCommand CenterCommand = {
@@ -68,7 +68,7 @@ static void Center(IVec3 a, IVec3 b) {
     Message_Player(message);
 }
 
-static void CenterSelectionHandler(IVec3* marks, int count, void* object) {
+static void CenterSelectionHandler(IVec3* marks, int count) {
     if (count != 2) {
         return;
     }
@@ -83,6 +83,6 @@ static void Center_Command(const cc_string* args, int argsCount) {
 		return;
 	}
 
-    MarkSelection_Make(CenterSelectionHandler, 2, NULL, NULL);
+    MarkSelection_Make(CenterSelectionHandler, 2);
     Message_Player("&fPlace or break two blocks to determine the edges.");
 }

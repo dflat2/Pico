@@ -12,20 +12,16 @@
 #include "SPCCommand.h"
 #include "WorldUtils.h"
 
-typedef struct ReplaceArguments_ {
-	BlockID block;
-	Brush* brush;
-	bool replaceNot;
-} ReplaceArguments;
-
 static void ReplaceNot_Command(const cc_string* args, int argsCount);
 static void Replace_Command(const cc_string* args, int argsCount);
 static void ReplaceAll_Command(const cc_string* args, int argsCount);
-static bool TryParseArguments(const cc_string* args, int argsCount, ReplaceArguments* out_arguments);
+static bool TryParseArguments(const cc_string* args, int argsCount);
 static void ShowUsage();
-static void CleanResources(void* args);
-static void ReplaceSelectionHandler(IVec3* marks, int count, void* object);
-static void DoReplace(IVec3 min, IVec3 max, BlockID block, Brush* brush, bool replaceNot);
+static void ReplaceSelectionHandler(IVec3* marks, int count);
+static void DoReplace(IVec3 min, IVec3 max, BlockID block, bool replaceNot);
+
+static BlockID s_ReplacedBlock;
+static bool s_ReplaceNot;
 
 static struct ChatCommand ReplaceCommand = {
 	"Replace",
@@ -84,7 +80,7 @@ SPCCommand ReplaceNotSPCCommand = {
 	.canStatic = true
 };
 
-static void DoReplace(IVec3 min, IVec3 max, BlockID block, Brush* brush, bool replaceNot) {
+static void DoReplace(IVec3 min, IVec3 max, BlockID block, bool replaceNot) {
 	Draw_Start("Replace");
 	BlockID current;
 
@@ -94,7 +90,7 @@ static void DoReplace(IVec3 min, IVec3 max, BlockID block, Brush* brush, bool re
 				current = GetBlock(x, y, z);
 
 				if ((!replaceNot && current == block) || (replaceNot && current != block)) {
-					Draw_Brush(x, y, z, brush);
+					Draw_Brush(x, y, z);
 				}
 			}
 		}
@@ -104,38 +100,29 @@ static void DoReplace(IVec3 min, IVec3 max, BlockID block, Brush* brush, bool re
 	Message_BlocksAffected(blocksAffected);
 }
 
-static void ReplaceSelectionHandler(IVec3* marks, int count, void* object) {
+static void ReplaceSelectionHandler(IVec3* marks, int count) {
     if (count != 2) {
         return;
     }
 
-    ReplaceArguments* arguments = (ReplaceArguments*)object;
-    DoReplace(Min(marks[0], marks[1]), Max(marks[0], marks[1]),
-			arguments->block, arguments->brush, arguments->replaceNot);
-}
-
-static void CleanResources(void* args) {
-	ReplaceArguments* arguments = (ReplaceArguments*) args;
-	Brush_Free(arguments->brush);
-	free(arguments);
+    DoReplace(Min(marks[0], marks[1]), Max(marks[0], marks[1]), s_ReplacedBlock, s_ReplaceNot);
 }
 
 static void ShowUsage() {
 	Message_Player("Usage: &b/Replace[Not/All] <block> [brush/block]&f.");
 }
 
-static bool TryParseArguments(const cc_string* args, int argsCount, ReplaceArguments* out_arguments) {
+static bool TryParseArguments(const cc_string* args, int argsCount) {
 	if (argsCount == 0) {
 		ShowUsage();
 		return false;
 	}
 
-	if (!TryParseBlock(&args[0], &out_arguments->block)) {
+	if (!TryParseBlock(&args[0], &s_ReplacedBlock)) {
 		return false;
 	}
 
 	bool hasBlockOrBrush = (argsCount >= 2);
-	Brush* brush = Brush_CreateEmpty();
 
 	if (hasBlockOrBrush) {
 		bool isBlock = args[1].buffer[0] != '@';
@@ -144,46 +131,38 @@ static bool TryParseArguments(const cc_string* args, int argsCount, ReplaceArgum
 			return false;
 		}
 
-		if (!Parse_TryParseBlockOrBrush(&args[1], argsCount - 1, brush)) {
+		if (!Parse_TryParseBlockOrBrush(&args[1], argsCount - 1)) {
 			return false;
 		}
 
-		out_arguments->brush = brush;
 		return true;
-	} else {
-		if (!Brush_TryCreateNormal(BLOCK_AIR, true, brush)) {
-			return false;
-		}
-		out_arguments->brush = brush;
-		return true;
-	}
+	} 
+
+	Brush_LoadInventory();
+	return true;
 }
 
 static void Replace_Command(const cc_string* args, int argsCount) {
-	ReplaceArguments* arguments = allocate(1, sizeof(ReplaceArguments));
-	arguments->replaceNot = false;
+	s_ReplaceNot = false;
 	
-	if (!TryParseArguments(args, argsCount, arguments)) {
-		free(arguments);
+	if (!TryParseArguments(args, argsCount)) {
 		MarkSelection_Abort();
 		return;
 	}
 
-    MarkSelection_Make(ReplaceSelectionHandler, 2, arguments, CleanResources);
+    MarkSelection_Make(ReplaceSelectionHandler, 2);
     Message_Player("Place or break two blocks to determine the edges.");
 }
 
 static void ReplaceAll_Command(const cc_string* args, int argsCount) {
-	ReplaceArguments* arguments = allocate(1, sizeof(ReplaceArguments));
-	arguments->replaceNot = false;
+	s_ReplaceNot  = false;
 	
-	if (!TryParseArguments(args, argsCount, arguments)) {
-		free(arguments);
+	if (!TryParseArguments(args, argsCount)) {
 		MarkSelection_Abort();
 		return;
 	}
 
-    MarkSelection_Make(ReplaceSelectionHandler, 2, arguments, CleanResources);
+    MarkSelection_Make(ReplaceSelectionHandler, 2);
 
     IVec3 low = { .X = 0, .Y = 0, .Z = 0 };
     IVec3 high = { .X = World.Width - 1, .Y = World.Height - 1, .Z = World.Length - 1 };
@@ -193,15 +172,13 @@ static void ReplaceAll_Command(const cc_string* args, int argsCount) {
 }
 
 static void ReplaceNot_Command(const cc_string* args, int argsCount) {
-	ReplaceArguments* arguments = allocate(1, sizeof(ReplaceArguments));
-	arguments->replaceNot = true;
+	s_ReplaceNot = true;
 	
-	if (!TryParseArguments(args, argsCount, arguments)) {
-		free(arguments);
+	if (!TryParseArguments(args, argsCount)) {
 		MarkSelection_Abort();
 		return;
 	}
 
-    MarkSelection_Make(ReplaceSelectionHandler, 2, arguments, CleanResources);
+    MarkSelection_Make(ReplaceSelectionHandler, 2);
     Message_Player("Place or break two blocks to determine the edges.");
 }
