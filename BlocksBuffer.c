@@ -221,5 +221,5 @@ static IVec3 ApplyPermutation(S3 permutation, IVec3 vector) {
 }
 
 static int Pack(IVec3 vector) {
-	return vector.X + (vector.Y * s_Buffer.dimensions.X) + vector.Z * (s_Buffer.dimensions.X * s_Buffer.dimensions.Y);
+	return vector.Z + (vector.Y * s_Buffer.dimensions.Z) + vector.X * (s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
 }
