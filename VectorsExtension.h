@@ -1,7 +1,8 @@
 #ifndef VECTORS_H
 #define VECTORS_H
 
-#include "CC_API/Vectors.h"
+#include "ClassiCube/src/Vectors.h"
+
 #include "Axis.h"
 
 typedef struct IVec2_ {

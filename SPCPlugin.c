@@ -8,11 +8,11 @@
     #define EXPORT __attribute__((visibility("default")))
 #endif
 
-#include "CC_API/Chat.h"
-#include "CC_API/Game.h"
-#include "CC_API/Entity.h"
-#include "CC_API/Event.h"
-#include "CC_API/Server.h"
+#include "ClassiCube/src/Chat.h"
+#include "ClassiCube/src/Game.h"
+#include "ClassiCube/src/Entity.h"
+#include "ClassiCube/src/Event.h"
+#include "ClassiCube/src/Server.h"
 
 #include "SPCCommand.h"
 #include "UndoTree.h"

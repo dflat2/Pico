@@ -1,7 +1,7 @@
 #ifndef PARSING_UTILS_H
 #define PARSING_UTILS_H
 
-#include "CC_API/String.h"
+#include "ClassiCube/src/String.h"
 
 #include "Axis.h"
 #include "Brush.h"

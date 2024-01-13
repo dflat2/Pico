@@ -3,8 +3,8 @@
 
 #include <time.h>
 
-#include "CC_API/Vectors.h"
-#include "CC_API/Block.h"
+#include "ClassiCube/src/Vectors.h"
+#include "ClassiCube/src/Block.h"
 
 void Format_HHMMSS(time_t time, char* buffer, size_t max);
 void Format_Block(BlockID block, char* buffer, size_t max);

@@ -1,5 +1,5 @@
-#include "CC_API/Chat.h"
-#include "CC_API/World.h"
+#include "ClassiCube/src/Chat.h"
+#include "ClassiCube/src/World.h"
 
 #include "Messaging.h"
 #include "MarkSelection.h"

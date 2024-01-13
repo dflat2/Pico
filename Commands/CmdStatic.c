@@ -1,4 +1,4 @@
-#include "CC_API/Chat.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "SPCCommand.h"
 #include "MarkSelection.h"

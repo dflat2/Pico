@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "CC_API/Chat.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "Messaging.h"
 #include "UndoTree.h"

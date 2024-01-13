@@ -1,5 +1,5 @@
-#include "CC_API/Chat.h"
-#include "CC_API/Entity.h"
+#include "ClassiCube/src/Chat.h"
+#include "ClassiCube/src/Entity.h"
 
 #include "Messaging.h"
 #include "SPCCommand.h"

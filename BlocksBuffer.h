@@ -1,9 +1,9 @@
 #ifndef BLOCKS_BUFFER_H
 #define BLOCKS_BUFFER_H
 
-#include "CC_API/Vectors.h"
-#include "CC_API/Core.h"
+#include "ClassiCube/src/Core.h"
 
+#include "VectorsExtension.h"
 #include "Axis.h"
 
 typedef struct BlocksBuffer_ {

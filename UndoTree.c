@@ -1,17 +1,16 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "CC_API/World.h"
-#include "CC_API/Game.h"
-#include "CC_API/Chat.h"
-#include "CC_API/Event.h"
+#include "ClassiCube/src/World.h"
+#include "ClassiCube/src/Game.h"
+#include "ClassiCube/src/Chat.h"
+#include "ClassiCube/src/Event.h"
 
 #include "MemoryAllocation.h"
 #include "Messaging.h"
 #include "UndoTree.h"
 #include "Format.h"
 #include "MarkSelection.h"
-
 #include "List.h"
 
 typedef struct BlockChangeEntry_ {

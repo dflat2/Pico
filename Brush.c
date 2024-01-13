@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#include "CC_API/String.h"
-#include "CC_API/Chat.h"
+#include "ClassiCube/src/String.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "Brushes.h"
 #include "List.h"

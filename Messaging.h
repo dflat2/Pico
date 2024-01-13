@@ -1,7 +1,7 @@
 #ifndef MESSAGING_H
 #define MESSAGING_H
 
-#include "CC_API/String.h"
+#include "ClassiCube/src/String.h"
 
 void Message_BlocksAffected(int blocksAffected);
 void Message_MessageOf(const char* message, int messageType);

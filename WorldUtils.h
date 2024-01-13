@@ -3,8 +3,8 @@
 
 #include <stdbool.h>
 
-#include "CC_API/Core.h"
-#include "CC_API/Vectors.h"
+#include "ClassiCube/src/Core.h"
+#include "ClassiCube/src/Vectors.h"
 
 IVec3 SnapToWorldBoundaries(IVec3 position);
 IVec3 GetCurrentPlayerPosition();

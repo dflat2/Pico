@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#include "CC_API/Chat.h"
-#include "CC_API/String.h"
+#include "ClassiCube/src/Chat.h"
+#include "ClassiCube/src/String.h"
 
 void Message_Player(const char* message) {
 	cc_string ccStringMessage = String_FromReadonly(message);

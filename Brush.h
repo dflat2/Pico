@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#include "CC_API/Core.h"
+#include "ClassiCube/src/Core.h"
 
 typedef struct Brush_ {
 	char* name;

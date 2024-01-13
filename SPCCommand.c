@@ -1,4 +1,5 @@
 #include <stdio.h>
+
 #include "SPCCommand.h"
 #include "List.h"
 #include "MemoryAllocation.h"

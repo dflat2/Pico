@@ -1,7 +1,7 @@
 #ifndef I_VEC3_FAST_QUEUE_H
 #define I_VEC3_FAST_QUEUE_H
 
-#include "CC_API/Vectors.h"
+#include "ClassiCube/src/Vectors.h"
 
 #include <stdbool.h>
 

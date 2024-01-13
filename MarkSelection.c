@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include "CC_API/Event.h"
-#include "CC_API/Game.h"
-#include "CC_API/Inventory.h"
+#include "ClassiCube/src/Event.h"
+#include "ClassiCube/src/Game.h"
+#include "ClassiCube/src/Inventory.h"
 
 #include "MarkSelection.h"
 #include "Messaging.h"

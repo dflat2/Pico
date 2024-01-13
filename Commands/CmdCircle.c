@@ -2,15 +2,15 @@
 #include <math.h>
 #include <stdio.h>
 
-#include "CC_API/Chat.h"
-#include "CC_API/Core.h"
-#include "CC_API/Game.h"
-#include "CC_API/Inventory.h"
+#include "ClassiCube/src/Chat.h"
+#include "ClassiCube/src/Core.h"
+#include "ClassiCube/src/Game.h"
+#include "ClassiCube/src/Inventory.h"
 
 #include "MarkSelection.h"
 #include "MemoryAllocation.h"
 #include "Messaging.h"
-#include "Vectors.h"
+#include "VectorsExtension.h"
 #include "ParsingUtils.h"
 #include "Axis.h"
 #include "SPCCommand.h"

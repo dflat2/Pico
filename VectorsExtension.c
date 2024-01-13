@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include "Vectors.h"
+#include "VectorsExtension.h"
 
 IVec3 Min(IVec3 a, IVec3 b) {
     IVec3 result;

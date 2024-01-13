@@ -1,13 +1,13 @@
 #include <stdio.h>
 
-#include "CC_API/Chat.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "Draw.h"
 #include "BlocksBuffer.h"
 #include "MarkSelection.h"
 #include "MemoryAllocation.h"
 #include "Messaging.h"
-#include "Vectors.h"
+#include "VectorsExtension.h"
 #include "WorldUtils.h"
 #include "Array.h"
 #include "SPCCommand.h"

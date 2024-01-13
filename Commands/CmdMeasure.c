@@ -1,13 +1,13 @@
 #include <stdio.h>
 
-#include "CC_API/Block.h"
-#include "CC_API/Chat.h"
+#include "ClassiCube/src/Block.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "Messaging.h"
 #include "MemoryAllocation.h"
 #include "WorldUtils.h"
 #include "MarkSelection.h"
-#include "Vectors.h"
+#include "VectorsExtension.h"
 #include "SPCCommand.h"
 
 static void Measure_Command(const cc_string* args, int argsCount);

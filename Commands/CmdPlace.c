@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#include "CC_API/Chat.h"
-#include "CC_API/Inventory.h"
+#include "ClassiCube/src/Chat.h"
+#include "ClassiCube/src/Inventory.h"
 
 #include "WorldUtils.h"
 #include "Messaging.h"

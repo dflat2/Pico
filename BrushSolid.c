@@ -1,5 +1,5 @@
-#include "CC_API/BlockID.h"
-#include "CC_API/Inventory.h"
+#include "ClassiCube/src/BlockID.h"
+#include "ClassiCube/src/Inventory.h"
 
 #include "ParsingUtils.h"
 #include "Messaging.h"

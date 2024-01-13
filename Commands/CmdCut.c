@@ -1,12 +1,12 @@
 #include <stdio.h>
 
-#include "CC_API/Chat.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "BlocksBuffer.h"
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Messaging.h"
-#include "Vectors.h"
+#include "VectorsExtension.h"
 #include "SPCCommand.h"
 
 static void CutSelectionHandler(IVec3* marks, int count);

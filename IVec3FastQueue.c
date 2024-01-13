@@ -1,4 +1,4 @@
-#include "CC_API/Vectors.h"
+#include "ClassiCube/src/Vectors.h"
 
 #include <stdlib.h>
 #include <stdbool.h>

@@ -1,8 +1,8 @@
 #ifndef SPC_COMMAND_H
 #define SPC_COMMAND_H
 
-#include "CC_API/String.h"
-#include "CC_API/Chat.h"
+#include "ClassiCube/src/String.h"
+#include "ClassiCube/src/Chat.h"
 
 typedef struct SPCCommand_ {
 	struct ChatCommand* chatCommand;

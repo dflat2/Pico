@@ -1,12 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "CC_API/Chat.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Messaging.h"
-#include "Vectors.h"
+#include "VectorsExtension.h"
 #include "SPCCommand.h"
 
 static void Center_Command(const cc_string* args, int argsCount);

@@ -1,7 +1,8 @@
 #ifndef MARK_SELECTION_H
 #define MARK_SELECTION_H
 
-#include "CC_API/Vectors.h"
+#include "ClassiCube/src/Vectors.h"
+
 #include <stdbool.h>
 
 typedef void (*SelectionHandler)(IVec3* marks, int count);
