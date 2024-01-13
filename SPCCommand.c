@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "SPCCommand.h"
-#include "List.h"
+#include "DataStructures/List.h"
 #include "MemoryAllocation.h"
 
 static List* s_Commands = NULL;

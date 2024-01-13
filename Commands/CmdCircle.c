@@ -12,7 +12,7 @@
 #include "Messaging.h"
 #include "VectorsExtension.h"
 #include "ParsingUtils.h"
-#include "Axis.h"
+#include "DataStructures/Axis.h"
 #include "SPCCommand.h"
 #include "Draw.h"
 

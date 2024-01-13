@@ -2,7 +2,7 @@
 
 #include "ClassiCube/src/Chat.h"
 
-#include "BlocksBuffer.h"
+#include "DataStructures/BlocksBuffer.h"
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Messaging.h"

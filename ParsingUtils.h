@@ -3,7 +3,7 @@
 
 #include "ClassiCube/src/String.h"
 
-#include "Axis.h"
+#include "DataStructures/Axis.h"
 #include "Brush.h"
 
 typedef void (*CommandFunc)(const cc_string* args, int argsCount);

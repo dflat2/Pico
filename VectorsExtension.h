@@ -3,7 +3,7 @@
 
 #include "ClassiCube/src/Vectors.h"
 
-#include "Axis.h"
+#include "DataStructures/Axis.h"
 
 typedef struct IVec2_ {
     int X;

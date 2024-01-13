@@ -8,7 +8,7 @@
 #include "Messaging.h"
 #include "VectorsExtension.h"
 #include "ParsingUtils.h"
-#include "Array.h"
+#include "DataStructures/Array.h"
 #include "SPCCommand.h"
 #include "WorldUtils.h"
 

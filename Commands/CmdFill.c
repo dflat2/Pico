@@ -9,12 +9,12 @@
 #include "MemoryAllocation.h"
 #include "Messaging.h"
 #include "ParsingUtils.h"
-#include "Array.h"
+#include "DataStructures/Array.h"
 #include "SPCCommand.h"
-#include "List.h"
+#include "DataStructures/List.h"
 #include "WorldUtils.h"
-#include "BinaryMap.h"
-#include "IVec3FastQueue.h"
+#include "DataStructures/BinaryMap.h"
+#include "DataStructures/IVec3FastQueue.h"
 
 #define MAX_NEIGHBORS 6
 

@@ -11,7 +11,7 @@
 #include "UndoTree.h"
 #include "Format.h"
 #include "MarkSelection.h"
-#include "List.h"
+#include "DataStructures/List.h"
 
 typedef struct BlockChangeEntry_ {
 	int x;

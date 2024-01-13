@@ -4,7 +4,7 @@
 #include "ClassiCube/src/Chat.h"
 
 #include "Brushes.h"
-#include "List.h"
+#include "DataStructures/List.h"
 
 static void FillListBrushes();
 static bool TryFindBrush(const cc_string* name, Brush** brush);

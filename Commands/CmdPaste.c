@@ -3,13 +3,13 @@
 #include "ClassiCube/src/Chat.h"
 
 #include "Draw.h"
-#include "BlocksBuffer.h"
+#include "DataStructures/BlocksBuffer.h"
 #include "MarkSelection.h"
 #include "MemoryAllocation.h"
 #include "Messaging.h"
 #include "VectorsExtension.h"
 #include "WorldUtils.h"
-#include "Array.h"
+#include "DataStructures/Array.h"
 #include "SPCCommand.h"
 
 static void Paste_Command(const cc_string* args, int argsCount);

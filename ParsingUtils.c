@@ -2,7 +2,7 @@
 
 #include "Messaging.h"
 #include "ParsingUtils.h"
-#include "Axis.h"
+#include "DataStructures/Axis.h"
 
 #define SUCCESS 1
 #define FAILURE 0

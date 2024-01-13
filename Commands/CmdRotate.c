@@ -2,8 +2,8 @@
 
 #include "ClassiCube/src/Chat.h"
 
-#include "Axis.h"
-#include "BlocksBuffer.h"
+#include "DataStructures/Axis.h"
+#include "DataStructures/BlocksBuffer.h"
 #include "MarkSelection.h"
 #include "ParsingUtils.h"
 #include "Messaging.h"
