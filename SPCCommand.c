@@ -30,6 +30,7 @@ extern SPCCommand ReplaceNotSPCCommand;
 extern SPCCommand ReplaceSPCCommand;
 extern SPCCommand RotateSPCCommand;
 extern SPCCommand StaticSPCCommand;
+extern SPCCommand TreeSPCCommand;
 extern SPCCommand UndoListSPCCommand;
 extern SPCCommand UndoSPCCommand;
 extern SPCCommand UndoTreeSPCCommand;
@@ -60,6 +61,7 @@ void SPCCommand_RegisterAll() {
 	Register(&ReplaceSPCCommand);
 	Register(&RotateSPCCommand);
 	Register(&StaticSPCCommand);
+	Register(&TreeSPCCommand);
 	Register(&UndoListSPCCommand);
 	Register(&UndoSPCCommand);
 	Register(&UndoTreeSPCCommand);
