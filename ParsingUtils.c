@@ -18,7 +18,6 @@ typedef enum TimeUnit_ {
 static bool TryParseDuration_Second(const cc_string* string, int* cursor, int* out_result_Second, TimeUnit* out_setUnit);
 static bool TryParseTimeUnit(const cc_string* string, int* cursor, TimeUnit* out_unit);
 static bool TryParsePositiveNumber(const cc_string* string, int* cursor, int* out_number);
-static bool TryParseNumber(const cc_string* string, int* out_number);
 static bool IsDigit(char character);
 
 bool TryParseBlock(const cc_string* blockString, BlockID* block) {
@@ -127,7 +126,7 @@ bool Parse_TryParseAxis(const cc_string* string, Axis* out_axis) {
 }
 
 bool Parse_TryParseDegrees(const cc_string* string, int* out_degrees) {
-	if (!TryParseNumber(string, out_degrees)) {
+	if (!Parse_TryParseNumber(string, out_degrees)) {
 		Message_ShowInvalidDegrees(string);
 		return false;
 	}
@@ -165,7 +164,7 @@ static bool TryParsePositiveNumber(const cc_string* string, int* cursor, int* ou
     return true;
 }
 
-static bool TryParseNumber(const cc_string* string, int* out_number) {
+bool Parse_TryParseNumber(const cc_string* string, int* out_number) {
 	bool isNegative = false;
 	int start = 0;
 

@@ -10,6 +10,7 @@ extern SPCCommand AbortSPCCommand;
 extern SPCCommand AscendSPCCommand;
 extern SPCCommand BrushesSPCCommand;
 extern SPCCommand CenterSPCCommand;
+extern SPCCommand CircleSPCCommand;
 extern SPCCommand CopySPCCommand;
 extern SPCCommand CutSPCCommand;
 extern SPCCommand DescendSPCCommand;
@@ -39,6 +40,7 @@ void SPCCommand_RegisterAll() {
 	Register(&AscendSPCCommand);
 	Register(&BrushesSPCCommand);
 	Register(&CenterSPCCommand);
+	Register(&CircleSPCCommand);
 	Register(&CopySPCCommand);
 	Register(&CutSPCCommand);
 	Register(&DescendSPCCommand);
