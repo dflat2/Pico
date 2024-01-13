@@ -3,7 +3,7 @@
 
 #include "ClassiCube/src/Block.h"
 
-#include "Brush.h"
+#include "Brushes/Brush.h"
 
 void Draw_Start(char* description);
 void Draw_Block(int x, int y, int z, BlockID block);

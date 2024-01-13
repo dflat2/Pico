@@ -4,7 +4,7 @@
 #include "ClassiCube/src/String.h"
 
 #include "DataStructures/Axis.h"
-#include "Brush.h"
+#include "Brushes/Brush.h"
 
 typedef void (*CommandFunc)(const cc_string* args, int argsCount);
 

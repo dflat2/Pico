@@ -1,6 +1,6 @@
 #include "ClassiCube/src/Game.h"
 
-#include "Brush.h"
+#include "Brushes/Brush.h"
 #include "UndoTree.h"
 #include "WorldUtils.h"
 
