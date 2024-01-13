@@ -24,7 +24,6 @@ static void Circle_Command(const cc_string* args, int argsCount);
 static void MidPointCircleOctant2D(IVec2* out_octant, int* out_count);
 static void DoCircle();
 static void ShowUsage();
-static void Circle_Command(const cc_string* args, int argsCount);
 
 struct ChatCommand CircleCommand = {
 	"Circle",
