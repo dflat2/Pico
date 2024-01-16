@@ -3,6 +3,8 @@
 #include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/String.h"
 
+#include "Format.h"
+
 void Message_Player(const char* message) {
 	cc_string ccStringMessage = String_FromReadonly(message);
 	Chat_Add(&ccStringMessage);
@@ -70,4 +72,18 @@ void Message_ShowInvalidDegrees(const cc_string* string) {
     String_Format1(&message, "&fInvalid degrees: &b%s&f.", string);
     Chat_Add(&message);
 	Message_Player("Degrees must be integers, multiples of 90.");
+}
+
+void Message_UndoDisabled(const char* action) {
+	char cannotDoMsg[64];
+	snprintf(cannotDoMsg, sizeof(cannotDoMsg), "Cannot &b%s&f, as the &bUndoTree is disabled.", action);
+	Message_Player(cannotDoMsg);
+}
+
+void Message_UndoCheckedOut(int commit, int timestamp) {
+	char timestampString[] = "00:00:00";
+    Format_HHMMSS(timestamp, timestampString, sizeof(timestampString));
+	char successMsg[64];
+	snprintf(successMsg, sizeof(successMsg), "Checked out operation &b%d&f [&b%s&f].", commit, timestampString);
+	Message_Player(successMsg);
 }

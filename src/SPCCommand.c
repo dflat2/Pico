@@ -11,12 +11,15 @@ extern SPCCommand AbortSPCCommand;
 extern SPCCommand AscendSPCCommand;
 extern SPCCommand BrushesSPCCommand;
 extern SPCCommand CenterSPCCommand;
+extern SPCCommand CheckoutSPCCommand;
 extern SPCCommand CircleSPCCommand;
 extern SPCCommand CopySPCCommand;
 extern SPCCommand CutSPCCommand;
 extern SPCCommand DescendSPCCommand;
+extern SPCCommand EarlierSPCCommand;
 extern SPCCommand FillSPCCommand;
 extern SPCCommand FlipSPCCommand;
+extern SPCCommand LaterSPCCommand;
 extern SPCCommand LineSPCCommand;
 extern SPCCommand MarkAllSPCCommand;
 extern SPCCommand MarkSPCCommand;
@@ -35,7 +38,6 @@ extern SPCCommand StaticSPCCommand;
 extern SPCCommand TreeSPCCommand;
 extern SPCCommand UndoListSPCCommand;
 extern SPCCommand UndoSPCCommand;
-extern SPCCommand UndoTreeSPCCommand;
 extern SPCCommand ZSPCCommand;
 
 void SPCCommand_RegisterAll() {
@@ -43,12 +45,15 @@ void SPCCommand_RegisterAll() {
 	Register(&AscendSPCCommand);
 	Register(&BrushesSPCCommand);
 	Register(&CenterSPCCommand);
+	Register(&CheckoutSPCCommand);
 	Register(&CircleSPCCommand);
 	Register(&CopySPCCommand);
 	Register(&CutSPCCommand);
 	Register(&DescendSPCCommand);
+	Register(&EarlierSPCCommand);
 	Register(&FillSPCCommand);
 	Register(&FlipSPCCommand);
+	Register(&LaterSPCCommand);
 	Register(&LineSPCCommand);
 	Register(&MarkAllSPCCommand);
 	Register(&MarkSPCCommand);
@@ -67,7 +72,6 @@ void SPCCommand_RegisterAll() {
 	Register(&TreeSPCCommand);
 	Register(&UndoListSPCCommand);
 	Register(&UndoSPCCommand);
-	Register(&UndoTreeSPCCommand);
 	Register(&ZSPCCommand);
 }
 
