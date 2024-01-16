@@ -64,9 +64,27 @@ int Dot(const IVec3 a, const IVec3 b) {
     return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
 }
 
+int IVec2_Dot(const IVec2 a, const IVec2 b) {
+    return a.X * b.X + a.Y * b.Y;
+}
+
 double Distance(IVec3 a, IVec3 b) {
     IVec3 difference = Substract(a, b);
     return sqrt(Dot(difference, difference));
+}
+
+double IVec2_Distance(IVec2 a, IVec2 b) {
+    IVec2 difference = IVec2_Substract(a, b);
+    return sqrt(IVec2_Dot(a, b));
+}
+
+IVec2 IVec2_Substract(const IVec2 a, const IVec2 b) {
+	IVec2 result = {
+		.X = a.X - b.X,
+		.Y = a.Y - b.Y,
+	};
+
+	return result;
 }
 
 FVec3 FVec3_ScalarMultiply(const FVec3 vector, float t) {

@@ -13,16 +13,23 @@
 #include "VectorsExtension.h"
 #include "ParsingUtils.h"
 #include "DataStructures/Axis.h"
+#include "DataStructures/Array.h"
 #include "SPCCommand.h"
 #include "Draw.h"
 
+typedef enum CircleMode_ {
+	MODE_SOLID = 0,
+	MODE_HOLLOW = 1,
+} CircleMode;
+
+static CircleMode s_Mode;
 static Axis s_Axis;
 static int s_Radius;
 static IVec3 s_Center;
 
 static void Circle_Command(const cc_string* args, int argsCount);
-static void MidPointCircleOctant2D(IVec2* out_octant, int* out_count);
 static void DoCircle();
+static bool ShouldDraw(IVec2 vector);
 static void ShowUsage();
 
 struct ChatCommand CircleCommand = {
@@ -30,11 +37,11 @@ struct ChatCommand CircleCommand = {
 	Circle_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Circle <radius> <axis> [brush/block]",
-        "&fDraws a circle of radius &b<radius>&f.",
-        "&b<axis> &fmust be &bX&f, &bY&f (default) or &bZ&f.",
+		"&b/Circle <radius> <axis> [mode] [brush/block]",
+        "Draws a circle of radius &b<radius>&f.",
+        "&b<axis> &fmust be &bX&f, &bY&f or &bZ&f.",
+        "List of modes: &bsolid&f (default) or &bhollow&f.",
         NULL,
-		NULL
 	},
 	NULL
 };
@@ -44,82 +51,35 @@ SPCCommand CircleSPCCommand = {
 	.canStatic = true
 };
 
-static void MidPointCircleOctant2D(IVec2* out_octant, int* out_count) {
-    *out_count = 0;
-
-    IVec2 here = { .X = s_Radius, .Y = 0 };
-    IVec2 northEast;
-    IVec2 north;
-    float midPointX;
-    float midPointY;
-    bool isMidPointInCircle;
-
-    while (here.X != here.Y) {
-        out_octant[*out_count] = here;
-        (*out_count)++;
-
-        northEast.X = here.X - 1;
-        northEast.Y = here.Y + 1;
-        north.X = here.X;
-        north.Y = here.Y + 1;
-
-        midPointX = ((float)northEast.X + (float)north.X) / 2.0;
-        midPointY = here.Y + 1;
-
-        isMidPointInCircle = (midPointX * midPointX + midPointY * midPointY) <= (s_Radius * s_Radius);
-
-        if (isMidPointInCircle) {
-            here = north;
-        }
-        else {
-            here = northEast;
-        }
-    }
-
-    out_octant[*out_count] = here;
-    (*out_count)++;
-}
-
-static void ReflectOctant(IVec2 octantVector, IVec2* out_reflections) {
-    out_reflections[0] = octantVector;
-    out_reflections[1].X = octantVector.Y;
-    out_reflections[1].Y = octantVector.X;
-    out_reflections[2].X = -octantVector.X;
-    out_reflections[2].Y = octantVector.Y;
-    out_reflections[3].X = octantVector.Y;
-    out_reflections[3].Y = -octantVector.X;
-    out_reflections[4].X = octantVector.X;
-    out_reflections[4].Y = -octantVector.Y;
-    out_reflections[5].X = -octantVector.Y;
-    out_reflections[5].Y = octantVector.X;
-    out_reflections[6].X = -octantVector.X;
-    out_reflections[6].Y = -octantVector.Y;
-    out_reflections[7].X = -octantVector.Y;
-    out_reflections[7].Y = -octantVector.X;
-}
-
 static void DoCircle() {
-    // `radius` is always an upper bound for the number of blocks in an octant.
-    IVec2* octant = allocate(s_Radius, sizeof(IVec2));
-    int count = 0;
-    MidPointCircleOctant2D(octant, &count);
-
-    IVec3 here;
-    IVec2 reflections[8];
-
     Draw_Start("Circle");
+    IVec3 current;
+    IVec2 current2D;
 
-    for (int i = 0; i < count; i++) {
-        ReflectOctant(octant[i], reflections);
+    for (int i = -s_Radius; i <= s_Radius; i++) {
+        for (int j = -s_Radius; j <= s_Radius; j++) {
+            current2D.X = i;
+            current2D.Y = j;
 
-        for (int j = 0; j < 8; j++) {
-            here = Add(s_Center, Transform2DTo3D(reflections[j], s_Axis));
-            Draw_Brush(here.X, here.Y, here.Z);
+            if (ShouldDraw(current2D)) {
+                current = Add(s_Center, Transform2DTo3D(current2D, s_Axis));
+                Draw_Brush(current.X, current.Y, current.Z);
+            }
         }
     }
 
     int blocksAffected = Draw_End();
 	Message_BlocksAffected(blocksAffected);
+}
+
+static bool ShouldDraw(IVec2 vector) {
+    double distance = sqrt(IVec2_Dot(vector, vector));
+
+    if (s_Mode == MODE_SOLID) {
+        return distance <= s_Radius;
+    }
+
+    return s_Radius - 1 <= distance && distance <= s_Radius;
 }
 
 static void CircleSelectionHandler(IVec3* marks, int count) {
@@ -154,17 +114,33 @@ static void Circle_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    bool hasBlockOrBrush = argsCount >= 3;
+    cc_string modesString[] = {
+        String_FromConst("solid"),
+        String_FromConst("hollow"),
+    };
+
+	size_t modesCount = sizeof(modesString) / sizeof(modesString[0]);
+
+	bool hasMode = (argsCount >= 3) && Array_ContainsString(&args[2], modesString, modesCount);
+    bool hasBlockOrBrush = (argsCount >= 4) || (argsCount == 3) && !hasMode;
+
+	if (hasMode) {
+		s_Mode = Array_IndexOfStringCaseless(&args[2], modesString, modesCount);
+	} else {
+		s_Mode = MODE_SOLID;
+	}
+
+    int blockOrBrushIndex = hasMode ? 3 : 2;
 
     if (hasBlockOrBrush) {
         // Checks that there are no trailing blocks in the command.
-        bool isBlock = args[2].buffer[0] != '@';
-        if (isBlock && argsCount > 3) {
+        bool isBlock = args[blockOrBrushIndex].buffer[0] != '@';
+        if (isBlock && argsCount > blockOrBrushIndex + 1) {
             ShowUsage();
             return;
         }
 
-        if (!Parse_TryParseBlockOrBrush(&args[2], argsCount - 2)) {
+        if (!Parse_TryParseBlockOrBrush(&args[blockOrBrushIndex], argsCount - blockOrBrushIndex)) {
             return;
         }
 	} else {
