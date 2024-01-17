@@ -3,11 +3,10 @@
 #include "MarkSelection.h"
 #include "WorldUtils.h"
 #include "Messaging.h"
-#include "SPCCommand.h"
 
 static void Mark_Command(const cc_string* args, int argsCount);
 
-static struct ChatCommand MarkCommand = {
+struct ChatCommand MarkCommand = {
 	"Mark",
 	Mark_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -20,12 +19,6 @@ static struct ChatCommand MarkCommand = {
 	},
 	NULL
 };
-
-SPCCommand MarkSPCCommand = {
-	.chatCommand = &MarkCommand,
-	.canStatic = false
-};
-
 
 static void Mark_Command(const cc_string* args, int argsCount) {
     if (argsCount == 0) {

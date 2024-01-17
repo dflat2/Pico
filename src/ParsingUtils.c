@@ -45,6 +45,15 @@ bool Parse_CommandFunc(cc_string argument, NamedCommandFunc* commands, int count
 	return FAILURE;
 }
 
+bool Parse_LastArgumentIsRepeat(const cc_string* arguments, int count) {
+    if (count == 0) {
+		return false;
+	}
+
+	const cc_string* lastArgument = &arguments[count - 1];
+	return lastArgument->length == 1 && lastArgument->buffer[0] == '+';
+}
+
 bool Parse_DeltaTime_Second(const cc_string* string, int* out_total_Second) {
 	*out_total_Second = 0;
 

@@ -4,7 +4,6 @@
 #include "ClassiCube/src/World.h"
 
 #include "Messaging.h"
-#include "SPCCommand.h"
 #include "WorldUtils.h"
 
 static void Ascend_Command(const cc_string* args, int argsCount);
@@ -15,7 +14,7 @@ static bool CanStandOnBlock(int x, int y, int z);
 static bool IsSolidBlock(BlockID id);
 static bool CanPassThrough(BlockID id);
 
-static struct ChatCommand AscendCommand = {
+struct ChatCommand AscendCommand = {
 	"Ascend",
 	Ascend_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -29,12 +28,7 @@ static struct ChatCommand AscendCommand = {
 	NULL
 };
 
-SPCCommand AscendSPCCommand = {
-	.chatCommand = &AscendCommand,
-	.canStatic = false,
-};
-
-static struct ChatCommand DescendCommand = {
+struct ChatCommand DescendCommand = {
 	"Descend",
 	Descend_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -46,11 +40,6 @@ static struct ChatCommand DescendCommand = {
 		NULL
 	},
 	NULL
-};
-
-SPCCommand DescendSPCCommand = {
-	.chatCommand = &DescendCommand,
-	.canStatic = false,
 };
 
 static void Ascend_Command(const cc_string* args, int argsCount) {

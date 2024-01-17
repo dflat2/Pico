@@ -1,12 +1,13 @@
 #include <stdio.h>
 
+#include "ClassiCube/src/Chat.h"
+
 #include "Messaging.h"
-#include "SPCCommand.h"
 #include "UndoTree.h"
 
 static void Checkout_Command(const cc_string* args, int argsCount);
 
-static struct ChatCommand CheckoutCommand = {
+struct ChatCommand CheckoutCommand = {
 	"Checkout",
 	Checkout_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -18,11 +19,6 @@ static struct ChatCommand CheckoutCommand = {
 		NULL,
 	},
 	NULL
-};
-
-SPCCommand CheckoutSPCCommand = {
-	.chatCommand = &CheckoutCommand,
-	.canStatic = false
 };
 
 static void Checkout_Command(const cc_string* args, int argsCount) {

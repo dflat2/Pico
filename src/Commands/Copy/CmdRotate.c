@@ -7,12 +7,11 @@
 #include "MarkSelection.h"
 #include "ParsingUtils.h"
 #include "Messaging.h"
-#include "SPCCommand.h"
 
 static void ShowUsage();
 static void Rotate_Command(const cc_string* args, int argsCount);
 
-static struct ChatCommand RotateCommand = {
+struct ChatCommand RotateCommand = {
 	"Rotate",
 	Rotate_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -24,11 +23,6 @@ static struct ChatCommand RotateCommand = {
 		NULL
 	},
 	NULL
-};
-
-SPCCommand RotateSPCCommand = {
-	.chatCommand = &RotateCommand,
-	.canStatic = false
 };
 
 static void ShowUsage() {

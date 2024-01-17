@@ -10,7 +10,6 @@
 
 #include "MarkSelection.h"
 #include "Messaging.h"
-#include "SPCCommand.h"
 #include "Draw.h"
 
 static void Tree_Command(const cc_string* args, int argsCount);
@@ -28,11 +27,6 @@ struct ChatCommand TreeCommand = {
 		NULL
 	},
 	NULL
-};
-
-SPCCommand TreeSPCCommand = {
-	.chatCommand = &TreeCommand,
-	.canStatic = true
 };
 
 static void DrawTrunk(int x, int y, int z) {

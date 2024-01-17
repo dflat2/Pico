@@ -4,11 +4,10 @@
 
 #include "MarkSelection.h"
 #include "Messaging.h"
-#include "SPCCommand.h"
 
 static void Paint_Command(const cc_string* args, int argsCount);
 
-static struct ChatCommand PaintCommand = {
+struct ChatCommand PaintCommand = {
 	"Paint",
 	Paint_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -20,11 +19,6 @@ static struct ChatCommand PaintCommand = {
 		NULL
 	},
 	NULL
-};
-
-SPCCommand PaintSPCCommand = {
-	.chatCommand = &PaintCommand,
-	.canStatic = false
 };
 
 static void Paint_Command(const cc_string* args, int argsCount) {

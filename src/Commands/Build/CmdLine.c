@@ -11,7 +11,6 @@
 #include "VectorsExtension.h"
 #include "ParsingUtils.h"
 #include "DataStructures/Array.h"
-#include "SPCCommand.h"
 
 typedef enum LineMode_ {
 	MODE_NORMAL,
@@ -20,8 +19,10 @@ typedef enum LineMode_ {
 } LineMode;
 
 static LineMode s_Mode;
+static bool s_Repeat;
 
-static void Line_Command(const cc_string* args, int argsCount);
+static void Line_Command(const cc_string *args, int argsCount);
+static void MakeSelection();
 static bool TryParseArguments(const cc_string* args, int argsCount);
 static void ShowUsage();
 static void LineSelectionHandler(IVec3* marks, int count);
@@ -32,24 +33,20 @@ static int GreatestInteger2(int a, int b);
 static int GreatestInteger3(int a, int b, int c);
 static FVec3 Bezier(FVec3 from, FVec3 controlPoint, FVec3 to, float t);
 static void Line(IVec3 from, IVec3 to);
+static void MakeSelection();
 
-static struct ChatCommand LineCommand = {
+struct ChatCommand LineCommand = {
 	"Line",
 	Line_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Line [mode] [brush/block]",
+		"&b/Line [mode] [brush/block] [+]",
         "&fDraws a line between two points.",
 		"&fList of modes: &bnormal&f (default), &bwall&f, &bbezier&f.",
 		NULL,
 		NULL
 	},
 	NULL
-};
-
-SPCCommand LineSPCCommand = {
-	.chatCommand = &LineCommand,
-	.canStatic = true
 };
 
 static int GreatestInteger2(int a, int b) {
@@ -191,10 +188,14 @@ static void LineSelectionHandler(IVec3* marks, int count) {
 	} else if (s_Mode == MODE_BEZIER) {
 		DoBezier(marks[0], marks[1], marks[2]);
 	}
+
+	if (s_Repeat) {
+		MakeSelection();
+	}
 }
 
 static void ShowUsage() {
-	Message_Player("Usage: &b/Line normal/wall/bezier [brush/block]&f.");
+	Message_Player("Usage: &b/Line [mode] [brush/block] [+]&f.");
 }
 
 static bool TryParseArguments(const cc_string* args, int argsCount) {
@@ -250,16 +251,30 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 }
 
 static void Line_Command(const cc_string* args, int argsCount) {
+	if (Parse_LastArgumentIsRepeat(args, argsCount)) {
+		argsCount -= 1;
+		s_Repeat = true;
+	} else {
+		s_Repeat = false;
+	}
+
 	if (!TryParseArguments(args, argsCount)) {
-		MarkSelection_Abort();
 		return;
 	}
 
-	if (s_Mode != MODE_BEZIER) {
-		MarkSelection_Make(LineSelectionHandler, 2);
-		Message_Player("&fPlace or break two blocks to determine the endpoints.");
-	} else {
-		MarkSelection_Make(LineSelectionHandler, 3);
-		Message_Player("Place or break two blocks to determine the endpoints, then another for the direction.");
+	if (s_Repeat) {
+		Message_Player("Now repeating &bLine&f.");
 	}
+
+    MakeSelection();
+}
+
+static void MakeSelection() {
+    if (s_Mode != MODE_BEZIER) {
+        MarkSelection_Make(LineSelectionHandler, 2);
+        Message_Player("&fPlace or break two blocks to determine the endpoints.");
+    } else {
+        MarkSelection_Make(LineSelectionHandler, 3);
+        Message_Player("Place or break three blocks (the second one is the control point);");
+    }
 }

@@ -14,7 +14,7 @@
 #include "ClassiCube/src/Event.h"
 #include "ClassiCube/src/Server.h"
 
-#include "SPCCommand.h"
+#include "Commands/Commands.h"
 #include "UndoTree.h"
 #include "MarkSelection.h"
 
@@ -56,7 +56,7 @@ static void SinglePlayerCommandsPlugin_Init(void) {
 		return;
 	}
 
-	SPCCommand_RegisterAll();
+	Commands_RegisterAll();
 	RegisterChatSending();
 	EnableUndoWhenMapLoaded();
 	MarkSelection_Abort();

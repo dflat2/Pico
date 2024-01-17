@@ -1,0 +1,67 @@
+#include "ClassiCube/src/Chat.h"
+
+extern struct ChatCommand AbortCommand;
+extern struct ChatCommand AscendCommand;
+extern struct ChatCommand BrushesCommand;
+extern struct ChatCommand CenterCommand;
+extern struct ChatCommand CheckoutCommand;
+extern struct ChatCommand CircleCommand;
+extern struct ChatCommand CopyCommand;
+extern struct ChatCommand CutCommand;
+extern struct ChatCommand DescendCommand;
+extern struct ChatCommand EarlierCommand;
+extern struct ChatCommand FillCommand;
+extern struct ChatCommand FlipCommand;
+extern struct ChatCommand LaterCommand;
+extern struct ChatCommand LineCommand;
+extern struct ChatCommand MarkAllCommand;
+extern struct ChatCommand MarkCommand;
+extern struct ChatCommand MeasureCommand;
+extern struct ChatCommand PaintCommand;
+extern struct ChatCommand PasteCommand;
+extern struct ChatCommand PlaceCommand;
+extern struct ChatCommand ReachDistanceCommand;
+extern struct ChatCommand RedoCommand;
+extern struct ChatCommand ReplaceAllCommand;
+extern struct ChatCommand ReplaceNotCommand;
+extern struct ChatCommand ReplaceCommand;
+extern struct ChatCommand RotateCommand;
+extern struct ChatCommand SphereCommand;
+extern struct ChatCommand TreeCommand;
+extern struct ChatCommand UndoListCommand;
+extern struct ChatCommand UndoCommand;
+extern struct ChatCommand ZCommand;
+
+void Commands_RegisterAll() {
+	Commands_Register(&AbortCommand);
+	Commands_Register(&AscendCommand);
+	Commands_Register(&BrushesCommand);
+	Commands_Register(&CenterCommand);
+	Commands_Register(&CheckoutCommand);
+	Commands_Register(&CircleCommand);
+	Commands_Register(&CopyCommand);
+	Commands_Register(&CutCommand);
+	Commands_Register(&DescendCommand);
+	Commands_Register(&EarlierCommand);
+	Commands_Register(&FillCommand);
+	Commands_Register(&FlipCommand);
+	Commands_Register(&LaterCommand);
+	Commands_Register(&LineCommand);
+	Commands_Register(&MarkAllCommand);
+	Commands_Register(&MarkCommand);
+	Commands_Register(&MeasureCommand);
+	Commands_Register(&PaintCommand);
+	Commands_Register(&PasteCommand);
+	Commands_Register(&PlaceCommand);
+	Commands_Register(&ReachDistanceCommand);
+	Commands_Register(&RedoCommand);
+	Commands_Register(&ReplaceAllCommand);
+	Commands_Register(&ReplaceNotCommand);
+	Commands_Register(&ReplaceCommand);
+	Commands_Register(&RotateCommand);
+	Commands_Register(&SphereCommand);
+	Commands_Register(&TreeCommand);
+	Commands_Register(&UndoListCommand);
+	Commands_Register(&UndoCommand);
+	Commands_Register(&ZCommand);
+}

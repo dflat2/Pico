@@ -2,13 +2,12 @@
 #include "ClassiCube/src/Entity.h"
 
 #include "Messaging.h"
-#include "SPCCommand.h"
 
 static void ReachDistance_Command(const cc_string* args, int argsCount);
 static void ResetReachDistance(struct LocalPlayer* player);
 static void SetReachDistance(struct LocalPlayer* player, float reachDistance);
 
-static struct ChatCommand ReachDistanceCommand = {
+struct ChatCommand ReachDistanceCommand = {
 	"ReachDistance",
 	ReachDistance_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -21,12 +20,6 @@ static struct ChatCommand ReachDistanceCommand = {
 	},
 	NULL
 };
-
-SPCCommand ReachDistanceSPCCommand = {
-	.chatCommand = &ReachDistanceCommand,
-	.canStatic = false
-};
-
 
 #define DEFAULT_REACH_DISTANCE 5.0f
 

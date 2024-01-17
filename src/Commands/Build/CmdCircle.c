@@ -14,7 +14,6 @@
 #include "ParsingUtils.h"
 #include "DataStructures/Axis.h"
 #include "DataStructures/Array.h"
-#include "SPCCommand.h"
 #include "Draw.h"
 
 typedef enum CircleMode_ {
@@ -44,11 +43,6 @@ struct ChatCommand CircleCommand = {
         NULL,
 	},
 	NULL
-};
-
-SPCCommand CircleSPCCommand = {
-	.chatCommand = &CircleCommand,
-	.canStatic = true
 };
 
 static void DoCircle() {

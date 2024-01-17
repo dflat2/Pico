@@ -10,7 +10,6 @@
 #include "Messaging.h"
 #include "ParsingUtils.h"
 #include "DataStructures/Array.h"
-#include "SPCCommand.h"
 #include "DataStructures/List.h"
 #include "WorldUtils.h"
 #include "DataStructures/BinaryMap.h"
@@ -33,7 +32,7 @@ static bool TryParseArguments(const cc_string* args, int argsCount);
 static void ShowUsage();
 static void FillSelectionHandler(IVec3* marks, int count);
 
-static struct ChatCommand FillCommand = {
+struct ChatCommand FillCommand = {
 	"Fill",
 	Fill_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -45,11 +44,6 @@ static struct ChatCommand FillCommand = {
 		NULL
 	},
 	NULL
-};
-
-SPCCommand FillSPCCommand = {
-	.chatCommand = &FillCommand,
-	.canStatic = true
 };
 
 static void ShowUsage() {

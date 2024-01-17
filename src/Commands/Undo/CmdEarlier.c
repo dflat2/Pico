@@ -1,11 +1,12 @@
+#include "ClassiCube/src/Chat.h"
+
 #include "Messaging.h"
-#include "SPCCommand.h"
 #include "UndoTree.h"
 #include "ParsingUtils.h"
 
 static void Earlier_Command(const cc_string* args, int argsCount);
 
-static struct ChatCommand EarlierCommand = {
+struct ChatCommand EarlierCommand = {
 	"Earlier",
 	Earlier_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -17,11 +18,6 @@ static struct ChatCommand EarlierCommand = {
 		NULL
 	},
 	NULL
-};
-
-SPCCommand EarlierSPCCommand = {
-	.chatCommand = &EarlierCommand,
-	.canStatic = false
 };
 
 static void Earlier_Command(const cc_string* args, int argsCount) {

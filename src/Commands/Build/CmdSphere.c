@@ -2,6 +2,8 @@
 #include <math.h>
 #include <stdio.h>
 
+#include "ClassiCube/src/Chat.h"
+
 #include "MarkSelection.h"
 #include "MemoryAllocation.h"
 #include "Messaging.h"
@@ -9,7 +11,6 @@
 #include "ParsingUtils.h"
 #include "DataStructures/Axis.h"
 #include "DataStructures/Array.h"
-#include "SPCCommand.h"
 #include "Draw.h"
 
 typedef enum SphereMode_ {
@@ -38,11 +39,6 @@ struct ChatCommand SphereCommand = {
 		NULL
 	},
 	NULL
-};
-
-SPCCommand SphereSPCCommand = {
-	.chatCommand = &SphereCommand,
-	.canStatic = true
 };
 
 static void DoSphere() {

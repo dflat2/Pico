@@ -9,7 +9,6 @@
 #include "VectorsExtension.h"
 #include "ParsingUtils.h"
 #include "DataStructures/Array.h"
-#include "SPCCommand.h"
 #include "WorldUtils.h"
 
 static void ReplaceNot_Command(const cc_string* args, int argsCount);
@@ -23,7 +22,7 @@ static void DoReplace(IVec3 min, IVec3 max, BlockID block, bool replaceNot);
 static BlockID s_ReplacedBlock;
 static bool s_ReplaceNot;
 
-static struct ChatCommand ReplaceCommand = {
+struct ChatCommand ReplaceCommand = {
 	"Replace",
 	Replace_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -37,12 +36,7 @@ static struct ChatCommand ReplaceCommand = {
 	NULL
 };
 
-SPCCommand ReplaceSPCCommand = {
-	.chatCommand = &ReplaceCommand,
-	.canStatic = true
-};
-
-static struct ChatCommand ReplaceAllCommand = {
+struct ChatCommand ReplaceAllCommand = {
 	"ReplaceAll",
 	ReplaceAll_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -56,12 +50,7 @@ static struct ChatCommand ReplaceAllCommand = {
 	NULL
 };
 
-SPCCommand ReplaceAllSPCCommand = {
-	.chatCommand = &ReplaceAllCommand,
-	.canStatic = false
-};
-
-static struct ChatCommand ReplaceNotCommand = {
+struct ChatCommand ReplaceNotCommand = {
 	"ReplaceNot",
 	ReplaceNot_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -73,11 +62,6 @@ static struct ChatCommand ReplaceNotCommand = {
 		"Does the same, but replaces with the output of &b<brush>&f."
 	},
 	NULL
-};
-
-SPCCommand ReplaceNotSPCCommand = {
-	.chatCommand = &ReplaceNotCommand,
-	.canStatic = true
 };
 
 static void DoReplace(IVec3 min, IVec3 max, BlockID block, bool replaceNot) {

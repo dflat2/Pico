@@ -6,12 +6,11 @@
 #include "WorldUtils.h"
 #include "Messaging.h"
 #include "Draw.h"
-#include "SPCCommand.h"
 
 static void Place_Command(const cc_string* args, int argsCount);
 static void Place(IVec3 position, BlockID block);
 
-static struct ChatCommand PlaceCommand = {
+struct ChatCommand PlaceCommand = {
 	"Place",
 	Place_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -24,12 +23,6 @@ static struct ChatCommand PlaceCommand = {
 	},
 	NULL
 };
-
-SPCCommand PlaceSPCCommand = {
-	.chatCommand = &PlaceCommand,
-	.canStatic = false
-};
-
 
 static void Place(IVec3 position, BlockID block) {
 	cc_string cc_blockName = Block_UNSAFE_GetName(block);

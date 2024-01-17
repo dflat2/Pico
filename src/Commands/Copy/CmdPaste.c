@@ -10,13 +10,12 @@
 #include "VectorsExtension.h"
 #include "WorldUtils.h"
 #include "DataStructures/Array.h"
-#include "SPCCommand.h"
 
 static void Paste_Command(const cc_string* args, int argsCount);
 static void PasteSelectionHandler(IVec3* marks, int count);
 static void ShowBlocksPasted(int amount);
 
-static struct ChatCommand PasteCommand = {
+struct ChatCommand PasteCommand = {
 	"Paste",
 	Paste_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -29,12 +28,6 @@ static struct ChatCommand PasteCommand = {
 	},
 	NULL
 };
-
-SPCCommand PasteSPCCommand = {
-	.chatCommand = &PasteCommand,
-	.canStatic = true
-};
-
 
 typedef enum PasteMode_ {
     MODE_NORMAL,

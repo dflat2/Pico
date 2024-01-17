@@ -7,12 +7,11 @@
 #include "MarkSelection.h"
 #include "ParsingUtils.h"
 #include "Messaging.h"
-#include "SPCCommand.h"
 
 static void ShowUsage();
 static void Flip_Command(const cc_string* args, int argsCount);
 
-static struct ChatCommand FlipCommand = {
+struct ChatCommand FlipCommand = {
 	"Flip",
 	Flip_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -24,11 +23,6 @@ static struct ChatCommand FlipCommand = {
 		NULL
 	},
 	NULL
-};
-
-SPCCommand FlipSPCCommand = {
-	.chatCommand = &FlipCommand,
-	.canStatic = false
 };
 
 static void ShowUsage() {

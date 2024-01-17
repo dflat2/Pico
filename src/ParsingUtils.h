@@ -15,6 +15,7 @@ typedef struct NamedCommandFunc_ {
 
 bool TryParseBlock(const cc_string* blockString, BlockID* block);
 bool Parse_CommandFunc(cc_string argument, NamedCommandFunc* commands, int count, CommandFunc* out_function);
+bool Parse_LastArgumentIsRepeat(const cc_string* arguments, int count);
 bool Parse_DeltaTime_Second(const cc_string* string, int* out_result_Second);
 void Parse_ShowExamplesDeltaTime();
 bool Parse_TryParseNumber(const cc_string* string, int* out_number);

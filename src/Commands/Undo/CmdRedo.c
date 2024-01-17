@@ -1,10 +1,11 @@
+#include "ClassiCube/src/Chat.h"
+
 #include "Messaging.h"
-#include "SPCCommand.h"
 #include "UndoTree.h"
 
 static void Redo_Command(const cc_string* args, int argsCount);
 
-static struct ChatCommand RedoCommand = {
+struct ChatCommand RedoCommand = {
 	"Redo",
 	Redo_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -16,11 +17,6 @@ static struct ChatCommand RedoCommand = {
 		NULL
 	},
 	NULL
-};
-
-SPCCommand RedoSPCCommand = {
-	.chatCommand = &RedoCommand,
-	.canStatic = false
 };
 
 static void Redo_Command(const cc_string* args, int argsCount) {

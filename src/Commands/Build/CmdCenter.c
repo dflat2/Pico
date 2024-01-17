@@ -7,13 +7,12 @@
 #include "MarkSelection.h"
 #include "Messaging.h"
 #include "VectorsExtension.h"
-#include "SPCCommand.h"
 
 static void Center_Command(const cc_string* args, int argsCount);
 static void CenterSelectionHandler(IVec3* marks, int count);
 static void Center(IVec3 a, IVec3 b);
 
-static struct ChatCommand CenterCommand = {
+struct ChatCommand CenterCommand = {
 	"Center",
 	Center_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
@@ -26,12 +25,6 @@ static struct ChatCommand CenterCommand = {
 	},
 	NULL
 };
-
-SPCCommand CenterSPCCommand = {
-	.chatCommand = &CenterCommand,
-	.canStatic = false
-};
-
 
 static void Center(IVec3 a, IVec3 b) {
     IVec3 min = Min(a, b);
