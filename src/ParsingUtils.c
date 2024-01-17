@@ -30,13 +30,19 @@ bool Parse_TryParseBlock(const cc_string* blockString, BlockID* block) {
     return true;
 }
 
-bool Parse_LastArgumentIsRepeat(const cc_string* arguments, int count) {
-    if (count == 0) {
+bool Parse_LastArgumentIsRepeat(const cc_string* arguments, int* ref_count) {
+    if (*ref_count == 0) {
 		return false;
 	}
 
-	const cc_string* lastArgument = &arguments[count - 1];
-	return lastArgument->length == 1 && lastArgument->buffer[0] == '+';
+	const cc_string* lastArgument = &arguments[*ref_count - 1];
+
+	if (lastArgument->length == 1 && lastArgument->buffer[0] == '+') {
+		*ref_count = *ref_count - 1;
+		return true;
+	}
+	
+	return false;
 }
 
 bool Parse_TryParseDeltaTime_Second(const cc_string* string, int* out_total_Second) {

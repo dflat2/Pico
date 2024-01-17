@@ -7,7 +7,7 @@
 #include "Brushes/Brush.h"
 
 bool Parse_TryParseBlock(const cc_string* blockString, BlockID* block);
-bool Parse_LastArgumentIsRepeat(const cc_string* arguments, int count);
+bool Parse_LastArgumentIsRepeat(const cc_string* arguments, int* ref_count);
 bool Parse_TryParseDeltaTime_Second(const cc_string* string, int* out_result_Second);
 void Parse_ShowExamplesDeltaTime();
 bool Parse_TryParseNumber(const cc_string* string, int* out_number);

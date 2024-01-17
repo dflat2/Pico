@@ -17,6 +17,7 @@ typedef enum SphereMode_ {
 	MODE_HOLLOW = 1,
 } SphereMode;
 
+static bool s_Repeat;
 static SphereMode s_Mode;
 static int s_Radius;
 static IVec3 s_Center;
@@ -31,7 +32,7 @@ struct ChatCommand SphereCommand = {
 	Sphere_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Sphere <radius> [mode] [brush/block]",
+		"&b/Sphere <radius> [mode] [brush/block] [+]",
         "&fDraws a sphere of radius &b<radius>&f.",
         "&fList of modes: &bsolid&f (default), &bhollow&f.",
         NULL,
@@ -75,13 +76,20 @@ static void SphereSelectionHandler(IVec3* marks, int count) {
 
     s_Center = marks[0];
     DoSphere();
+
+    if (s_Repeat) {
+        MarkSelection_Make(SphereSelectionHandler, 1);
+        Message_Player("&fPlace or break a block to determine the center.");
+    }
 }
 
 static void ShowUsage() {
-	Message_Player("Usage: &b/Sphere <radius> [mode] [brush/block]&f.");
+	Message_Player("Usage: &b/Sphere <radius> [mode] [brush/block] [+]&f.");
 }
 
 static void Sphere_Command(const cc_string* args, int argsCount) {
+    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+
     if (argsCount == 0) {
         ShowUsage();
         return;
@@ -125,6 +133,10 @@ static void Sphere_Command(const cc_string* args, int argsCount) {
         }
 	} else {
 		Brush_LoadInventory();
+	}
+
+    if (s_Repeat) {
+		Message_Player("Now repeating &bSphere&f.");
 	}
 
     MarkSelection_Make(SphereSelectionHandler, 1);

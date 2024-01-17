@@ -23,6 +23,7 @@ typedef enum FillMode_ {
 	MODE_2DZ = 3,
 } FillMode;
 
+static bool s_Repeat;
 static FillMode s_Mode;
 
 static bool TryExpand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlock, BinaryMap* map);
@@ -36,7 +37,7 @@ struct ChatCommand FillCommand = {
 	Fill_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Fill [mode] [brush/block]",
+		"&b/Fill [mode] [brush/block] [+]",
         "&fFills the specified area.",
 		"&fList of modes: &b3d&f (default), &b2d-x&f, &b2d-y&f, &b2d-z&f.",
 		NULL,
@@ -46,7 +47,7 @@ struct ChatCommand FillCommand = {
 };
 
 static void ShowUsage() {
-	Message_Player("Usage: &b/Fill [mode] [brush/block]&f.");
+	Message_Player("Usage: &b/Fill [mode] [brush/block] [+]&f.");
 }
 
 static bool TryParseArguments(const cc_string* args, int argsCount) {
@@ -181,14 +182,25 @@ static void FillSelectionHandler(IVec3* marks, int count) {
 
 	BinaryMap_Free(binaryMap);
 	IVec3FastQueue_Free(queue);
+
+	if (s_Repeat) {
+        MarkSelection_Make(FillSelectionHandler, 1);
+        Message_Player("Place or break a block.");
+    }
 }
 
 static void Fill_Command(const cc_string* args, int argsCount) {
+	s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+
 	if (!TryParseArguments(args, argsCount)) {
 		MarkSelection_Abort();
 		return;
 	}
 
+	if (s_Repeat) {
+		Message_Player("Now repeating &bFill&f.");
+	}
+
     MarkSelection_Make(FillSelectionHandler, 1);
-    Message_Player("&fPlace or break a block.");
+    Message_Player("Place or break a block.");
 }

@@ -10,7 +10,10 @@
 
 #include "MarkSelection.h"
 #include "Messaging.h"
+#include "ParsingUtils.h"
 #include "Draw.h"
+
+static bool s_Repeat = false;
 
 static void Tree_Command(const cc_string* args, int argsCount);
 static void ShowUsage();
@@ -20,7 +23,7 @@ struct ChatCommand TreeCommand = {
 	Tree_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Tree",
+		"&b/Tree [+]",
         "&fGrows a tree.",
         NULL,
         NULL,
@@ -92,17 +95,28 @@ static void TreeSelectionHandler(IVec3* marks, int count) {
     DrawLeavesLayer4(x, y, z);
     int blocksAffected = Draw_End();
     Message_BlocksAffected(blocksAffected);
+
+    if (s_Repeat) {
+        MarkSelection_Make(TreeSelectionHandler, 1);
+        Message_Player("Place or break a block to determine the root.");
+    }
 }
 
 static void ShowUsage() {
-	Message_Player("Usage: &b/Tree&f.");
+	Message_Player("Usage: &b/Tree [+]&f.");
 }
 
 static void Tree_Command(const cc_string* args, int argsCount) {
+    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+
     if (argsCount > 0) {
         ShowUsage();
         return;
     }
+
+    if (s_Repeat) {
+		Message_Player("Now repeating &bTree&f.");
+	}
 
     MarkSelection_Make(TreeSelectionHandler, 1);
     Message_Player("Place or break a block to determine the root.");

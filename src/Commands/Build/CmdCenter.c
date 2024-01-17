@@ -7,6 +7,9 @@
 #include "MarkSelection.h"
 #include "Messaging.h"
 #include "VectorsExtension.h"
+#include "ParsingUtils.h"
+
+static bool s_Repeat = false;
 
 static void Center_Command(const cc_string* args, int argsCount);
 static void CenterSelectionHandler(IVec3* marks, int count);
@@ -17,7 +20,7 @@ struct ChatCommand CenterCommand = {
 	Center_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Center",
+		"&b/Center [+]",
 		"&fPlaces gold blocks at the center of your selection.",
 		NULL,
 		NULL,
@@ -67,13 +70,24 @@ static void CenterSelectionHandler(IVec3* marks, int count) {
     }
 
     Center(marks[0], marks[1]);
+
+    if (s_Repeat) {
+        MarkSelection_Make(CenterSelectionHandler, 2);
+        Message_Player("&fPlace or break two blocks to determine the edges.");
+    }
 }
 
 static void Center_Command(const cc_string* args, int argsCount) {
+    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+
 	if (argsCount != 0) {
-		Message_Player("&fUsage: &b/Center");
+		Message_Player("&fUsage: &b/Center [+]&f.");
 		MarkSelection_Abort();
 		return;
+	}
+
+    if (s_Repeat) {
+		Message_Player("Now repeating &bCenter&f.");
 	}
 
     MarkSelection_Make(CenterSelectionHandler, 2);

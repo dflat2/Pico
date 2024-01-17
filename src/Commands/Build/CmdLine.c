@@ -251,12 +251,7 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 }
 
 static void Line_Command(const cc_string* args, int argsCount) {
-	if (Parse_LastArgumentIsRepeat(args, argsCount)) {
-		argsCount -= 1;
-		s_Repeat = true;
-	} else {
-		s_Repeat = false;
-	}
+    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
 	if (!TryParseArguments(args, argsCount)) {
 		return;

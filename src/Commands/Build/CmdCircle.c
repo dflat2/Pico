@@ -20,6 +20,7 @@ typedef enum CircleMode_ {
 	MODE_HOLLOW = 1,
 } CircleMode;
 
+static bool s_Repeat = false;
 static CircleMode s_Mode;
 static Axis s_Axis;
 static int s_Radius;
@@ -35,7 +36,7 @@ struct ChatCommand CircleCommand = {
 	Circle_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Circle <radius> <axis> [mode] [brush/block]",
+		"&b/Circle <radius> <axis> [mode] [brush/block] [+]",
         "Draws a circle of radius &b<radius>&f.",
         "&b<axis> &fmust be &bX&f, &bY&f or &bZ&f.",
         "List of modes: &bsolid&f (default) or &bhollow&f.",
@@ -82,13 +83,20 @@ static void CircleSelectionHandler(IVec3* marks, int count) {
 
     s_Center = marks[0];
     DoCircle();
+
+    if (s_Repeat) {
+        MarkSelection_Make(CircleSelectionHandler, 1);
+        Message_Player("&fPlace or break a block to determine the center.");
+    }
 }
 
 static void ShowUsage() {
-	Message_Player("Usage: &b/Circle <radius> <axis> [brush/block]&f.");
+	Message_Player("Usage: &b/Circle <radius> <axis> [brush/block] [+]&f.");
 }
 
 static void Circle_Command(const cc_string* args, int argsCount) {
+    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+
     if (argsCount < 2) {
         ShowUsage();
         return;
@@ -138,6 +146,10 @@ static void Circle_Command(const cc_string* args, int argsCount) {
         }
 	} else {
 		Brush_LoadInventory();
+	}
+
+    if (s_Repeat) {
+		Message_Player("Now repeating &bCircle&f.");
 	}
 
     MarkSelection_Make(CircleSelectionHandler, 1);

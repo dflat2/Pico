@@ -18,6 +18,7 @@ typedef enum ZMode_ {
 	MODE_CORNERS = 4
 } ZMode;
 
+static bool s_Repeat;
 static ZMode s_Mode;
 
 typedef void (*CuboidOperation)(IVec3 min, IVec3 max);
@@ -39,7 +40,7 @@ struct ChatCommand ZCommand = {
 	Z_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Z [mode] [brush/block]",
+		"&b/Z [mode] [brush/block] [+]",
         "&fDraws a cuboid between two points.",
 		"&fList of modes: &bsolid&f (default), &bhollow&f, &bwalls&f, &bwire&f, &bcorners&f.",
 		NULL,
@@ -148,10 +149,15 @@ static void ZSelectionHandler(IVec3* marks, int count) {
 
     CuboidOperation Operation = GetFunction(s_Mode);
     Operation(Min(marks[0], marks[1]), Max(marks[0], marks[1]));
+
+	if (s_Repeat) {
+		MarkSelection_Make(ZSelectionHandler, 2);
+    	Message_Player("&fPlace or break two blocks to determine the edges.");
+	}
 }
 
 static void ShowUsage() {
-	Message_Player("Usage: &b/Z [mode] [brush/block]&f.");
+	Message_Player("Usage: &b/Z [mode] [brush/block] [+]&f.");
 }
 
 static bool TryParseArguments(const cc_string* args, int argsCount) {
@@ -209,9 +215,15 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 }
 
 static void Z_Command(const cc_string* args, int argsCount) {
+	s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+
 	if (!TryParseArguments(args, argsCount)) {
 		MarkSelection_Abort();
 		return;
+	}
+
+	if (s_Repeat) {
+		Message_Player("Now repeating &bZ&f.");
 	}
 
     MarkSelection_Make(ZSelectionHandler, 2);

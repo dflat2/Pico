@@ -29,12 +29,7 @@ struct ChatCommand PaintCommand = {
 };
 
 static void Paint_Command(const cc_string* args, int argsCount) {
-	if (Parse_LastArgumentIsRepeat(args, argsCount)) {
-		argsCount -= 1;
-		s_Repeat = true;
-	} else {
-		s_Repeat = false;
-	}
+    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
 	if (argsCount >= 1) {
 		// Checks that there are no trailing blocks.
