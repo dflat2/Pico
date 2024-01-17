@@ -10,7 +10,7 @@ void Draw_Start(char* description) {
 	s_blocksAffected = 0;
 
 	if (UndoTree_Enabled()) {
-		UndoTree_PrepareNewNode(description);
+		UndoTree_TryPrepareNewNode(description);
 	}
 }
 

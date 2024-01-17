@@ -44,7 +44,7 @@ static void Descend();
 static void Ascend();
 static bool BuildingNode();
 static void FreeUndoNode(UndoNode* node);
-static void InitRoot();
+static bool TryInitRoot();
 static void GetLeaves(List* out_leaves);
 
 static UndoNode* s_root = NULL;
@@ -59,7 +59,7 @@ static List* s_redoStack = NULL;
 void UndoTree_Enable() {
 	if (s_enabled) return;
 
-	InitRoot();
+	TryInitRoot();
 	s_here = s_root;
 	s_buildingNode = NULL;
 	s_commitAutoIncrement = 0;
@@ -220,10 +220,15 @@ bool UndoTree_Redo() {
 	return true;
 }
 
-void UndoTree_PrepareNewNode(char* description) {
-	if (!s_enabled || BuildingNode()) return;
+bool UndoTree_TryPrepareNewNode(char* description) {
+	if (!s_enabled || BuildingNode()) return false;
 
-	s_buildingNode = allocate(1, sizeof(UndoNode));
+	s_buildingNode = malloc(sizeof(UndoNode));
+
+	if (s_buildingNode == NULL) {
+		return false;
+	}
+
 	s_commitAutoIncrement++;
 	s_buildingNode->commit = s_commitAutoIncrement;
 	strncpy(s_buildingNode->description, description, sizeof(s_buildingNode->description));
@@ -233,6 +238,7 @@ void UndoTree_PrepareNewNode(char* description) {
 	s_buildingNode->timestamp = time(NULL);
 	s_buildingNode->redoChild = NULL;
 	s_buildingNode->children = List_CreateEmpty();
+	return true;
 }
 
 void UndoTree_AddBlockChangeEntry(int x, int y, int z, DeltaBlockID delta) {
@@ -336,8 +342,13 @@ static void GetLeaves(List* out_leaves) {
 	List_Free(stack);
 }
 
-static void InitRoot() {
-	s_root = allocate(1, sizeof(UndoNode));
+static bool TryInitRoot() {
+	s_root = malloc(sizeof(UndoNode));
+
+	if (s_root == NULL) {
+		return false;
+	}
+
 	s_root->commit = 0;
 	char description[] = "World loaded";
 	strncpy(s_root->description, description, sizeof(description));
@@ -347,6 +358,8 @@ static void InitRoot() {
 	s_root->parent = NULL;
 	s_root->children = List_CreateEmpty();
 	s_root->redoChild = NULL;
+
+	return true;
 }
 
 static void FreeUndoNode(UndoNode* node) {
@@ -491,7 +504,7 @@ static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID bl
 		snprintf(description, sizeof(description), "Place %s %s", formattedBlock, formattedCoordinates);
 	}
  
-	UndoTree_PrepareNewNode(description);
+	UndoTree_TryPrepareNewNode(description);
 	UndoTree_AddBlockChangeEntry(coords.X, coords.Y, coords.Z, block - oldBlock);
 	UndoTree_Commit();
 }

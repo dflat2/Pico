@@ -17,6 +17,6 @@ bool BlocksBuffer_TryFlip(Axis axis);
 
 BlocksBuffer BlocksBuffer_GetCopied();
 bool BlocksBuffer_IsEmpty();
-int BlocksBuffer_Copy(IVec3 mark1, IVec3 mark2);
+bool BlocksBuffer_TryCopy(IVec3 mark1, IVec3 mark2, int* out_amountCopied);
 
 #endif /* BLOCKS_BUFFER_H */

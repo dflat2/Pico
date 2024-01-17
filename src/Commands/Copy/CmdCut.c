@@ -67,9 +67,15 @@ static void CutSelectionHandler(IVec3* marks, int count) {
     if (count != 2) {
         return;
     }
-	int amountCut = BlocksBuffer_Copy(marks[0], marks[1]);
+
+	int amountCopied = 0;
+
+	if (!BlocksBuffer_TryCopy(marks[0], marks[1], &amountCopied)) {
+		Message_Player("Error when doing the cut.");
+		return;
+	}
 	DoCut(marks[0], marks[1]);
-	ShowBlocksCut(amountCut);
+	ShowBlocksCut(amountCopied);
 }
 
 static void Cut_Command(const cc_string* args, int argsCount) {

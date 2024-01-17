@@ -43,7 +43,7 @@ bool BlocksBuffer_IsEmpty() {
 	return s_BufferIsEmpty;
 }
 
-int BlocksBuffer_Copy(IVec3 mark1, IVec3 mark2) {
+bool BlocksBuffer_TryCopy(IVec3 mark1, IVec3 mark2, int* out_amountCopied) {
 	IVec3 min = Min(mark1, mark2);
 	IVec3 max = Max(mark1, mark2);
 	IVec3 anchor = Substract(mark1, min);
@@ -52,7 +52,12 @@ int BlocksBuffer_Copy(IVec3 mark1, IVec3 mark2) {
 	int height = max.Y - min.Y + 1;
 	int length = max.Z - min.Z + 1;
 
-	BlockID* blocks = allocateZeros(width * height * length, sizeof(BlockID));
+	BlockID* blocks = calloc(width * height * length, sizeof(BlockID));
+
+	if (blocks == NULL) {
+		return false;
+	}
+
 	int index = 0;
 
 	for (int x = min.X; x <= max.X; x++) {
@@ -75,7 +80,8 @@ int BlocksBuffer_Copy(IVec3 mark1, IVec3 mark2) {
 
 	s_Buffer.content = blocks;
 	s_BufferIsEmpty = false;
-	return width * height * length;
+	*out_amountCopied = width * height * length;
+	return true;
 }
 
 bool BlocksBuffer_TryRotate(Axis axis, int count) {

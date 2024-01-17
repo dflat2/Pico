@@ -20,7 +20,7 @@ bool UndoTree_Checkout(int commit, int* out_ascended, int* out_descended);
 bool UndoTree_Redo();
 
 // Attaching a new node.
-void UndoTree_PrepareNewNode(char* description);
+bool UndoTree_TryPrepareNewNode(char* description);
 void UndoTree_AddBlockChangeEntry(int x, int y, int z, DeltaBlockID delta);
 void UndoTree_Commit();
 
