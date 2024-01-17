@@ -26,7 +26,7 @@ static bool BrushSolid_TryParseArguments(const cc_string* args, int argsCount) {
 
 	if (argsCount == 0) {
 		s_UseHoldingBlock = true;
-	} else if (!TryParseBlock(&args[0], &s_Block)) {
+	} else if (!Parse_TryParseBlock(&args[0], &s_Block)) {
 		return false;
 	}
 

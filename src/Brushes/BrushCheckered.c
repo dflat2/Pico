@@ -22,7 +22,7 @@ static bool BrushCheckered_TryParseArguments(const cc_string* args, int argsCoun
 		return false;;
 	}
 
-	if (!TryParseBlock(&args[0], &s_Block1) || !TryParseBlock(&args[1], &s_Block2)) {
+	if (!Parse_TryParseBlock(&args[0], &s_Block1) || !Parse_TryParseBlock(&args[1], &s_Block2)) {
 		return false;
 	}
 

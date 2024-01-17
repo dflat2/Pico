@@ -101,7 +101,7 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 		return false;
 	}
 
-	if (!TryParseBlock(&args[0], &s_ReplacedBlock)) {
+	if (!Parse_TryParseBlock(&args[0], &s_ReplacedBlock)) {
 		return false;
 	}
 

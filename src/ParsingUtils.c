@@ -4,9 +4,6 @@
 #include "ParsingUtils.h"
 #include "DataStructures/Axis.h"
 
-#define SUCCESS 1
-#define FAILURE 0
-
 typedef enum TimeUnit_ {
 	UNIT_SECOND = 0x01,
 	UNIT_MINUTE = 0x02,
@@ -20,29 +17,17 @@ static bool TryParseTimeUnit(const cc_string* string, int* cursor, TimeUnit* out
 static bool TryParsePositiveNumber(const cc_string* string, int* cursor, int* out_number);
 static bool IsDigit(char character);
 
-bool TryParseBlock(const cc_string* blockString, BlockID* block) {
+bool Parse_TryParseBlock(const cc_string* blockString, BlockID* block) {
     int i_block;
     i_block = Block_Parse(blockString);
 
     if (i_block == -1) {
 		Message_ShowUnknownBlock(blockString);
-        return FAILURE;
+        return false;
     }
 
     *block = (BlockID)i_block;
-    return SUCCESS;
-}
-
-bool Parse_CommandFunc(cc_string argument, NamedCommandFunc* commands, int count, CommandFunc* out_function) {
-    for (int i = 0; i < count; i++) {
-		if (String_CaselessEquals(&argument, &(commands[i].name))) {
-			*out_function = commands[i].function;
-			return SUCCESS;
-		}
-	}
-
-	*out_function = NULL;
-	return FAILURE;
+    return true;
 }
 
 bool Parse_LastArgumentIsRepeat(const cc_string* arguments, int count) {
@@ -54,7 +39,7 @@ bool Parse_LastArgumentIsRepeat(const cc_string* arguments, int count) {
 	return lastArgument->length == 1 && lastArgument->buffer[0] == '+';
 }
 
-bool Parse_DeltaTime_Second(const cc_string* string, int* out_total_Second) {
+bool Parse_TryParseDeltaTime_Second(const cc_string* string, int* out_total_Second) {
 	*out_total_Second = 0;
 
     if (string == NULL || string->length == 0) {
@@ -92,7 +77,7 @@ void Parse_ShowExamplesDeltaTime() {
 bool Parse_TryParseBrush(const cc_string* arguments, int argumentsCount) {
 	bool startsWithAtSign = String_IndexOfAt(&arguments[0], 0, '@') == 0;
 	if (!startsWithAtSign) {
-		return FAILURE;
+		return false;
 	}
 
 	return Brush_TryLoad(&arguments[0], &arguments[1], argumentsCount - 1);
@@ -114,24 +99,24 @@ bool Parse_TryParseBlockOrBrush(const cc_string* arguments, int argumentsCount) 
 bool Parse_TryParseAxis(const cc_string* string, Axis* out_axis) {
 	if (string->length == 0 || string->length >= 2) {
 		Message_ShowInvalidAxis(string);
-		return FAILURE;
+		return false;
 	}
 
 	char firstCharacter = string->buffer[0];
 
 	if (firstCharacter == 'X' || firstCharacter == 'x') {
 		*out_axis = AXIS_X;
-		return SUCCESS;
+		return true;
 	} else if (firstCharacter == 'Y' || firstCharacter == 'y') {
 		*out_axis = AXIS_Y;
-		return SUCCESS;
+		return true;
 	} else if (firstCharacter == 'Z' || firstCharacter == 'z') {
 		*out_axis = AXIS_Z;
-		return SUCCESS;
+		return true;
 	}
 
 	Message_ShowInvalidAxis(string);
-	return FAILURE;
+	return false;
 }
 
 bool Parse_TryParseDegrees(const cc_string* string, int* out_degrees) {

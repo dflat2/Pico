@@ -33,7 +33,7 @@ static void Earlier_Command(const cc_string* args, int argsCount) {
 
 	int duration_Second;
 
-	if (!Parse_DeltaTime_Second(&(args[0]), &duration_Second)) {
+	if (!Parse_TryParseDeltaTime_Second(&(args[0]), &duration_Second)) {
 		Parse_ShowExamplesDeltaTime();
 		return;
 	}
