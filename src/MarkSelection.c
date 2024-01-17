@@ -16,14 +16,12 @@ static int s_CurrentMark = 0;
 static int s_TotalMarks = 0;
 static IVec3 s_Marks[MAX_MARKS] = { 0 };
 static SelectionHandler s_Handler = NULL;
-static bool s_Painting = false;
 
 static void ValidateSelection();
 static void ResetSelectionState();
 static void UnregisterBlockChanged();
 static void RegisterBlockChanged();
 static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock);
-static void ShowMode(const char* mode);
 
 void MarkSelection_DoMark(IVec3 coords) {
     if (!s_InProgress) {
@@ -46,7 +44,6 @@ void MarkSelection_DoMark(IVec3 coords) {
 void MarkSelection_Abort() {
     ResetSelectionState();
     UnregisterBlockChanged();
-	ShowMode("Normal");
 }
 
 int MarkSelection_RemainingMarks() {
@@ -58,7 +55,7 @@ int MarkSelection_RemainingMarks() {
 }
 
 void MarkSelection_Make(SelectionHandler handler, int count) {
-	if (s_InProgress || s_Painting) {
+	if (s_InProgress) {
 		MarkSelection_Abort();
 	}
 
@@ -69,38 +66,9 @@ void MarkSelection_Make(SelectionHandler handler, int count) {
     RegisterBlockChanged();
 }
 
-void MarkSelection_TogglePaint() {
-	if (s_Painting) {
-		MarkSelection_Abort();
-		return;
-	}
-
-	MarkSelection_Abort();
-	s_Painting = true;
-	RegisterBlockChanged();
-	Message_Player("Mode: &bPaint&f.");
-	ShowMode("Paint");
-}
-
-bool MarkSelection_Painting() {
-	return s_Painting;
-}
-
 static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock) {
-	if (s_InProgress) {
-		Game_UpdateBlock(coords.X, coords.Y, coords.Z, oldBlock);
-		MarkSelection_DoMark(coords);
-	} else if (s_Painting && newBlock == BLOCK_AIR) {
-		Draw_Start("Paint");
-		Game_UpdateBlock(coords.X, coords.Y, coords.Z, oldBlock);
-		Draw_Block(coords.X, coords.Y, coords.Z, Inventory_SelectedBlock);
-		Draw_End();
-	} else if (s_Painting) {
-		Draw_Start("Place");
-		Game_UpdateBlock(coords.X, coords.Y, coords.Z, oldBlock);
-		Draw_Block(coords.X, coords.Y, coords.Z, newBlock);
-		Draw_End();
-	}
+	Game_UpdateBlock(coords.X, coords.Y, coords.Z, oldBlock);
+	MarkSelection_DoMark(coords);
 }
 
 static void RegisterBlockChanged() {
@@ -116,20 +84,10 @@ static void ResetSelectionState() {
     s_CurrentMark = 0;
     s_TotalMarks = 0;
     s_Handler = NULL;
-	s_Painting = false;
 }
 
 static void ValidateSelection() {
 	UnregisterBlockChanged();
 	s_InProgress = false;
     s_Handler(s_Marks, s_TotalMarks);
-}
-
-static void ShowMode(const char* mode) {
-	cc_string cc_mode = String_FromReadonly(mode);
-	char buffer[64];
-	cc_string message = String_FromArray(buffer);
-	String_AppendConst(&message, "Mode: &b");
-	String_AppendString(&message, &cc_mode);
-	Chat_AddOf(&message, MSG_TYPE_BOTTOMRIGHT_1);
 }

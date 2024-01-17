@@ -487,7 +487,7 @@ static void ShowCurrentNode() {
 }
 
 static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID block) {
-	if (MarkSelection_RemainingMarks() > 0 || MarkSelection_Painting()) {
+	if (MarkSelection_RemainingMarks() > 0) {
 		return;
 	}
 
