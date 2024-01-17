@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 #include "ClassiCube/src/Chat.h"
@@ -6,7 +7,6 @@
 
 #include "Draw.h"
 #include "MarkSelection.h"
-#include "MemoryAllocation.h"
 #include "Messaging.h"
 #include "VectorsExtension.h"
 #include "ParsingUtils.h"

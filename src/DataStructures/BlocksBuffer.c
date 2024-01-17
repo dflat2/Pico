@@ -1,7 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "BlocksBuffer.h"
-#include "MemoryAllocation.h"
 #include "WorldUtils.h"
 
 typedef enum S3_ { XYZ, XZY, ZYX, YXZ, ZXY, YZX } S3;

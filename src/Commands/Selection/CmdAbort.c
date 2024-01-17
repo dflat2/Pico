@@ -4,8 +4,17 @@
 #include "Messaging.h"
 
 static void Abort_Command(const cc_string* args, int argsCount) {
+	if (argsCount > 0) {
+		Message_Player("Usage: &b/Abort&f.");
+	}
+
+	if (MarkSelection_RemainingMarks() == 0) {
+		Message_Player("There is nothing to abort.");
+		return;
+	}
+
     MarkSelection_Abort();
-    Message_Player("&fEvery toggle or action was aborted.");
+    Message_Player("&fCurrent selection was aborted.");
 }
 
 struct ChatCommand AbortCommand = {
@@ -14,7 +23,7 @@ struct ChatCommand AbortCommand = {
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
 		"&b/Abort",
-		"&fCancels all toggles and actions.",
+		"&fCancels current selection.",
 		NULL,
 		NULL,
 		NULL

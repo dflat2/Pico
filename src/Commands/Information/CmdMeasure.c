@@ -1,10 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "ClassiCube/src/Block.h"
 #include "ClassiCube/src/Chat.h"
 
 #include "Messaging.h"
-#include "MemoryAllocation.h"
 #include "WorldUtils.h"
 #include "MarkSelection.h"
 #include "VectorsExtension.h"
