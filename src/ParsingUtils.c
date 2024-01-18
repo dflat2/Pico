@@ -92,14 +92,18 @@ bool Parse_TryParseBrush(const cc_string* arguments, int argumentsCount) {
 bool Parse_TryParseBlockOrBrush(const cc_string* arguments, int argumentsCount) {
 	bool startsWithAtSign = String_IndexOfAt(&arguments[0], 0, '@') == 0;
 
-	if (!startsWithAtSign) {
-		if (!Brush_TryLoadSolid(&arguments[0])) {
-			return false;
-		}
-		return true;
+	if (startsWithAtSign) {
+		return Parse_TryParseBrush(arguments, argumentsCount);
+	} else if (argumentsCount > 1) {
+		Message_Player("Trailing characters in command.");
+		return false;
 	}
 
-	return Parse_TryParseBrush(arguments, argumentsCount);
+	if (!Brush_TryLoadSolid(&arguments[0])) {
+		return false;
+	}
+
+	return true;
 }
 
 bool Parse_TryParseAxis(const cc_string* string, Axis* out_axis) {

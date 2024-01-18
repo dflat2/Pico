@@ -121,13 +121,6 @@ static void Sphere_Command(const cc_string* args, int argsCount) {
     int blockOrBrushIndex = hasMode ? 2 : 1;
 
     if (hasBlockOrBrush) {
-        // Checks that there are no trailing blocks in the command.
-        bool isBlock = args[blockOrBrushIndex].buffer[0] != '@';
-        if (isBlock && argsCount > blockOrBrushIndex + 1) {
-            ShowUsage();
-            return;
-        }
-
         if (!Parse_TryParseBlockOrBrush(&args[blockOrBrushIndex], argsCount - blockOrBrushIndex)) {
             return;
         }

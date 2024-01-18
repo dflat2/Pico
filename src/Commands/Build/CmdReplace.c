@@ -108,12 +108,6 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 	bool hasBlockOrBrush = (argsCount >= 2);
 
 	if (hasBlockOrBrush) {
-		bool isBlock = args[1].buffer[0] != '@';
-		if (isBlock && argsCount > 2) {
-			ShowUsage();
-			return false;
-		}
-
 		if (!Parse_TryParseBlockOrBrush(&args[1], argsCount - 1)) {
 			return false;
 		}

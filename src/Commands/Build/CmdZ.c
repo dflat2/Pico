@@ -196,13 +196,6 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 			brushIndex = 0;
 		}
 
-		// Checks that there are no trailing blocks in the command, e.g. `/Z Stone Air` doesn't make sense.
-		bool isBlock = args[brushIndex].buffer[0] != '@';
-		if (isBlock && argsCount > (brushIndex + 1)) {
-			ShowUsage();
-			return false;
-		}
-
 		if (!Parse_TryParseBlockOrBrush(&args[brushIndex], argsCount - brushIndex)) {
 			return false;
 		}

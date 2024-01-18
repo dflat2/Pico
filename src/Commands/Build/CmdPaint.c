@@ -32,13 +32,6 @@ static void Paint_Command(const cc_string* args, int argsCount) {
     s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
 	if (argsCount >= 1) {
-		// Checks that there are no trailing blocks.
-		bool isBlock = args[0].buffer[0] != '@';
-		if (isBlock && argsCount > 1) {
-			ShowUsage();
-			return;
-		}
-
 		if (!Parse_TryParseBlockOrBrush(&args[0], argsCount)) {
 			return;
 		}
