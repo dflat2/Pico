@@ -22,7 +22,7 @@ struct ChatCommand MarkAllCommand = {
 
 static void MarkAll_Command(const cc_string* args, int argsCount) {
 	if (argsCount != 0) {
-		Message_Player("&fUsage: &b/MarkAll&f.");
+		Message_CommandUsage(MarkAllCommand);
 		return;
 	}
 

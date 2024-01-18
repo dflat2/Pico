@@ -29,7 +29,6 @@ static IVec3 s_Center;
 static void Circle_Command(const cc_string* args, int argsCount);
 static void DoCircle();
 static bool ShouldDraw(IVec2 vector);
-static void ShowUsage();
 
 struct ChatCommand CircleCommand = {
 	"Circle",
@@ -90,15 +89,11 @@ static void CircleSelectionHandler(IVec3* marks, int count) {
     }
 }
 
-static void ShowUsage() {
-	Message_Player("Usage: &b/Circle <radius> <axis> [brush/block] [+]&f.");
-}
-
 static void Circle_Command(const cc_string* args, int argsCount) {
     s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (argsCount < 2) {
-        ShowUsage();
+        Message_CommandUsage(CircleCommand);
         return;
     }
 

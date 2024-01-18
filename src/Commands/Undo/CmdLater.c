@@ -25,12 +25,12 @@ struct ChatCommand LaterCommand = {
 
 static void Later_Command(const cc_string* args, int argsCount) {
 	if (argsCount != 1) {
-		Message_Player("Usage: &b/Later <duration>&f.");
+		Message_CommandUsage(LaterCommand);
 		return;
 	}
 
 	if (!UndoTree_Enabled()) {
-		Message_UndoDisabled("/UndoTree later");
+		Message_UndoDisabled("/Later");
 		return;
 	}
 

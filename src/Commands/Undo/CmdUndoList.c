@@ -10,8 +10,8 @@ struct ChatCommand UndoListCommand = {
 	UndoList_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/UndoList &f- Lists the terminal nodes of the undo tree.",
-		NULL,
+		"&b/UndoList",
+		"Lists the terminal nodes of the undo tree.",
 		NULL,
 		NULL,
 		NULL
@@ -21,7 +21,7 @@ struct ChatCommand UndoListCommand = {
 
 static void UndoList_Command(const cc_string* args, int argsCount) {
 	if (argsCount != 0) {
-		Message_Player("Usage: &b/UndoList&f.");
+		Message_CommandUsage(UndoListCommand);
 		return;
 	}
 

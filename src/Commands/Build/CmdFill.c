@@ -29,7 +29,6 @@ static FillMode s_Mode;
 static bool TryExpand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlock, BinaryMap* map);
 static void Fill_Command(const cc_string* args, int argsCount);
 static bool TryParseArguments(const cc_string* args, int argsCount);
-static void ShowUsage();
 static void FillSelectionHandler(IVec3* marks, int count);
 
 struct ChatCommand FillCommand = {

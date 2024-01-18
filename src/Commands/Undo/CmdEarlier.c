@@ -22,7 +22,7 @@ struct ChatCommand EarlierCommand = {
 
 static void Earlier_Command(const cc_string* args, int argsCount) {
 	if (argsCount != 1) {
-		Message_Player("Usage: &b/Earlier <duration>&f.");
+		Message_CommandUsage(EarlierCommand);
 		return;
 	}
 

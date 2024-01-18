@@ -25,7 +25,6 @@ typedef void (*CuboidOperation)(IVec3 min, IVec3 max);
 
 static void Z_Command(const cc_string* args, int argsCount);
 static bool TryParseArguments(const cc_string* args, int argsCount);
-static void ShowUsage();
 static void ZSelectionHandler(IVec3* marks, int count);
 static CuboidOperation GetFunction(char mode);
 static void DoCuboidCorners(IVec3 min, IVec3 max);
@@ -154,10 +153,6 @@ static void ZSelectionHandler(IVec3* marks, int count) {
 		MarkSelection_Make(ZSelectionHandler, 2);
     	Message_Player("&fPlace or break two blocks to determine the edges.");
 	}
-}
-
-static void ShowUsage() {
-	Message_Player("Usage: &b/Z [mode] [brush/block] [+]&f.");
 }
 
 static bool TryParseArguments(const cc_string* args, int argsCount) {

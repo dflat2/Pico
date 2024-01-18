@@ -25,7 +25,6 @@ static IVec3 s_Center;
 static void Sphere_Command(const cc_string* args, int argsCount);
 static void DoSphere();
 static bool ShouldDraw(int x, int y, int z);
-static void ShowUsage();
 
 struct ChatCommand SphereCommand = {
 	"Sphere",
@@ -83,15 +82,11 @@ static void SphereSelectionHandler(IVec3* marks, int count) {
     }
 }
 
-static void ShowUsage() {
-	Message_Player("Usage: &b/Sphere <radius> [mode] [brush/block] [+]&f.");
-}
-
 static void Sphere_Command(const cc_string* args, int argsCount) {
     s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (argsCount == 0) {
-        ShowUsage();
+        Message_CommandUsage(SphereCommand);
         return;
     }
 

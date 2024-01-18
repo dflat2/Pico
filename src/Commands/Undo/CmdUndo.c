@@ -10,9 +10,9 @@ struct ChatCommand UndoCommand = {
 	Undo_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Undo &f- Undoes the last operation.",
+		"&b/Undo",
+		"Undoes the last operation.",
 		"Note: you cannot undo physics.",
-		NULL,
 		NULL,
 		NULL,
 	},
@@ -21,7 +21,7 @@ struct ChatCommand UndoCommand = {
 
 static void Undo_Command(const cc_string* args, int argsCount) {
 	if (argsCount != 0) {
-		Message_Player("Usage: &b/Undo&f.");
+		Message_CommandUsage(UndoCommand);
 		Message_Player("If you want to go back in time, use &b/Earlier <duration>&f.");
 		return;
 	}

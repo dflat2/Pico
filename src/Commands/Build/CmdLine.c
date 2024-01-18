@@ -24,7 +24,6 @@ static bool s_Repeat;
 static void Line_Command(const cc_string *args, int argsCount);
 static void MakeSelection();
 static bool TryParseArguments(const cc_string* args, int argsCount);
-static void ShowUsage();
 static void LineSelectionHandler(IVec3* marks, int count);
 static void DoLine(IVec3 from, IVec3 to);
 static void DoWall(IVec3 from, IVec3 to);
@@ -192,10 +191,6 @@ static void LineSelectionHandler(IVec3* marks, int count) {
 	if (s_Repeat) {
 		MakeSelection();
 	}
-}
-
-static void ShowUsage() {
-	Message_Player("Usage: &b/Line [mode] [brush/block] [+]&f.");
 }
 
 static bool TryParseArguments(const cc_string* args, int argsCount) {

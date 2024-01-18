@@ -93,7 +93,7 @@ static void MeasureSelectionHandler(IVec3* marks, int count) {
 
 static void Measure_Command(const cc_string* args, int argsCount) {
 	if (argsCount > 10) {
-		Message_Player("&fCannot measure more than 10 blocks.");
+		Message_Player("Cannot measure more than 10 blocks.");
 		return;
 	}
 
@@ -111,6 +111,6 @@ static void Measure_Command(const cc_string* args, int argsCount) {
 		s_Blocks[i] = (BlockID)currentBlock;
 	}
 
-	Message_Player("&fPlace or break two blocks to determine the edges.");
+	Message_Player("Place or break two blocks to determine the edges.");
 	MarkSelection_Make(MeasureSelectionHandler, 2);
 }

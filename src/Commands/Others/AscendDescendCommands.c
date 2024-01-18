@@ -44,7 +44,7 @@ struct ChatCommand DescendCommand = {
 
 static void Ascend_Command(const cc_string* args, int argsCount) {
 	if (argsCount >= 1) {
-		Message_Player("&fUsage: &b/Ascend");
+		Message_CommandUsage(AscendCommand);
 		return;
 	}
 
@@ -71,7 +71,7 @@ static void Ascend_Command(const cc_string* args, int argsCount) {
 
 static void Descend_Command(const cc_string* args, int argsCount) {
 	if (argsCount >= 1) {
-		Message_Player("&fUsage: &b/Descend");
+		Message_CommandUsage(DescendCommand);
 		return;
 	}
 

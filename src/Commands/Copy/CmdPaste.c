@@ -19,11 +19,11 @@ struct ChatCommand PasteCommand = {
 	Paste_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Paste [mode] &f- Pastes the stored copy.",
-		"&fSet the mode to &bair &fto also paste air blocks.",
+		"&b/Paste [mode]",
+		"Pastes the stored copy.",
 		"&fList of modes: &bnormal&f (default), &bair&f.",
 		NULL,
-		NULL
+		NULL,
 	},
 	NULL
 };
@@ -84,7 +84,7 @@ static void Paste_Command(const cc_string* args, int argsCount) {
 	}
 
 	if (argsCount >= 2) {
-		Message_Player("Usage: &b/Paste [mode]&f.");
+		Message_CommandUsage(PasteCommand);
 		MarkSelection_Abort();
 		return;
 	}

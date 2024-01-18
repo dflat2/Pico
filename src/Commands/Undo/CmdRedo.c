@@ -10,8 +10,8 @@ struct ChatCommand RedoCommand = {
 	Redo_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Redo &f- Reverts last &b/Undo&f.",
-		NULL,
+		"&b/Redo",
+		"Reverts last &b/Undo&f.",
 		NULL,
 		NULL,
 		NULL
@@ -21,7 +21,7 @@ struct ChatCommand RedoCommand = {
 
 static void Redo_Command(const cc_string* args, int argsCount) {
 	if (argsCount != 0) {
-		Message_Player("Usage: &b/Redo&f.");
+		Message_CommandUsage(RedoCommand);
 		return;
 	}
 

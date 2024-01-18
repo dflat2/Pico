@@ -16,7 +16,6 @@
 static bool s_Repeat = false;
 
 static void Tree_Command(const cc_string* args, int argsCount);
-static void ShowUsage();
 
 struct ChatCommand TreeCommand = {
 	"Tree",
@@ -102,15 +101,11 @@ static void TreeSelectionHandler(IVec3* marks, int count) {
     }
 }
 
-static void ShowUsage() {
-	Message_Player("Usage: &b/Tree [+]&f.");
-}
-
 static void Tree_Command(const cc_string* args, int argsCount) {
     s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (argsCount > 0) {
-        ShowUsage();
+        Message_CommandUsage(TreeCommand);
         return;
     }
 

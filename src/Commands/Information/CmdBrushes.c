@@ -8,8 +8,8 @@ struct ChatCommand BrushesCommand = {
 	"Brushes",
 	Brushes_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY, {
-		"&b/Brushes&f - Lists available brushes.",
-		NULL,
+		"&b/Brushes",
+		"Lists available brushes",
 		NULL,
 		NULL,
 		NULL
@@ -18,6 +18,11 @@ struct ChatCommand BrushesCommand = {
 };
 
 static void Brushes_Command(const cc_string* args, int argsCount) {
+	if (argsCount > 0) {
+		Message_CommandUsage(BrushesCommand);
+		return;
+	}
+
 	Message_Player("Available brushes:");
 	Message_Player(" &b@Solid <block>");
 	Message_Player(" &b@Inventory");

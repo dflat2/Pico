@@ -23,7 +23,7 @@ struct ChatCommand CheckoutCommand = {
 
 static void Checkout_Command(const cc_string* args, int argsCount) {
 	if (argsCount != 1) {
-		Message_Player("Usage: &b/Checkout <operation>&f.");
+		Message_CommandUsage(CheckoutCommand);
 		return;
 	}
 

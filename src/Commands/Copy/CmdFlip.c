@@ -8,7 +8,6 @@
 #include "ParsingUtils.h"
 #include "Messaging.h"
 
-static void ShowUsage();
 static void Flip_Command(const cc_string* args, int argsCount);
 
 struct ChatCommand FlipCommand = {
@@ -16,18 +15,14 @@ struct ChatCommand FlipCommand = {
 	Flip_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Flip X/Y/Z &f- Flips the copied cuboid around the given axis.",
-		NULL,
+		"&b/Flip X/Y/Z",
+		"Flips the copied cuboid around the given axis.",
 		NULL,
 		NULL,
 		NULL
 	},
 	NULL
 };
-
-static void ShowUsage() {
-	Message_Player("Usage: &b/Flip X&f, &b/Flip Y &for &b/Flip Z&f.");
-}
 
 static void Flip_Command(const cc_string* args, int argsCount) {
 	if (BlocksBuffer_IsEmpty()) {
@@ -36,7 +31,7 @@ static void Flip_Command(const cc_string* args, int argsCount) {
 	}
 
 	if (argsCount == 0) {
-		ShowUsage();
+		Message_CommandUsage(FlipCommand);
 		return;
 	}
 	

@@ -1,6 +1,7 @@
 #ifndef MESSAGING_H
 #define MESSAGING_H
 
+#include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/String.h"
 
 void Message_BlocksAffected(int blocksAffected);
@@ -13,5 +14,6 @@ void Message_ShowUnknownBlock(const cc_string* block);
 void Message_ShowInvalidAxis(const cc_string* axis);
 void Message_ShowInvalidDegrees(const cc_string* string);
 void Message_UndoCheckedOut(int commit, int timestamp);
+void Message_CommandUsage(struct ChatCommand command);
 
 #endif /* MESSAGING_H */

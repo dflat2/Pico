@@ -8,7 +8,6 @@
 #include "ParsingUtils.h"
 #include "Messaging.h"
 
-static void ShowUsage();
 static void Rotate_Command(const cc_string* args, int argsCount);
 
 struct ChatCommand RotateCommand = {
@@ -16,19 +15,14 @@ struct ChatCommand RotateCommand = {
 	Rotate_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Rotate [axis] [degrees] &f- Rotates the copied cuboid.",
+		"&b/Rotate [axis] [degrees]",
+		"Rotates the copied cuboid.",
 		"&b[axis] &fmust be &bX&f, &bY&f (default) or &bZ&f.",
-		"&b[degrees] &fmust be a multiple of 90.",
-		NULL,
+		"&b[degrees] &fmust be a multiple of 90 (default 90).",
 		NULL
 	},
 	NULL
 };
-
-static void ShowUsage() {
-	Message_Player("Usage: &b/Rotate <axis> [degrees]&f.");
-	Message_Player("&b[degrees]&f must be a multiple of 90.");
-}
 
 static void ShowRotated(Axis axis, int degrees) {
 	char charAxis = 'X';
@@ -52,7 +46,7 @@ static void Rotate_Command(const cc_string* args, int argsCount) {
 	}
 
 	if (argsCount >= 3) {
-		ShowUsage();
+		Message_CommandUsage(RotateCommand);
 		return;
 	}
 

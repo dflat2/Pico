@@ -45,7 +45,7 @@ static void ReachDistance_Command(const cc_string* args, int argsCount) {
 	}
 
 	if (argsCount >= 2) {
-		Message_Player("&fUsage: &b/ReachDistance [distance]");
+		Message_CommandUsage(ReachDistanceCommand);
 		return;
 	}
 
@@ -54,7 +54,7 @@ static void ReachDistance_Command(const cc_string* args, int argsCount) {
 
 	if (!success)
 	{
-		Message_Player("&fUsage: &b/ReachDistance [distance]&f.");
+		Message_CommandUsage(ReachDistanceCommand);
 		return;
 	}
 

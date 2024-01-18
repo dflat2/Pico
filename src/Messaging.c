@@ -87,3 +87,10 @@ void Message_UndoCheckedOut(int commit, int timestamp) {
 	snprintf(successMsg, sizeof(successMsg), "Checked out operation &b%d&f [&b%s&f].", commit, timestampString);
 	Message_Player(successMsg);
 }
+
+void Message_CommandUsage(struct ChatCommand command) {
+    const char* firstHelpLine = command.help[0];
+    char usageMessage[65];
+    snprintf(usageMessage, sizeof(usageMessage), "Usage: %s&f.", firstHelpLine);
+    Message_Player(usageMessage);
+}

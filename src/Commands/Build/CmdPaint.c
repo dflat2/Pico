@@ -12,7 +12,6 @@ static bool s_Repeat = false;
 
 static void Paint_Command(const cc_string* args, int argsCount);
 static void PaintSelectionHandler(IVec3* marks, int count);
-static void ShowUsage();
 
 struct ChatCommand PaintCommand = {
 	"Paint",
@@ -61,8 +60,4 @@ static void PaintSelectionHandler(IVec3* marks, int count) {
 		Message_Player("&fPlace or break a block to paint.");
 		MarkSelection_Make(&PaintSelectionHandler, 1);
     }
-}
-
-static void ShowUsage() {
-	Message_Player("Usage: &b/Paint [brush/block] [+]&f.");
 }
