@@ -45,10 +45,6 @@ struct ChatCommand FillCommand = {
 	NULL
 };
 
-static void ShowUsage() {
-	Message_Player("Usage: &b/Fill [mode] [brush/block] [+]&f.");
-}
-
 static bool TryParseArguments(const cc_string* args, int argsCount) {
     cc_string modesString[] = {
         String_FromConst("3d"),
