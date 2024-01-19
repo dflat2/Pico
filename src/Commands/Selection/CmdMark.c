@@ -1,6 +1,7 @@
 #include "ClassiCube/src/Chat.h"
 
 #include "MarkSelection.h"
+#include "ParsingUtils.h"
 #include "WorldUtils.h"
 #include "Messaging.h"
 
@@ -33,7 +34,7 @@ static void Mark_Command(const cc_string* args, int argsCount) {
 
     IVec3 target;
     
-    if (!TryParseCoordinates(args, &target)) {
+    if (!Parse_TryParseCoordinates(args, &target)) {
         return;
     }
     

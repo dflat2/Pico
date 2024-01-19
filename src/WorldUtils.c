@@ -38,56 +38,6 @@ IVec3 SnapToWorldBoundaries(IVec3 coords) {
     return coords;
 }
 
-static bool TryParseSingleCoordinate(const cc_string* coordinateString, int* result, bool* isRelative) {
-    char first = coordinateString->buffer[0];
-    char last = coordinateString->buffer[coordinateString->length - 1];
-    *isRelative = (first == '(') && (last == ')');
-
-    cc_string number = { coordinateString->buffer, coordinateString->length, coordinateString->capacity };
-
-    if (*isRelative) {
-        number.buffer = &(number.buffer[1]);
-        number.length -= 2;
-    }
-
-    if (Convert_ParseInt(&number, result)) {
-        return true;
-    }
-
-    return false;
-}
-
-static void CoordinateError(const cc_string* coordinate) {
-    char error[64];
-    cc_string cc_error = { error, 0, 64 };
-    String_Format1(&cc_error, "&fCould not parse coordinate &b%s&f.", coordinate);
-    Chat_Add(&cc_error);
-}
-
-bool TryParseCoordinates(const cc_string* coordinates, IVec3* result) {
-	IVec3 playerPosition = GetCurrentPlayerPosition();
-
-    int arrayTarget[3];
-    int arrayPlayerPosition[3] = { playerPosition.X, playerPosition.Y, playerPosition.Z };
-    bool isRelative;
-
-    for (int i = 0; i < 3; i++) {
-        if (!TryParseSingleCoordinate(&coordinates[i], &arrayTarget[i], &isRelative)) {
-            CoordinateError(&coordinates[i]);
-            return false;
-        }
-
-        if (isRelative) {
-            arrayTarget[i] += arrayPlayerPosition[i];
-        }
-    }
-
-    result->X = arrayTarget[0];
-	result->Y = arrayTarget[1];
-	result->Z = arrayTarget[2];
-	return true;
-}
-
 bool IsInWorldBoundaries(int x, int y, int z) {
 	return (0 <= x && x <= World.Width) &&
 		   (0 <= y && y <= World.Height) &&

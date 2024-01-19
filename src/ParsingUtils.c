@@ -2,6 +2,7 @@
 
 #include "Messaging.h"
 #include "ParsingUtils.h"
+#include "WorldUtils.h"
 #include "DataStructures/Axis.h"
 
 typedef enum TimeUnit_ {
@@ -13,6 +14,7 @@ typedef enum TimeUnit_ {
 } TimeUnit;
 
 static bool TryParseDuration_Second(const cc_string* string, int* cursor, int* out_result_Second, TimeUnit* out_setUnit);
+static bool TryParseSingleCoordinate(const cc_string* coordinateString, int* out_result, bool* out_isRelative);
 static bool TryParseTimeUnit(const cc_string* string, int* cursor, TimeUnit* out_unit);
 static bool TryParsePositiveNumber(const cc_string* string, int* cursor, int* out_number);
 static bool IsDigit(char character);
@@ -251,5 +253,55 @@ static bool TryParseDuration_Second(const cc_string* string, int* cursor, int* o
 			return false;
 	}
 
+	return true;
+}
+
+static bool TryParseSingleCoordinate(const cc_string* coordinateString, int* out_result, bool* out_isRelative) {
+    char first = coordinateString->buffer[0];
+    char last = coordinateString->buffer[coordinateString->length - 1];
+    *out_isRelative = (first == '(') && (last == ')');
+
+    cc_string number = { coordinateString->buffer, coordinateString->length, coordinateString->capacity };
+
+    if (*out_isRelative) {
+        number.buffer = &(number.buffer[1]);
+        number.length -= 2;
+    }
+
+    if (Convert_ParseInt(&number, out_result)) {
+        return true;
+    }
+
+    return false;
+}
+
+static void CoordinateError(const cc_string* coordinate) {
+    char error[64];
+    cc_string cc_error = { error, 0, 64 };
+    String_Format1(&cc_error, "Could not parse coordinate &b%s&f.", coordinate);
+    Chat_Add(&cc_error);
+}
+
+bool Parse_TryParseCoordinates(const cc_string* coordinates, IVec3* out_result) {
+	IVec3 playerPosition = GetCurrentPlayerPosition();
+
+    int arrayTarget[3];
+    int arrayPlayerPosition[3] = { playerPosition.X, playerPosition.Y, playerPosition.Z };
+    bool isRelative;
+
+    for (int i = 0; i < 3; i++) {
+        if (!TryParseSingleCoordinate(&coordinates[i], &arrayTarget[i], &isRelative)) {
+            CoordinateError(&coordinates[i]);
+            return false;
+        }
+
+        if (isRelative) {
+            arrayTarget[i] += arrayPlayerPosition[i];
+        }
+    }
+
+    out_result->X = arrayTarget[0];
+	out_result->Y = arrayTarget[1];
+	out_result->Z = arrayTarget[2];
 	return true;
 }

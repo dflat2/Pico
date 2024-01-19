@@ -8,7 +8,6 @@
 
 IVec3 SnapToWorldBoundaries(IVec3 position);
 IVec3 GetCurrentPlayerPosition();
-bool TryParseCoordinates(const cc_string* coordinates, IVec3* target);
 bool IsInWorldBoundaries(int x, int y, int z);
 BlockID GetBlock(int x, int y, int z);
 

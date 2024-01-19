@@ -2,6 +2,7 @@
 #define PARSING_UTILS_H
 
 #include "ClassiCube/src/String.h"
+#include "ClassiCube/src/Vectors.h"
 
 #include "DataStructures/Axis.h"
 #include "Brushes/Brush.h"
@@ -14,5 +15,6 @@ bool Parse_TryParseNumber(const cc_string* string, int* out_number);
 bool Parse_TryParseBlockOrBrush(const cc_string* arguments, int argumentsCount);
 bool Parse_TryParseAxis(const cc_string* string, Axis* out_axis);
 bool Parse_TryParseDegrees(const cc_string* string, int* out_degrees);
+bool Parse_TryParseCoordinates(const cc_string* coordinates, IVec3* out_result);
 
 #endif /* PARSING_UTILS_H */
