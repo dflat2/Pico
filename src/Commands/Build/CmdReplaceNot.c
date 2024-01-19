@@ -10,21 +10,20 @@
 #include "DataStructures/Array.h"
 #include "WorldUtils.h"
 
-static void Replace_Command(const cc_string* args, int argsCount);
+static void ReplaceNot_Command(const cc_string* args, int argsCount);
 static bool TryParseArguments(const cc_string* args, int argsCount);
-static void ShowUsage();
 static void ReplaceSelectionHandler(IVec3* marks, int count);
-static void DoReplace(IVec3 min, IVec3 max);
+static void DoReplaceNot(IVec3 min, IVec3 max);
 
-static BlockID s_ReplacedBlock;
+static BlockID s_ReplacedNotBlock;
 
-struct ChatCommand ReplaceCommand = {
-	"Replace",
-	Replace_Command,
+struct ChatCommand ReplaceNotCommand = {
+	"ReplaceNot",
+	ReplaceNot_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Replace <oldblock> [block/brush]",
-		"Replaces &b<oldblock> &fwith &b[block]&f between two points.",
+		"&b/ReplaceNot <block> [newblock]",
+		"Replaces all blocks but &b<block>&fwith &b[newblock]&f.",
 		NULL,
 		NULL,
 		NULL
@@ -32,16 +31,13 @@ struct ChatCommand ReplaceCommand = {
 	NULL
 };
 
-static void DoReplace(IVec3 min, IVec3 max) {
+static void DoReplaceNot(IVec3 min, IVec3 max) {
 	Draw_Start("Replace");
-	BlockID current;
 
 	for (int x = min.X; x <= max.X; x++) {
 		for (int y = min.Y; y <= max.Y; y++) {
 			for (int z = min.Z; z <= max.Z; z++) {
-				current = GetBlock(x, y, z);
-
-				if (current == s_ReplacedBlock) {
+				if (GetBlock(x, y, z) != s_ReplacedNotBlock) {
 					Draw_Brush(x, y, z);
 				}
 			}
@@ -57,20 +53,16 @@ static void ReplaceSelectionHandler(IVec3* marks, int count) {
         return;
     }
 
-    DoReplace(Min(marks[0], marks[1]), Max(marks[0], marks[1]));
-}
-
-static void ShowUsage() {
-	Message_Player("Usage: &b/Replace[Not/All] <block> [brush/block]&f.");
+    DoReplaceNot(Min(marks[0], marks[1]), Max(marks[0], marks[1]));
 }
 
 static bool TryParseArguments(const cc_string* args, int argsCount) {
 	if (argsCount == 0) {
-		Message_CommandUsage(ReplaceCommand);
+		Message_CommandUsage(ReplaceNotCommand);
 		return false;
 	}
 
-	if (!Parse_TryParseBlock(&args[0], &s_ReplacedBlock)) {
+	if (!Parse_TryParseBlock(&args[0], &s_ReplacedNotBlock)) {
 		return false;
 	}
 
@@ -88,7 +80,9 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 	return true;
 }
 
-static void Replace_Command(const cc_string* args, int argsCount) {	
+static void ReplaceNot_Command(const cc_string* args, int argsCount) {	
+	MarkSelection_Abort();
+
 	if (!TryParseArguments(args, argsCount)) {
 		return;
 	}
