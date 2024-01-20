@@ -8,7 +8,6 @@
 #include "VectorsExtension.h"
 #include "ParsingUtils.h"
 #include "DataStructures/Array.h"
-#include "WorldUtils.h"
 
 static void Replace_Command(const cc_string* args, int argsCount);
 static bool TryParseArguments(const cc_string* args, int argsCount);

@@ -8,7 +8,6 @@
 #include "MarkSelection.h"
 #include "Messaging.h"
 #include "VectorsExtension.h"
-#include "WorldUtils.h"
 #include "DataStructures/Array.h"
 
 static void Paste_Command(const cc_string* args, int argsCount);

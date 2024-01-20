@@ -2,7 +2,7 @@
 
 #include "Messaging.h"
 #include "ParsingUtils.h"
-#include "WorldUtils.h"
+#include "Player.h"
 #include "DataStructures/Axis.h"
 
 typedef enum TimeUnit_ {
@@ -283,7 +283,7 @@ static void CoordinateError(const cc_string* coordinate) {
 }
 
 bool Parse_TryParseCoordinates(const cc_string* coordinates, IVec3* out_result) {
-	IVec3 playerPosition = GetCurrentPlayerPosition();
+	IVec3 playerPosition = Player_GetPosition();
 
     int arrayTarget[3];
     int arrayPlayerPosition[3] = { playerPosition.X, playerPosition.Y, playerPosition.Z };

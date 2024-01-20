@@ -6,7 +6,6 @@
 #include "ClassiCube/src/World.h"
 
 #include "Messaging.h"
-#include "WorldUtils.h"
 #include "MarkSelection.h"
 #include "VectorsExtension.h"
 

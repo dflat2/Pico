@@ -10,7 +10,6 @@
 #include "ParsingUtils.h"
 #include "DataStructures/Array.h"
 #include "DataStructures/List.h"
-#include "WorldUtils.h"
 #include "DataStructures/BinaryMap.h"
 #include "DataStructures/IVec3FastQueue.h"
 

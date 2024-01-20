@@ -4,7 +4,7 @@
 #include "ClassiCube/src/World.h"
 
 #include "Messaging.h"
-#include "WorldUtils.h"
+#include "Player.h"
 
 static void Ascend_Command(const cc_string* args, int argsCount);
 static void Descend_Command(const cc_string* args, int argsCount);

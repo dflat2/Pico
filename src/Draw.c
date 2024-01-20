@@ -3,7 +3,6 @@
 
 #include "Brushes/Brush.h"
 #include "UndoTree.h"
-#include "WorldUtils.h"
 
 static int s_blocksAffected;
 
