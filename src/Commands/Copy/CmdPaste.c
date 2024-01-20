@@ -12,7 +12,6 @@
 
 static void Paste_Command(const cc_string* args, int argsCount);
 static void PasteSelectionHandler(IVec3* marks, int count);
-static void ShowBlocksPasted(int amount);
 
 struct ChatCommand PasteCommand = {
 	"Paste",
@@ -34,19 +33,6 @@ typedef enum PasteMode_ {
 } PasteMode;
 
 static PasteMode s_Mode;
-
-static void ShowBlocksPasted(int amount) {
-	char message[128];
-
-	if (amount == 1) {
-		snprintf(message, sizeof(message), "&b%d &fblock were pasted.", amount);
-	} else {
-		snprintf(message, sizeof(message), "&b%d &fblocks were pasted.", amount);
-	}
-
-	Message_Player(message);
-}
-
 
 static void PasteSelectionHandler(IVec3* marks, int count) {
     if (count != 1 || BlocksBuffer_IsEmpty()) {
@@ -71,8 +57,8 @@ static void PasteSelectionHandler(IVec3* marks, int count) {
 		}
 	}
 
-    Draw_End();
-	ShowBlocksPasted(buffer.dimensions.X * buffer.dimensions.Y * buffer.dimensions.Z);
+    int blocksAffected = Draw_End();
+	Message_BlocksAffected(blocksAffected);
 }
 
 static void Paste_Command(const cc_string* args, int argsCount) {

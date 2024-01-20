@@ -52,7 +52,8 @@ static void DoCut(IVec3 mark1, IVec3 mark2) {
 		}
 	}
 
-    Draw_End();
+    int blocksAffected = Draw_End();
+	Message_BlocksAffected(blocksAffected);
 }
 
 static void CutSelectionHandler(IVec3* marks, int count) {

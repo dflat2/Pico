@@ -92,12 +92,15 @@ static void TreeSelectionHandler(IVec3* marks, int count) {
     DrawLeavesLayer2(x, y, z);
     DrawLeavesLayer3(x, y, z);
     DrawLeavesLayer4(x, y, z);
-    Draw_End();
+    int blocksAffected = Draw_End();
 
     if (s_Repeat) {
         MarkSelection_Make(TreeSelectionHandler, 1, "Tree");
         Message_Player("Place or break a block to determine the root.");
+        return;
     }
+
+	Message_BlocksAffected(blocksAffected);
 }
 
 static void Tree_Command(const cc_string* args, int argsCount) {

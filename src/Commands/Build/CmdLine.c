@@ -134,8 +134,6 @@ static void DoWall(IVec3 from, IVec3 to) {
 	for (int y = yMin; y <= yMax; y++) {
 		Draw_Brush(to.X, round(y), to.Z);
 	}
-
-    Draw_End();
 }
 
 static FVec3 Bezier(FVec3 from, FVec3 controlPoint, FVec3 to, float t) {
@@ -170,8 +168,6 @@ static void DoBezier(IVec3 from, IVec3 controlPoint, IVec3 to) {
 		Line(lineStart, lineEnd);
 		lineStart = lineEnd;
 	}
-
-    Draw_End();
 }
 
 static void LineSelectionHandler(IVec3* marks, int count) {
@@ -183,9 +179,14 @@ static void LineSelectionHandler(IVec3* marks, int count) {
 		DoBezier(marks[0], marks[1], marks[2]);
 	}
 
+	int blocksAffected = Draw_End();
+
 	if (s_Repeat) {
 		MakeSelection();
+		return;
 	}
+
+	Message_BlocksAffected(blocksAffected);
 }
 
 static bool TryParseArguments(const cc_string* args, int argsCount) {
@@ -244,15 +245,20 @@ static void Line_Command(const cc_string* args, int argsCount) {
 		Message_Player("Now repeating &bLine&f.");
 	}
 
+	if (s_Mode != MODE_BEZIER) {
+		Message_Player("&fPlace or break two blocks to determine the endpoints.");
+	} else {
+		Message_Player("Place or break three blocks.");
+	}
+
     MakeSelection();
 }
 
 static void MakeSelection() {
     if (s_Mode != MODE_BEZIER) {
         MarkSelection_Make(LineSelectionHandler, 2, "Line");
-        Message_Player("&fPlace or break two blocks to determine the endpoints.");
+        
     } else {
         MarkSelection_Make(LineSelectionHandler, 3, "Line (bezier)");
-        Message_Player("Place or break three blocks (the second one is the control point);");
     }
 }

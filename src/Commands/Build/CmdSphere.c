@@ -53,7 +53,8 @@ static void DoSphere() {
         }
     }
 
-    Draw_End();
+    int blocksAffected = Draw_End();
+	Message_BlocksAffected(blocksAffected);
 }
 
 static bool ShouldDraw(int x, int y, int z) {

@@ -61,7 +61,11 @@ static void DoCircle() {
         }
     }
 
-    Draw_End();
+	int blocksAffected = Draw_End();
+
+    if (!s_Repeat) {
+        Message_BlocksAffected(blocksAffected);
+    }
 }
 
 static bool ShouldDraw(IVec2 vector) {

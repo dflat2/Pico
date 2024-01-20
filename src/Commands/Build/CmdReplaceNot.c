@@ -43,7 +43,8 @@ static void DoReplaceNot(IVec3 min, IVec3 max) {
 		}
 	}
 
-    Draw_End();
+    int blocksAffected = Draw_End();
+	Message_BlocksAffected(blocksAffected);
 }
 
 static void ReplaceSelectionHandler(IVec3* marks, int count) {

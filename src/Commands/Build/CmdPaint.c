@@ -53,9 +53,12 @@ static void PaintSelectionHandler(IVec3* marks, int count) {
 
 	Draw_Start("Paint");
     Draw_Brush(marks[0].X, marks[0].Y, marks[0].Z);
-    Draw_End();
+    int blocksAffected = Draw_End();
 
     if (s_Repeat) {
 		MarkSelection_Make(&PaintSelectionHandler, 1, "Paint");
+		return;
     }
+
+	Message_BlocksAffected(blocksAffected);
 }

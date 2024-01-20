@@ -164,15 +164,18 @@ static void FillSelectionHandler(IVec3* marks, int count) {
 		}
 	}
 
-    Draw_End();
-
 	BinaryMap_Free(binaryMap);
 	IVec3FastQueue_Free(queue);
+
+	int blocksAffected = Draw_End();
 
 	if (s_Repeat) {
         MarkSelection_Make(FillSelectionHandler, 1, "Fill");
         Message_Player("Place or break a block.");
+		return;
     }
+
+	Message_BlocksAffected(blocksAffected);
 }
 
 static void Fill_Command(const cc_string* args, int argsCount) {

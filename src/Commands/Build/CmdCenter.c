@@ -54,7 +54,8 @@ static void Center(IVec3 a, IVec3 b) {
             }
         }
     }
-	Draw_End();
+	int blocksAffected = Draw_End();
+    Message_BlocksAffected(blocksAffected);
 
     char message[128];
     snprintf(message, sizeof(message), "&fDrew cuboid at center from &b(%d, %d, %d)&f to &b(%d, %d, %d)&f.",

@@ -62,7 +62,11 @@ static void DoCuboidSolid(IVec3 min, IVec3 max) {
 	Draw_Start("Cuboid solid");
     DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, max.Z);
 
-    Draw_End();
+    int blocksAffected = Draw_End();
+
+    if (!s_Repeat) {
+	    Message_BlocksAffected(blocksAffected);
+    }
 }
 
 static void DoCuboidHollow(IVec3 min, IVec3 max) {
@@ -74,7 +78,11 @@ static void DoCuboidHollow(IVec3 min, IVec3 max) {
     DrawCuboid(min.X, max.Y, min.Z, max.X, max.Y, max.Z);
     DrawCuboid(min.X, min.Y, max.Z, max.X, max.Y, max.Z);
 
-    Draw_End();
+    int blocksAffected = Draw_End();
+
+    if (!s_Repeat) {
+	    Message_BlocksAffected(blocksAffected);
+    }
 }
 
 static void DoCuboidWalls(IVec3 min, IVec3 max) {
@@ -84,7 +92,11 @@ static void DoCuboidWalls(IVec3 min, IVec3 max) {
     DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, max.Z);
     DrawCuboid(min.X, min.Y, max.Z, max.X, max.Y, max.Z);
 
-    Draw_End();
+    int blocksAffected = Draw_End();
+
+    if (!s_Repeat) {
+	    Message_BlocksAffected(blocksAffected);
+    }
 }
 
 static void DoCuboidWire(IVec3 min, IVec3 max) {
@@ -116,7 +128,11 @@ static void DoCuboidCorners(IVec3 min, IVec3 max) {
     Draw_Brush(max.X, max.Y, min.Z);
     Draw_Brush(max.X, max.Y, max.Z);
 
-    Draw_End();
+    int blocksAffected = Draw_End();
+
+    if (!s_Repeat) {
+	    Message_BlocksAffected(blocksAffected);
+    }
 }
 
 static CuboidOperation GetFunction(char mode) {
@@ -146,7 +162,6 @@ static void ZSelectionHandler(IVec3* marks, int count) {
 
 	if (s_Repeat) {
 		MarkSelection_Make(ZSelectionHandler, 2, "Z");
-    	Message_Player("&fPlace or break two blocks to determine the edges.");
 	}
 }
 
