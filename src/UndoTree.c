@@ -310,7 +310,7 @@ void UndoTree_ShowLeaves() {
 		Format_Int32(currentNode->commit, formattedCommit, sizeof(formattedCommit));
 
 		char message[64];
-		snprintf(message, sizeof(message), "[&e%s&f]&e %s @%s/%s", formattedCommit, currentNode->description, formattedTime, formattedBlocks);
+		snprintf(message, sizeof(message), "[&b%s&f]&b %s @%s/%s", formattedCommit, currentNode->description, formattedTime, formattedBlocks);
 
 		Message_Player(message);
 	}
@@ -477,10 +477,10 @@ static void ShowCurrentNode() {
 	Format_Int32(s_here->commit, formattedCommit, sizeof(formattedCommit));
 
 	char status1[64];
-	snprintf(status1, sizeof(status1), "[&e%s&f]&e %s @%s", formattedCommit, s_here->description, formattedTime);
+	snprintf(status1, sizeof(status1), "[%s] %s @%s", formattedCommit, s_here->description, formattedTime);
 
 	char status2[64];
-	snprintf(status2, sizeof(status2), "Blocks affected: &e%s", formattedBlocks);
+	snprintf(status2, sizeof(status2), "Blocks affected: %s", formattedBlocks);
 
 	Message_MessageOf(status1, MSG_TYPE_STATUS_1);
 	Message_MessageOf(status2, MSG_TYPE_STATUS_2);
