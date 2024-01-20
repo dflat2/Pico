@@ -5,7 +5,6 @@ static BlockID BrushCheckered_Paint(int x, int y, int z);
 static bool BrushCheckered_TryParseArguments(const cc_string* args, int argsCount);
 
 Brush BrushCheckered = {
-	.name = "@Checkered",
 	.TryParseArguments = &BrushCheckered_TryParseArguments,
 	.Paint = &BrushCheckered_Paint,
 }; 

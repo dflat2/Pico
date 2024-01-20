@@ -7,7 +7,6 @@ static bool BrushRainbow_TryParseArguments(const cc_string* args, int argsCount)
 static BlockID BrushRainbow_Paint(int x, int y, int z);
 
 Brush BrushRainbow = {
-	.name = "@Rainbow",
 	.TryParseArguments = &BrushRainbow_TryParseArguments,
 	.Paint = &BrushRainbow_Paint,
 }; 

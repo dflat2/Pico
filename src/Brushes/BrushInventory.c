@@ -8,7 +8,6 @@ static bool BrushInventory_TryParseArguments(const cc_string* args, int argsCoun
 static BlockID BrushInventory_Paint(int x, int y, int z);
 
 Brush BrushInventory = {
-	.name = "@Inventory",
 	.TryParseArguments = &BrushInventory_TryParseArguments,
 	.Paint = &BrushInventory_Paint,
 }; 

@@ -6,7 +6,6 @@
 #include "ClassiCube/src/Core.h"
 
 typedef struct Brush_ {
-	char* name;
 	bool (*TryParseArguments)(const cc_string* args, int argsCount);
 	BlockID (*Paint)(int x, int y, int z);
 } Brush;
