@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "ClassiCube/src/World.h"
+
 #include "BlocksBuffer.h"
-#include "WorldUtils.h"
 
 typedef enum S3_ { XYZ, XZY, ZYX, YXZ, ZXY, YZX } S3;
 
@@ -63,7 +64,7 @@ bool BlocksBuffer_TryCopy(IVec3 mark1, IVec3 mark2, int* out_amountCopied) {
 	for (int x = min.X; x <= max.X; x++) {
 		for (int y = min.Y; y <= max.Y; y++) {
 			for (int z = min.Z; z <= max.Z; z++) {
-				blocks[index] = GetBlock(x, y, z);
+				blocks[index] = World_GetBlock(x, y, z);
 				index++;
 			}
 		}

@@ -146,9 +146,9 @@ static bool IsSolidBlock(BlockID id) {
 }
 
 static bool CanStandOnBlock(int x, int y, int z) {
-	BlockID below = IsInWorldBoundaries(x, y - 1, z) ? GetBlock(x, y - 1, z) : BLOCK_AIR;
-	BlockID feet = IsInWorldBoundaries(x, y, z) ? GetBlock(x, y, z) : BLOCK_AIR;
-	BlockID head = IsInWorldBoundaries(x, y + 1, z) ? GetBlock(x, y + 1, z) : BLOCK_AIR;
+	BlockID below = World_Contains(x, y - 1, z) ? World_GetBlock(x, y - 1, z) : BLOCK_AIR;
+	BlockID feet = World_Contains(x, y, z) ? World_GetBlock(x, y, z) : BLOCK_AIR;
+	BlockID head = World_Contains(x, y + 1, z) ? World_GetBlock(x, y + 1, z) : BLOCK_AIR;
 
 	// y == 0 is always solid because it's bedrock, though outside of the world boundaries.
 	if (y == 0) {

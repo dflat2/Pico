@@ -37,14 +37,3 @@ IVec3 SnapToWorldBoundaries(IVec3 coords) {
 
     return coords;
 }
-
-bool IsInWorldBoundaries(int x, int y, int z) {
-	return (0 <= x && x <= World.Width) &&
-		   (0 <= y && y <= World.Height) &&
-		   (0 <= z && z <= World.Length);
-}
-
-BlockID GetBlock(int x, int y, int z) {
-	int i = World_Pack(x, y, z);
-	return (BlockID)World_GetRawBlock(i);
-}

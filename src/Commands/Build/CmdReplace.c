@@ -39,7 +39,7 @@ static void DoReplace(IVec3 min, IVec3 max) {
 	for (int x = min.X; x <= max.X; x++) {
 		for (int y = min.Y; y <= max.Y; y++) {
 			for (int z = min.Z; z <= max.Z; z++) {
-				current = GetBlock(x, y, z);
+				current = World_GetBlock(x, y, z);
 
 				if (current == s_ReplacedBlock) {
 					Draw_Brush(x, y, z);

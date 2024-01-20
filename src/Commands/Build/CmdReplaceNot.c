@@ -37,7 +37,7 @@ static void DoReplaceNot(IVec3 min, IVec3 max) {
 	for (int x = min.X; x <= max.X; x++) {
 		for (int y = min.Y; y <= max.Y; y++) {
 			for (int z = min.Z; z <= max.Z; z++) {
-				if (GetBlock(x, y, z) != s_ReplacedNotBlock) {
+				if (World_GetBlock(x, y, z) != s_ReplacedNotBlock) {
 					Draw_Brush(x, y, z);
 				}
 			}

@@ -121,8 +121,8 @@ static bool TryExpand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlo
 	for (int i = 0; i < count; i++) {
 		neighbor = neighbors[i];
 
-		if (!IsInWorldBoundaries(neighbor.X, neighbor.Y, neighbor.Z) ||
-			GetBlock(neighbor.X, neighbor.Y, neighbor.Z) != filledOverBlock ||
+		if (!World_Contains(neighbor.X, neighbor.Y, neighbor.Z) ||
+			World_GetBlock(neighbor.X, neighbor.Y, neighbor.Z) != filledOverBlock ||
 			BinaryMap_Get(binaryMap, neighbor.X, neighbor.Y, neighbor.Z)) {
 			continue;
 		}
@@ -139,7 +139,7 @@ static bool TryExpand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlo
 
 static void FillSelectionHandler(IVec3* marks, int count) {
 	IVec3 fillOrigin = marks[0];
-	BlockID filledOverBlock = GetBlock(fillOrigin.X, fillOrigin.Y, fillOrigin.Z);
+	BlockID filledOverBlock = World_GetBlock(fillOrigin.X, fillOrigin.Y, fillOrigin.Z);
 	BinaryMap* binaryMap = BinaryMap_CreateEmpty(World.Width, World.Height, World.Length);
 	IVec3FastQueue* queue = IVec3FastQueue_CreateEmpty();
 

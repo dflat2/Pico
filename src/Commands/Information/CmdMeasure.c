@@ -3,6 +3,7 @@
 
 #include "ClassiCube/src/Block.h"
 #include "ClassiCube/src/Chat.h"
+#include "ClassiCube/src/World.h"
 
 #include "Messaging.h"
 #include "WorldUtils.h"
@@ -51,7 +52,7 @@ static void CountBlocks(int x1, int y1, int z1, int x2, int y2, int z2) {
 	for (int x = x1; x <= x2; x++) {
 		for (int y = y1; y <= y2; y++) {
 			for (int z = z1; z <= z2; z++) {
-				currentBlock = GetBlock(x, y, z);
+				currentBlock = World_GetBlock(x, y, z);
 
 				for (int i = 0; i < s_Count; i++) {
 					if (s_Blocks[i] == currentBlock) {

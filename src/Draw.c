@@ -1,4 +1,5 @@
 #include "ClassiCube/src/Game.h"
+#include "ClassiCube/src/World.h"
 
 #include "Brushes/Brush.h"
 #include "UndoTree.h"
@@ -15,11 +16,11 @@ void Draw_Start(char* description) {
 }
 
 void Draw_Block(int x, int y, int z, BlockID block) {
-	if (!IsInWorldBoundaries(x, y, z)) {
+	if (!World_Contains(x, y, z)) {
 		return;
 	}
 
-	BlockID current = GetBlock(x, y, z);
+	BlockID current = World_GetBlock(x, y, z);
 
 	if (current == block) {
 		return;

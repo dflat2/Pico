@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "ClassiCube/src/Chat.h"
+#include "ClassiCube/src/World.h"
 
 #include "Draw.h"
 #include "DataStructures/BlocksBuffer.h"
@@ -62,7 +63,7 @@ static void PasteSelectionHandler(IVec3* marks, int count) {
 		for (int y = origin.Y; y < origin.Y + buffer.dimensions.Y; y++) {
 			for (int z = origin.Z; z < origin.Z + buffer.dimensions.Z; z++) {
 				index++;
-				if (!IsInWorldBoundaries(x, y, z)) continue;
+				if (!World_Contains(x, y, z)) continue;
 
 				if (s_Mode == MODE_AIR || buffer.content[index] != BLOCK_AIR) {
 					Draw_Block(x, y, z, buffer.content[index]);

@@ -35,7 +35,7 @@ static void DoReplaceAll() {
 	for (int x = 0; x <= World.Width - 1; x++) {
 		for (int y = 0; y <= World.Height - 1; y++) {
 			for (int z = 0; z <= World.Length - 1; z++) {
-				if (GetBlock(x, y, z) == s_ReplacedBlock) {
+				if (World_GetBlock(x, y, z) == s_ReplacedBlock) {
 					Draw_Brush(x, y, z);
 				}
 			}
