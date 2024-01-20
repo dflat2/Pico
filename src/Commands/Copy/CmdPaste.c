@@ -4,6 +4,7 @@
 #include "ClassiCube/src/World.h"
 
 #include "Draw.h"
+#include "ParsingUtils.h"
 #include "DataStructures/BlocksBuffer.h"
 #include "MarkSelection.h"
 #include "Messaging.h"
@@ -13,12 +14,14 @@
 static void Paste_Command(const cc_string* args, int argsCount);
 static void PasteSelectionHandler(IVec3* marks, int count);
 
+static bool s_Repeat = false;
+
 struct ChatCommand PasteCommand = {
 	"Paste",
 	Paste_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Paste [mode]",
+		"&b/Paste [mode] +",
 		"Pastes the stored copy.",
 		"&fList of modes: &bnormal&f (default), &bair&f.",
 		NULL,
@@ -57,11 +60,19 @@ static void PasteSelectionHandler(IVec3* marks, int count) {
 		}
 	}
 
-    int blocksAffected = Draw_End();
+	int blocksAffected = Draw_End();
+
+	if (s_Repeat) {
+        MarkSelection_Make(PasteSelectionHandler, 1, "Paste");
+		return;
+    }
+
 	Message_BlocksAffected(blocksAffected);
 }
 
 static void Paste_Command(const cc_string* args, int argsCount) {
+	s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+
 	if (BlocksBuffer_IsEmpty()) {
 		Message_Player("&fYou haven't copied anything yet.");
 		MarkSelection_Abort();
@@ -93,6 +104,10 @@ static void Paste_Command(const cc_string* args, int argsCount) {
 		}
 
 		s_Mode = (PasteMode)modeIndex;
+	}
+
+	if (s_Repeat) {
+		Message_Player("Now repeating &bPaste&f.");
 	}
 
     MarkSelection_Make(PasteSelectionHandler, 1, "Paste");
