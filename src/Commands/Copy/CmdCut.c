@@ -52,8 +52,7 @@ static void DoCut(IVec3 mark1, IVec3 mark2) {
 		}
 	}
 
-	int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
+    Draw_End();
 }
 
 static void CutSelectionHandler(IVec3* marks, int count) {
@@ -72,6 +71,6 @@ static void CutSelectionHandler(IVec3* marks, int count) {
 }
 
 static void Cut_Command(const cc_string* args, int argsCount) {
-    MarkSelection_Make(CutSelectionHandler, 2);
+    MarkSelection_Make(CutSelectionHandler, 2, "Cut");
     Message_Player("&fPlace or break two blocks to determine the edges.");
 }

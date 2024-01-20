@@ -41,8 +41,7 @@ static void DoReplaceAll() {
 		}
 	}
 
-	int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
+    Draw_End();
 }
 
 static bool TryParseArguments(const cc_string* args, int argsCount) {

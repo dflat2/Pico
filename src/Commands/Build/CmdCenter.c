@@ -72,7 +72,7 @@ static void CenterSelectionHandler(IVec3* marks, int count) {
     Center(marks[0], marks[1]);
 
     if (s_Repeat) {
-        MarkSelection_Make(CenterSelectionHandler, 2);
+        MarkSelection_Make(CenterSelectionHandler, 2, "Center");
         Message_Player("&fPlace or break two blocks to determine the edges.");
     }
 }
@@ -90,6 +90,6 @@ static void Center_Command(const cc_string* args, int argsCount) {
 		Message_Player("Now repeating &bCenter&f.");
 	}
 
-    MarkSelection_Make(CenterSelectionHandler, 2);
+    MarkSelection_Make(CenterSelectionHandler, 2, "Center");
     Message_Player("&fPlace or break two blocks to determine the edges.");
 }

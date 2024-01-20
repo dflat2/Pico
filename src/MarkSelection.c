@@ -4,6 +4,7 @@
 #include "ClassiCube/src/Game.h"
 #include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/Inventory.h"
+#include "ClassiCube/src/String.h"
 
 #include "MarkSelection.h"
 #include "Messaging.h"
@@ -14,11 +15,14 @@
 static bool s_InProgress = false;
 static int s_CurrentMark = 0;
 static int s_TotalMarks = 0;
+static char s_OperationBuffer[64];
+static cc_string s_Operation = String_FromArray(s_OperationBuffer);
 static IVec3 s_Marks[MAX_MARKS] = { 0 };
 static SelectionHandler s_Handler = NULL;
 
 static void ValidateSelection();
 static void ResetSelectionState();
+static void ShowMarksLeft();
 static void UnregisterBlockChanged();
 static void RegisterBlockChanged();
 static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock);
@@ -31,10 +35,7 @@ void MarkSelection_DoMark(IVec3 coords) {
 
     s_Marks[s_CurrentMark] = coords;
     s_CurrentMark++;
-
-    char message[64];
-    snprintf(message, 64, "&fMark placed at &b(%d, %d, %d)&f.", coords.X, coords.Y, coords.Z);
-    Message_Player(message);
+    ShowMarksLeft();
 
     if (s_CurrentMark == s_TotalMarks) {
         ValidateSelection();
@@ -44,6 +45,7 @@ void MarkSelection_DoMark(IVec3 coords) {
 void MarkSelection_Abort() {
     ResetSelectionState();
     UnregisterBlockChanged();
+    ShowMarksLeft();
 }
 
 int MarkSelection_RemainingMarks() {
@@ -54,16 +56,53 @@ int MarkSelection_RemainingMarks() {
     return s_TotalMarks - s_CurrentMark;
 }
 
-void MarkSelection_Make(SelectionHandler handler, int count) {
+void MarkSelection_Make(SelectionHandler handler, int count, const char* operation) {
 	if (s_InProgress) {
 		MarkSelection_Abort();
 	}
+
+    cc_string cc_operation = String_FromReadonly(operation);
+    String_Copy(&s_Operation, &cc_operation);
 
     s_InProgress = true;
     s_CurrentMark = 0;
     s_TotalMarks = count;
     s_Handler = handler;
+    ShowMarksLeft();
     RegisterBlockChanged();
+}
+
+static void ShowMarksLeft() {
+    int marksLeft = s_TotalMarks - s_CurrentMark;
+
+    if (marksLeft == 0) {
+        Message_MessageOf("", MSG_TYPE_BOTTOMRIGHT_1);
+        return;
+    }
+
+    cc_string diamond = String_FromConst("\x04");
+    cc_string aquaCode = String_FromConst("&b");
+    cc_string whiteCode = String_FromConst("&f");
+
+    char buffer[64];
+    cc_string message = String_FromArray(buffer);
+    String_AppendString(&message, &aquaCode);
+    String_AppendString(&message, &s_Operation);
+    String_AppendConst(&message, " &f[");
+
+    for (int i = 0; i < s_TotalMarks; i++) {
+        if (i == s_CurrentMark) {
+            String_AppendString(&message, &aquaCode);
+            String_AppendString(&message, &diamond);
+            String_AppendString(&message, &whiteCode);
+        } else {
+            String_AppendString(&message, &diamond);
+        }
+    }
+
+    String_AppendConst(&message, "]");
+
+    Chat_AddOf(&message, MSG_TYPE_BOTTOMRIGHT_1);
 }
 
 static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock) {

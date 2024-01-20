@@ -71,8 +71,7 @@ static void PasteSelectionHandler(IVec3* marks, int count) {
 		}
 	}
 
-	int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
+    Draw_End();
 	ShowBlocksPasted(buffer.dimensions.X * buffer.dimensions.Y * buffer.dimensions.Z);
 }
 
@@ -110,6 +109,6 @@ static void Paste_Command(const cc_string* args, int argsCount) {
 		s_Mode = (PasteMode)modeIndex;
 	}
 
-    MarkSelection_Make(PasteSelectionHandler, 1);
+    MarkSelection_Make(PasteSelectionHandler, 1, "Paste");
     Message_Player("&fPlace a block in the corner of where you want to paste.");
 }

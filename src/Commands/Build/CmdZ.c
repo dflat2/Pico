@@ -62,8 +62,7 @@ static void DoCuboidSolid(IVec3 min, IVec3 max) {
 	Draw_Start("Cuboid solid");
     DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, max.Z);
 
-	int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
+    Draw_End();
 }
 
 static void DoCuboidHollow(IVec3 min, IVec3 max) {
@@ -75,8 +74,7 @@ static void DoCuboidHollow(IVec3 min, IVec3 max) {
     DrawCuboid(min.X, max.Y, min.Z, max.X, max.Y, max.Z);
     DrawCuboid(min.X, min.Y, max.Z, max.X, max.Y, max.Z);
 
-	int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
+    Draw_End();
 }
 
 static void DoCuboidWalls(IVec3 min, IVec3 max) {
@@ -86,8 +84,7 @@ static void DoCuboidWalls(IVec3 min, IVec3 max) {
     DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, max.Z);
     DrawCuboid(min.X, min.Y, max.Z, max.X, max.Y, max.Z);
 
-	int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
+    Draw_End();
 }
 
 static void DoCuboidWire(IVec3 min, IVec3 max) {
@@ -105,8 +102,7 @@ static void DoCuboidWire(IVec3 min, IVec3 max) {
     DrawCuboid(max.X, min.Y, max.Z, max.X, max.Y, max.Z);
     DrawCuboid(max.X, max.Y, min.Z, max.X, max.Y, max.Z);
 
-	int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
+    Draw_End();
 }
 
 static void DoCuboidCorners(IVec3 min, IVec3 max) {
@@ -120,8 +116,7 @@ static void DoCuboidCorners(IVec3 min, IVec3 max) {
     Draw_Brush(max.X, max.Y, min.Z);
     Draw_Brush(max.X, max.Y, max.Z);
 
-	int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
+    Draw_End();
 }
 
 static CuboidOperation GetFunction(char mode) {
@@ -150,7 +145,7 @@ static void ZSelectionHandler(IVec3* marks, int count) {
     Operation(Min(marks[0], marks[1]), Max(marks[0], marks[1]));
 
 	if (s_Repeat) {
-		MarkSelection_Make(ZSelectionHandler, 2);
+		MarkSelection_Make(ZSelectionHandler, 2, "Z");
     	Message_Player("&fPlace or break two blocks to determine the edges.");
 	}
 }
@@ -214,6 +209,6 @@ static void Z_Command(const cc_string* args, int argsCount) {
 		Message_Player("Now repeating &bZ&f.");
 	}
 
-    MarkSelection_Make(ZSelectionHandler, 2);
+    MarkSelection_Make(ZSelectionHandler, 2, "Z");
     Message_Player("&fPlace or break two blocks to determine the edges.");
 }

@@ -15,20 +15,6 @@ void Message_MessageOf(const char* message, int messageType) {
 	Chat_AddOf(&ccStringMessage, messageType);
 }
 
-void Message_BlocksAffected(int blocksAffected) {
-	char message[64];
-
-	if (blocksAffected == 0) {
-		snprintf(message, sizeof(message), "No blocks affected.");
-	} else if (blocksAffected == 1) {
-		snprintf(message, sizeof(message), "&b%d&f block affected.", blocksAffected);
-	} else {
-		snprintf(message, sizeof(message), "&b%d&f blocks affected.", blocksAffected);
-	}
-
-	Message_Player(message);
-}
-
 void Message_ShowUnknownMode(const cc_string* mode) {
     char message[64];
     cc_string cc_message = { message, .length = 0, .capacity = sizeof(message) };

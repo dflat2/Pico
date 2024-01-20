@@ -43,7 +43,7 @@ static void Paint_Command(const cc_string* args, int argsCount) {
 	}
 
 	Message_Player("&fPlace or break a block to paint.");
-	MarkSelection_Make(&PaintSelectionHandler, 1);
+	MarkSelection_Make(&PaintSelectionHandler, 1, "Paint");
 }
 
 static void PaintSelectionHandler(IVec3* marks, int count) {
@@ -53,11 +53,9 @@ static void PaintSelectionHandler(IVec3* marks, int count) {
 
 	Draw_Start("Paint");
     Draw_Brush(marks[0].X, marks[0].Y, marks[0].Z);
-    int blocksAffected = Draw_End();
-    Message_BlocksAffected(blocksAffected);
+    Draw_End();
 
     if (s_Repeat) {
-		Message_Player("&fPlace or break a block to paint.");
-		MarkSelection_Make(&PaintSelectionHandler, 1);
+		MarkSelection_Make(&PaintSelectionHandler, 1, "Paint");
     }
 }

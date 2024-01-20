@@ -92,8 +92,6 @@ static void Line(IVec3 from, IVec3 to) {
 static void DoLine(IVec3 from, IVec3 to) {
 	Draw_Start("Line normal");
 	Line(from, to);
-	int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
 }
 
 static void DoWall(IVec3 from, IVec3 to) {
@@ -107,7 +105,6 @@ static void DoWall(IVec3 from, IVec3 to) {
 	if (steps == 0) {
 		printf("deltaX = %d, deltaZ = %d\n", deltaX, deltaZ);
 		Draw_End();
-		Message_BlocksAffected(0);
 		return;
 	}
 
@@ -138,8 +135,7 @@ static void DoWall(IVec3 from, IVec3 to) {
 		Draw_Brush(to.X, round(y), to.Z);
 	}
 
-	int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
+    Draw_End();
 }
 
 static FVec3 Bezier(FVec3 from, FVec3 controlPoint, FVec3 to, float t) {
@@ -175,8 +171,7 @@ static void DoBezier(IVec3 from, IVec3 controlPoint, IVec3 to) {
 		lineStart = lineEnd;
 	}
 
-	int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
+    Draw_End();
 }
 
 static void LineSelectionHandler(IVec3* marks, int count) {
@@ -254,10 +249,10 @@ static void Line_Command(const cc_string* args, int argsCount) {
 
 static void MakeSelection() {
     if (s_Mode != MODE_BEZIER) {
-        MarkSelection_Make(LineSelectionHandler, 2);
+        MarkSelection_Make(LineSelectionHandler, 2, "Line");
         Message_Player("&fPlace or break two blocks to determine the endpoints.");
     } else {
-        MarkSelection_Make(LineSelectionHandler, 3);
+        MarkSelection_Make(LineSelectionHandler, 3, "Line (bezier)");
         Message_Player("Place or break three blocks (the second one is the control point);");
     }
 }

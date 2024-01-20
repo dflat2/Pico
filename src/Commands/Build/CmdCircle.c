@@ -61,8 +61,7 @@ static void DoCircle() {
         }
     }
 
-    int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
+    Draw_End();
 }
 
 static bool ShouldDraw(IVec2 vector) {
@@ -84,7 +83,7 @@ static void CircleSelectionHandler(IVec3* marks, int count) {
     DoCircle();
 
     if (s_Repeat) {
-        MarkSelection_Make(CircleSelectionHandler, 1);
+        MarkSelection_Make(CircleSelectionHandler, 1, "Circle");
         Message_Player("&fPlace or break a block to determine the center.");
     }
 }
@@ -140,6 +139,6 @@ static void Circle_Command(const cc_string* args, int argsCount) {
 		Message_Player("Now repeating &bCircle&f.");
 	}
 
-    MarkSelection_Make(CircleSelectionHandler, 1);
+    MarkSelection_Make(CircleSelectionHandler, 1, "Circle");
     Message_Player("&fPlace or break a block to determine the center.");
 }

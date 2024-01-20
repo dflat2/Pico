@@ -92,11 +92,10 @@ static void TreeSelectionHandler(IVec3* marks, int count) {
     DrawLeavesLayer2(x, y, z);
     DrawLeavesLayer3(x, y, z);
     DrawLeavesLayer4(x, y, z);
-    int blocksAffected = Draw_End();
-    Message_BlocksAffected(blocksAffected);
+    Draw_End();
 
     if (s_Repeat) {
-        MarkSelection_Make(TreeSelectionHandler, 1);
+        MarkSelection_Make(TreeSelectionHandler, 1, "Tree");
         Message_Player("Place or break a block to determine the root.");
     }
 }
@@ -113,6 +112,6 @@ static void Tree_Command(const cc_string* args, int argsCount) {
 		Message_Player("Now repeating &bTree&f.");
 	}
 
-    MarkSelection_Make(TreeSelectionHandler, 1);
+    MarkSelection_Make(TreeSelectionHandler, 1, "Tree");
     Message_Player("Place or break a block to determine the root.");
 }

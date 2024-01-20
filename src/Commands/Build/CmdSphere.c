@@ -53,8 +53,7 @@ static void DoSphere() {
         }
     }
 
-    int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
+    Draw_End();
 }
 
 static bool ShouldDraw(int x, int y, int z) {
@@ -77,7 +76,7 @@ static void SphereSelectionHandler(IVec3* marks, int count) {
     DoSphere();
 
     if (s_Repeat) {
-        MarkSelection_Make(SphereSelectionHandler, 1);
+        MarkSelection_Make(SphereSelectionHandler, 1, "Sphere");
         Message_Player("&fPlace or break a block to determine the center.");
     }
 }
@@ -127,6 +126,6 @@ static void Sphere_Command(const cc_string* args, int argsCount) {
 		Message_Player("Now repeating &bSphere&f.");
 	}
 
-    MarkSelection_Make(SphereSelectionHandler, 1);
+    MarkSelection_Make(SphereSelectionHandler, 1, "Sphere");
     Message_Player("&fPlace or break a block to determine the center.");
 }

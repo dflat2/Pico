@@ -52,6 +52,6 @@ static void CopySelectionHandler(IVec3* marks, int count) {
 }
 
 static void Copy_Command(const cc_string* args, int argsCount) {
-    MarkSelection_Make(CopySelectionHandler, 2);
+    MarkSelection_Make(CopySelectionHandler, 2, "Copy");
     Message_Player("&fPlace or break two blocks to determine the edges.");
 }

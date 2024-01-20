@@ -7,7 +7,7 @@
 
 typedef void (*SelectionHandler)(IVec3* marks, int count);
 
-void MarkSelection_Make(SelectionHandler handler, int count);
+void MarkSelection_Make(SelectionHandler handler, int count, const char* operation);
 void MarkSelection_Abort();
 void MarkSelection_DoMark(IVec3 coordinates);
 int MarkSelection_RemainingMarks();

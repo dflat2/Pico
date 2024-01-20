@@ -164,14 +164,13 @@ static void FillSelectionHandler(IVec3* marks, int count) {
 		}
 	}
 
-	int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
+    Draw_End();
 
 	BinaryMap_Free(binaryMap);
 	IVec3FastQueue_Free(queue);
 
 	if (s_Repeat) {
-        MarkSelection_Make(FillSelectionHandler, 1);
+        MarkSelection_Make(FillSelectionHandler, 1, "Fill");
         Message_Player("Place or break a block.");
     }
 }
@@ -188,6 +187,6 @@ static void Fill_Command(const cc_string* args, int argsCount) {
 		Message_Player("Now repeating &bFill&f.");
 	}
 
-    MarkSelection_Make(FillSelectionHandler, 1);
+    MarkSelection_Make(FillSelectionHandler, 1, "Fill");
     Message_Player("Place or break a block.");
 }

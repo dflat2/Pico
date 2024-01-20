@@ -43,8 +43,7 @@ static void DoReplaceNot(IVec3 min, IVec3 max) {
 		}
 	}
 
-	int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
+    Draw_End();
 }
 
 static void ReplaceSelectionHandler(IVec3* marks, int count) {
@@ -86,6 +85,6 @@ static void ReplaceNot_Command(const cc_string* args, int argsCount) {
 		return;
 	}
 
-    MarkSelection_Make(ReplaceSelectionHandler, 2);
+    MarkSelection_Make(ReplaceSelectionHandler, 2, "ReplaceNot");
     Message_Player("Place or break two blocks to determine the edges.");
 }

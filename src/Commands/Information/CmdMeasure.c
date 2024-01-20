@@ -112,5 +112,5 @@ static void Measure_Command(const cc_string* args, int argsCount) {
 	}
 
 	Message_Player("Place or break two blocks to determine the edges.");
-	MarkSelection_Make(MeasureSelectionHandler, 2);
+	MarkSelection_Make(MeasureSelectionHandler, 2, "Measure");
 }
