@@ -22,6 +22,8 @@ bool Brush_TryLoad(const cc_string* name, const cc_string* args, int argsCount) 
 		brush = &BrushInventory;
 	} else if (String_CaselessEqualsConst(name, "@Rainbow")) {
 		brush = &BrushRainbow;
+	} else if (String_CaselessEqualsConst(name, "@Random")) {
+		brush = &BrushRandom;
 	} else if (String_CaselessEqualsConst(name, "@Solid")) {
 		brush = &BrushSolid;
 	} else {

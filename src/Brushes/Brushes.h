@@ -5,6 +5,7 @@
 
 extern Brush BrushCheckered;
 extern Brush BrushRainbow;
+extern Brush BrushRandom;
 extern Brush BrushSolid;
 extern Brush BrushInventory;
 
