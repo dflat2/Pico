@@ -43,13 +43,7 @@ static void Later_Command(const cc_string* args, int argsCount) {
 
 	int commit;
 	if (!UndoTree_Later(duration_Second, &commit)) {
-		char noOpMsg[64];
-		char fromString[] = "00:00:00";
-		Format_HHMMSS(UndoTree_CurrentTimestamp(), fromString, sizeof(fromString));
-		char maxString[] = "00:00:00";
-		Format_HHMMSS(UndoTree_CurrentTimestamp() + duration_Second, maxString, sizeof(maxString));
-		snprintf(noOpMsg, sizeof(noOpMsg), "No operation to checkout between &b%s&f and &b%s&f.", fromString, maxString); 
-		Message_Player(noOpMsg);
+		Message_Player("No operation to checkout");
 		return;
 	} 
 

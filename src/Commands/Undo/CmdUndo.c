@@ -31,7 +31,7 @@ static void Undo_Command(const cc_string* args, int argsCount) {
 		return;
 	}
 
-	if (!UndoTree_Ascend()) {
+	if (!UndoTree_Undo()) {
 		Message_Player("There is nothing to undo.");
 		return;
 	}

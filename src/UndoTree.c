@@ -34,7 +34,6 @@ typedef struct UndoNode_ {
 } UndoNode;
 
 static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID block);
-static void ShowCurrentNode();
 static void SetRedoChild(UndoNode* node);
 static void Attach(UndoNode* parent, UndoNode* child);
 static void CheckoutFromNode(UndoNode* target, int* ascended, int* descended);
@@ -68,7 +67,6 @@ void UndoTree_Enable() {
 	s_redoStack = List_CreateEmpty();
 
 	s_enabled = true;
-	ShowCurrentNode();
 
     struct Event_Void* event = (struct Event_Void*) &UserEvents.BlockChanged;
     Event_Void_Callback callback = (Event_Void_Callback)OnBlockChanged;
@@ -142,7 +140,6 @@ bool UndoTree_Earlier(int deltaTime_S, int* commit) {
 	UndoNode* target = List_Get(s_history, newIndex);
 	List_Append(s_redoStack, s_here);
 	CheckoutFromNode(target, NULL, NULL);
-	ShowCurrentNode();
 	*commit = s_here->commit;
 	return true;
 }
@@ -174,26 +171,15 @@ bool UndoTree_Later(int deltaTime_S, int* commit) {
 	UndoNode* target = List_Get(s_history, newIndex);
 	List_Append(s_redoStack, s_here);
 	CheckoutFromNode(target, NULL, NULL);
-	ShowCurrentNode();
 	*commit = s_here->commit;
 	return true;
 }
 
-bool UndoTree_Ascend() {
+bool UndoTree_Undo() {
 	if (!s_enabled || BuildingNode() || s_here->parent == NULL) return false;
 
 	List_Append(s_redoStack, s_here);
 	Ascend();
-	ShowCurrentNode();
-	return true;
-}
-
-bool UndoTree_Descend() {
-	if (!s_enabled || BuildingNode() || s_here->redoChild == NULL) return false;
-
-	List_Append(s_redoStack, s_here);
-	Descend();
-	ShowCurrentNode();
 	return true;
 }
 
@@ -205,7 +191,6 @@ bool UndoTree_Checkout(int commit, int* ascended, int* descended) {
 
 	List_Append(s_redoStack, s_here);
 	CheckoutFromNode(target, ascended, descended);
-	ShowCurrentNode();
 	return true;
 }
 
@@ -216,7 +201,6 @@ bool UndoTree_Redo() {
 
 	UndoNode* target = List_Pop(s_redoStack);
 	CheckoutFromNode(target, NULL, NULL);
-	ShowCurrentNode();
 	return true;
 }
 
@@ -287,33 +271,45 @@ void UndoTree_Commit() {
 	List_Clear(s_redoStack);
 	SetRedoChild(s_here);
 	s_buildingNode = NULL;
-	ShowCurrentNode();
 }
 
-void UndoTree_ShowLeaves() {
+void UndoTree_DescribeFiveLastLeaves(cc_string* descriptions, int* descriptionsCount) {
+	const size_t max = 5;
 	List* leaves = List_CreateEmpty();
 	GetLeaves(leaves);
 
-	int count = List_Count(leaves);
+	*descriptionsCount = List_Count(leaves);
+
+	if (*descriptionsCount > max) {
+		*descriptionsCount = max;
+	}
+
+	char buffer_formattedTime[STRING_SIZE];
+	cc_string formattedTime = String_FromArray(buffer_formattedTime);
+
+	char buffer_formattedBlocks[STRING_SIZE];
+	cc_string formattedBlocks = String_FromArray(buffer_formattedBlocks);
+
+	char buffer_formattedCommit[STRING_SIZE];
+	cc_string formattedCommit = String_FromArray(buffer_formattedCommit);
+
 	UndoNode* currentNode;
 
-	for (int i = 0; i < count; i++) {
+	for (int i = 0; i < *descriptionsCount; i++) {
 		currentNode = (UndoNode*) List_Get(leaves, i);
 
-		char formattedTime[] = "00:00:00";
-		Format_HHMMSS(currentNode->timestamp, formattedTime, sizeof(formattedTime));
+		Format_HHMMSS(&formattedTime, currentNode->timestamp);
+		Format_Int32(&formattedBlocks, currentNode->blocksAffected);
+		Format_Int32(&formattedCommit, currentNode->commit);
 
-		char formattedBlocks[15];
-		Format_Int32(currentNode->blocksAffected, formattedBlocks, sizeof(formattedBlocks));
-
-		char formattedCommit[15];
-		Format_Int32(currentNode->commit, formattedCommit, sizeof(formattedCommit));
-
-		char message[64];
-		snprintf(message, sizeof(message), "[&b%s&f]&b %s @%s/%s", formattedCommit, currentNode->description, formattedTime, formattedBlocks);
-
-		Message_Player(message);
+		if (currentNode->blocksAffected == 1) {
+			String_Format4(&descriptions[i], "[&b%s&f] %c @ %s (%s block)", &formattedCommit, currentNode->description, &formattedTime, &formattedBlocks);
+		} else {
+			String_Format4(&descriptions[i], "[&b%s&f] %c @ %s (%s blocks)", &formattedCommit, currentNode->description, &formattedTime, &formattedBlocks);
+		}
 	}
+
+	List_Free(leaves);
 }
 
 long UndoTree_CurrentTimestamp() {
@@ -464,26 +460,6 @@ static void SetRedoChild(UndoNode* node) {
 		currentNode->parent->redoChild = currentNode;
 		currentNode = currentNode->parent;
 	}
-}
-
-static void ShowCurrentNode() {
-	char formattedTime[] = "00:00:00";
-	Format_HHMMSS(s_here->timestamp, formattedTime, sizeof(formattedTime));
-
-	char formattedBlocks[15];
-	Format_Int32(s_here->blocksAffected, formattedBlocks, sizeof(formattedBlocks));
-
-	char formattedCommit[15];
-	Format_Int32(s_here->commit, formattedCommit, sizeof(formattedCommit));
-
-	char status1[64];
-	snprintf(status1, sizeof(status1), "[%s] %s @%s", formattedCommit, s_here->description, formattedTime);
-
-	char status2[64];
-	snprintf(status2, sizeof(status2), "Blocks affected: %s", formattedBlocks);
-
-	Message_MessageOf(status1, MSG_TYPE_STATUS_1);
-	Message_MessageOf(status2, MSG_TYPE_STATUS_2);
 }
 
 static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID block) {

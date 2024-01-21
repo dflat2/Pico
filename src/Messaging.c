@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "ClassiCube/src/Chat.h"
+#include "ClassiCube/src/Constants.h"
 #include "ClassiCube/src/String.h"
 
 #include "Format.h"
@@ -80,12 +81,16 @@ void Message_UndoDisabled(const char* action) {
 	Message_Player(cannotDoMsg);
 }
 
-void Message_UndoCheckedOut(int commit, int timestamp) {
-	char timestampString[] = "00:00:00";
-    Format_HHMMSS(timestamp, timestampString, sizeof(timestampString));
-	char successMsg[64];
-	snprintf(successMsg, sizeof(successMsg), "Checked out operation &b%d&f [&b%s&f].", commit, timestampString);
-	Message_Player(successMsg);
+void Message_UndoCheckedOut(int commit, int timestampInt) {
+	char buffer_timestamp[] = "00:00:00";
+    cc_string timestamp = String_FromArray(buffer_timestamp);
+    Format_HHMMSS(&timestamp, timestampInt);
+
+	char successMessageBuffer[STRING_SIZE];
+    cc_string successMessage = String_FromArray(successMessageBuffer);
+
+    String_Format2(&successMessage, "Checked out operation &b%d&f [&b%s&f].", &commit, &timestamp);
+	Chat_Add(&successMessage);
 }
 
 void Message_CommandUsage(struct ChatCommand command) {

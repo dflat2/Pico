@@ -3,9 +3,9 @@
 
 #include "ClassiCube/src/Block.h"
 
-void Format_HHMMSS(time_t time, char* buffer, size_t size) {
+void Format_HHMMSS(cc_string* destination, time_t time) {
 	struct tm* timeStruct = localtime(&time);
-	strftime(buffer, sizeof(buffer), "%X", timeStruct);
+	destination->length = strftime(destination->buffer, destination->capacity, "%X", timeStruct);
 }
 
 void Format_Block(BlockID block, char* buffer, size_t size) {
@@ -27,17 +27,17 @@ void Format_Coordinates(IVec3 coordinates, char* buffer, size_t size) {
 	snprintf(buffer, size, "(%d, %d, %d)", coordinates.X, coordinates.Y, coordinates.Z);
 }
 
-void Format_Int32(int integer, char* buffer, size_t max) {
-	if (integer == 0 && max >= 2) {
-		buffer[0] = '0';
-		buffer[1] = '\0';
+void Format_Int32(cc_string* destination, int integer) {
+	if (integer == 0 && destination->capacity >= 2) {
+		destination->buffer[0] = '0';
+		destination->length = 1;
 		return;
 	}
 
 	int32_t integer32 = (int32_t)integer;
 
-	// "-2,147,483,648" (-2^31) has 14 characters. Add one for '\0'.
-	char reversedResult[15] = { 0 };
+	// Longest possible result: "-2,147,483,648" (-2^31) has 14 characters.
+	char reversedResult[14] = { 0 };
 	bool isNegative = (integer < 0);
 
 	if (isNegative) {
@@ -47,8 +47,7 @@ void Format_Int32(int integer, char* buffer, size_t max) {
 	int integerTruncated = integer32;
 	int commaCounter = 0;
 
-	reversedResult[0] = '\0';
-	int i = 1;
+	int i = 0;
 
 	while (integerTruncated != 0) {
 		if (commaCounter == 3) {
@@ -71,9 +70,11 @@ void Format_Int32(int integer, char* buffer, size_t max) {
 	i--;
 	int j = 0;
 
-	while (i >= 0 && j < max) {
-		buffer[j] = reversedResult[i];
+	while (i >= 0 && j < destination->capacity) {
+		destination->buffer[j] = reversedResult[i];
 		i--;
 		j++;
 	}
+
+	destination->length = j;
 }

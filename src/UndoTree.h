@@ -12,8 +12,7 @@ void UndoTree_Enable();
 void UndoTree_Disable();
 
 // Undo tree navigation.
-bool UndoTree_Ascend();
-bool UndoTree_Descend();
+bool UndoTree_Undo();
 bool UndoTree_Earlier(int deltaTime_Second, int* commit); 
 bool UndoTree_Later(int deltaTime_S, int* commit);
 bool UndoTree_Checkout(int commit, int* out_ascended, int* out_descended);
@@ -25,7 +24,7 @@ void UndoTree_AddBlockChangeEntry(int x, int y, int z, DeltaBlockID delta);
 void UndoTree_Commit();
 
 // Information.
-void UndoTree_ShowLeaves();
+void UndoTree_DescribeFiveLastLeaves(cc_string* descriptions, int* descriptionsCount);
 bool UndoTree_Enabled();
 long UndoTree_CurrentTimestamp();
 
