@@ -46,7 +46,7 @@ static void FreeUndoNode(UndoNode* node);
 static bool TryInitRoot();
 static void GetLeaves(List* out_leaves);
 
-static UndoNode* s_root = NULL;
+static UndoNode s_root;
 static UndoNode* s_here = NULL;
 static UndoNode* s_buildingNode = NULL;
 static int s_entriesSize = 1;
@@ -59,11 +59,11 @@ void UndoTree_Enable() {
 	if (s_enabled) return;
 
 	TryInitRoot();
-	s_here = s_root;
+	s_here = &s_root;
 	s_buildingNode = NULL;
 	s_commitAutoIncrement = 0;
 	s_history = List_CreateEmpty();
-	List_Append(s_history, s_root);
+	List_Append(s_history, &s_root);
 	s_redoStack = List_CreateEmpty();
 
 	s_enabled = true;
@@ -79,7 +79,7 @@ void UndoTree_Disable() {
 	UndoNode* currentNode;
 	List* stack = List_CreateEmpty();
 
-	List_Append(stack, s_root);
+	List_Append(stack, &s_root);
 
 	while (!List_IsEmpty(stack)) {
 		currentNode = (UndoNode*) List_Pop(stack);
@@ -319,7 +319,7 @@ long UndoTree_CurrentTimestamp() {
 static void GetLeaves(List* out_leaves) {
 	UndoNode* currentNode;
 	List* stack = List_CreateEmpty();
-	List_Append(stack, s_root);
+	List_Append(stack, &s_root);
 
 	while (!List_IsEmpty(stack)) {
 		currentNode = (UndoNode*) List_Pop(stack);
@@ -339,21 +339,15 @@ static void GetLeaves(List* out_leaves) {
 }
 
 static bool TryInitRoot() {
-	s_root = malloc(sizeof(UndoNode));
-
-	if (s_root == NULL) {
-		return false;
-	}
-
-	s_root->commit = 0;
+	s_root.commit = 0;
 	char description[] = "World loaded";
-	strncpy(s_root->description, description, sizeof(description));
-	s_root->blocksAffected = World.Width * World.Height * World.Length;
-	s_root->entries = NULL;
-	s_root->timestamp = time(NULL);
-	s_root->parent = NULL;
-	s_root->children = List_CreateEmpty();
-	s_root->redoChild = NULL;
+	strncpy(s_root.description, description, sizeof(description));
+	s_root.blocksAffected = World.Width * World.Height * World.Length;
+	s_root.entries = NULL;
+	s_root.timestamp = time(NULL);
+	s_root.parent = NULL;
+	s_root.children = List_CreateEmpty();
+	s_root.redoChild = NULL;
 
 	return true;
 }
@@ -394,7 +388,7 @@ static void Descend() {
 static UndoNode* FindNode(int commit) {
 	UndoNode* currentNode;
 	List* stack = List_CreateEmpty();
-	List_Append(stack, s_root);
+	List_Append(stack, &s_root);
 
 	while (!List_IsEmpty(stack)) {
 		currentNode = (UndoNode*) List_Pop(stack);
