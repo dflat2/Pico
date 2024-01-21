@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/Constants.h"
 #include "ClassiCube/src/String.h"
@@ -89,8 +87,8 @@ void Message_UndoCheckedOut(int commit, int timestampInt) {
 	char successMessageBuffer[STRING_SIZE];
     cc_string successMessage = String_FromArray(successMessageBuffer);
 
-    String_Format2(&successMessage, "Checked out operation &b%d&f [&b%s&f].", &commit, &timestamp);
-	Chat_Add(&successMessage);
+    String_Format2(&successMessage, "Checked out operation &b%i&f [&b%s&f].", &commit, &timestamp);
+    Chat_Add(&successMessage);
 }
 
 void Message_CommandUsage(struct ChatCommand command) {
