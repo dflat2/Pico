@@ -18,9 +18,6 @@
 #include "UndoTree.h"
 #include "MarkSelection.h"
 
-// temporary
-#include "Format.h"
-
 static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
     const cc_string clientCuboid = String_FromReadonly("/client cuboid");
     const cc_string cuboid = String_FromReadonly("/cuboid");
@@ -63,12 +60,6 @@ static void SinglePlayerCommandsPlugin_Init(void) {
 	RegisterChatSending();
 	EnableUndoWhenMapLoaded();
 	MarkSelection_Abort();
-
-    int test = -2342;
-    char buffer[64];
-    cc_string string = String_FromArray(buffer);
-    Format_Int32(&string, test);
-    Chat_Add(&string);
 }
 
 EXPORT int Plugin_ApiVersion = 1;
