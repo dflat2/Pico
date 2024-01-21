@@ -13,10 +13,29 @@
 #include "ClassiCube/src/Entity.h"
 #include "ClassiCube/src/Event.h"
 #include "ClassiCube/src/Server.h"
+#include "ClassiCube/src/BlockPhysics.h"
 
 #include "Commands/Commands.h"
 #include "UndoTree.h"
 #include "MarkSelection.h"
+
+static void OnChatSending(void* obj, const cc_string* msg, int msgType);
+static void OnMapLoaded(void* obj);
+static void WarnOnCuboid();
+static void EnabledUndoOnMapLoaded();
+
+static void SinglePlayerCommandsPlugin_Init(void) {
+	if (!Server.IsSinglePlayer) {
+		return;
+	}
+
+	Commands_RegisterAll();
+	WarnOnCuboid();
+	EnabledUndoOnMapLoaded();
+	MarkSelection_Abort();
+    
+    Physics.Enabled = false;
+}
 
 static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
     const cc_string clientCuboid = String_FromReadonly("/client cuboid");
@@ -40,26 +59,16 @@ static void OnMapLoaded(void* obj) {
 	UndoTree_Enable();
 }
 
-static void RegisterChatSending() {
+static void WarnOnCuboid() {
     struct Event_Void* event = (struct Event_Void*) &ChatEvents.ChatSending;
     Event_Void_Callback callback = (Event_Void_Callback)OnChatSending;
     Event_Register(event, NULL, callback);
 }
-static void EnableUndoWhenMapLoaded() {
+
+static void EnabledUndoOnMapLoaded() {
     struct Event_Void* event = (struct Event_Void*) &WorldEvents.MapLoaded;
     Event_Void_Callback callback = (Event_Void_Callback)OnMapLoaded;
     Event_Register(event, NULL, callback);
-}
-
-static void SinglePlayerCommandsPlugin_Init(void) {
-	if (!Server.IsSinglePlayer) {
-		return;
-	}
-
-	Commands_RegisterAll();
-	RegisterChatSending();
-	EnableUndoWhenMapLoaded();
-	MarkSelection_Abort();
 }
 
 EXPORT int Plugin_ApiVersion = 1;
