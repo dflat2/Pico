@@ -20,8 +20,8 @@ struct ChatCommand CenterCommand = {
 	Center_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Center [+]",
-		"&fPlaces gold blocks at the center of your selection.",
+		"&b/Center [block/brush] +",
+		"&fPlaces blocks at the center of your selection.",
 		NULL,
 		NULL,
 		NULL
@@ -50,7 +50,7 @@ static void Center(IVec3 a, IVec3 b) {
     for (int i = centerCuboidMin.X; i <= centerCuboidMax.X; i++) {
         for (int j = centerCuboidMin.Y; j <= centerCuboidMax.Y; j++) {
             for (int k = centerCuboidMin.Z; k <= centerCuboidMax.Z; k++) {
-                Draw_Block(i, j, k, BLOCK_GOLD);
+                Draw_Brush(i, j, k);
             }
         }
     }
@@ -80,12 +80,14 @@ static void CenterSelectionHandler(IVec3* marks, int count) {
 
 static void Center_Command(const cc_string* args, int argsCount) {
     s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
-
-	if (argsCount != 0) {
-		Message_Player("&fUsage: &b/Center [+]&f.");
-		MarkSelection_Abort();
-		return;
-	}
+    
+    if (argsCount != 0) {
+        if (!Parse_TryParseBlockOrBrush(&args[0], argsCount)) {
+            return;
+        }
+    } else {
+        Brush_LoadInventory();
+    }
 
     if (s_Repeat) {
 		Message_Player("Now repeating &bCenter&f.");
