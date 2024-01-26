@@ -44,18 +44,25 @@ struct ChatCommand CircleCommand = {
 	NULL
 };
 
-static void DoCircle() {
+static void CircleSelectionHandler(IVec3* marks, int count) {
+    if (count != 1) {
+        return;
+    }
+
     Draw_Start("Circle");
     IVec3 current;
     IVec2 current2D;
+    double distance;
 
     for (int i = -s_Radius; i <= s_Radius; i++) {
         for (int j = -s_Radius; j <= s_Radius; j++) {
             current2D.X = i;
             current2D.Y = j;
 
-            if (ShouldDraw(current2D)) {
-                current = Add(s_Center, Transform2DTo3D(current2D, s_Axis));
+            distance = sqrt(IVec2_Dot(current2D, current2D));
+
+            if ((s_Mode == MODE_SOLID && distance <= s_Radius) || s_Radius - 1 <= distance && distance <= s_Radius) {
+                current = Add(marks[0], Transform2DTo3D(current2D, s_Axis));
                 Draw_Brush(current.X, current.Y, current.Z);
             }
         }
@@ -63,33 +70,12 @@ static void DoCircle() {
 
 	int blocksAffected = Draw_End();
 
-    if (!s_Repeat) {
-        Message_BlocksAffected(blocksAffected);
-    }
-}
-
-static bool ShouldDraw(IVec2 vector) {
-    double distance = sqrt(IVec2_Dot(vector, vector));
-
-    if (s_Mode == MODE_SOLID) {
-        return distance <= s_Radius;
-    }
-
-    return s_Radius - 1 <= distance && distance <= s_Radius;
-}
-
-static void CircleSelectionHandler(IVec3* marks, int count) {
-    if (count != 1) {
+    if (s_Repeat) {
+        MarkSelection_Make(CircleSelectionHandler, 1, "Circle");
         return;
     }
 
-    s_Center = marks[0];
-    DoCircle();
-
-    if (s_Repeat) {
-        MarkSelection_Make(CircleSelectionHandler, 1, "Circle");
-        Message_Player("&fPlace or break a block to determine the center.");
-    }
+    Message_BlocksAffected(blocksAffected);
 }
 
 static void Circle_Command(const cc_string* args, int argsCount) {
