@@ -35,7 +35,7 @@ struct ChatCommand CircleCommand = {
 	Circle_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Circle <radius> <axis> [mode] [brush/block] [+]",
+		"&b/Circle <radius> <axis> [mode] [brush/block] +",
         "Draws a circle of radius &b<radius>&f.",
         "&b<axis> &fmust be &bX&f, &bY&f or &bZ&f.",
         "List of modes: &bsolid&f (default) or &bhollow&f.",
@@ -105,7 +105,7 @@ static void Circle_Command(const cc_string* args, int argsCount) {
     }
 
     if (s_Radius <= 0) {
-        Message_Player("The &bradius &fmust be positive.");
+        Message_Player("The radius must be positive.");
         return;
     }
 

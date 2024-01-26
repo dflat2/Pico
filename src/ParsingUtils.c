@@ -180,6 +180,10 @@ bool Parse_TryParseNumber(const cc_string* string, int* out_number) {
 	}
 
 	if (!TryParsePositiveNumber(string, &start, out_number)) {
+		char invalidNumberMessageBuffer[64];
+		cc_string invalidNumberMessage = String_FromArray(invalidNumberMessageBuffer);
+		String_Format1(&invalidNumberMessage, "Invalid integer: &b%s&f.", string);
+		Chat_Add(&invalidNumberMessage);
 		return false;
 	}
 
