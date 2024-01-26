@@ -27,8 +27,6 @@ static int s_Radius;
 static IVec3 s_Center;
 
 static void Circle_Command(const cc_string* args, int argsCount);
-static void DoCircle();
-static bool ShouldDraw(IVec2 vector);
 
 struct ChatCommand CircleCommand = {
 	"Circle",
