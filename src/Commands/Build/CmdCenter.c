@@ -29,10 +29,19 @@ struct ChatCommand CenterCommand = {
 	NULL
 };
 
-static void Center(IVec3 a, IVec3 b) {
-    IVec3 min = Min(a, b);
-    IVec3 max = Max(a, b);
-    IVec3 delta = { .X = abs(a.X - b.X), .Y = abs(a.Y - b.Y), .Z = abs(a.Z - b.Z) };
+static void CenterSelectionHandler(IVec3* marks, int count) {
+    if (count != 2) {
+        return;
+    }
+
+    IVec3 min = Min(marks[0], marks[1]);
+    IVec3 max = Max(marks[0], marks[1]);
+
+    IVec3 delta = {
+        .X = max.X - min.X,
+        .Y = max.Y - min.Y,
+        .Z = max.Z - min.Z
+    };
 
     IVec3 centerCuboidMin = {
         .X = (min.X + max.X) / 2,
@@ -55,27 +64,20 @@ static void Center(IVec3 a, IVec3 b) {
         }
     }
 	int blocksAffected = Draw_End();
-    Message_BlocksAffected(blocksAffected);
 
     char message[128];
+
+    if (s_Repeat) {
+        MarkSelection_Make(CenterSelectionHandler, 2, "Center");
+        return;
+    }
+
     snprintf(message, sizeof(message), "&fDrew cuboid at center from &b(%d, %d, %d)&f to &b(%d, %d, %d)&f.",
              centerCuboidMin.X, centerCuboidMin.Y, centerCuboidMin.Z,
              centerCuboidMax.X, centerCuboidMax.Y, centerCuboidMax.Z);
 
     Message_Player(message);
-}
-
-static void CenterSelectionHandler(IVec3* marks, int count) {
-    if (count != 2) {
-        return;
-    }
-
-    Center(marks[0], marks[1]);
-
-    if (s_Repeat) {
-        MarkSelection_Make(CenterSelectionHandler, 2, "Center");
-        Message_Player("&fPlace or break two blocks to determine the edges.");
-    }
+    Message_BlocksAffected(blocksAffected);
 }
 
 static void Center_Command(const cc_string* args, int argsCount) {
