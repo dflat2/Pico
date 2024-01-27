@@ -31,7 +31,7 @@ struct ChatCommand SphereCommand = {
 	Sphere_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Sphere <radius> [mode] [brush/block] [+]",
+		"&b/Sphere <radius> [mode] [brush/block] +",
         "&fDraws a sphere of radius &b<radius>&f.",
         "&fList of modes: &bsolid&f (default), &bhollow&f.",
         NULL,

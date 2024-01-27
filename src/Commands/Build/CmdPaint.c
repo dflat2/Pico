@@ -18,8 +18,8 @@ struct ChatCommand PaintCommand = {
 	Paint_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Paint [block/brush] [+]&f- Paints a block.",
-		NULL,
+		"&b/Paint [block/brush] +",
+		"Paints a block.",
 		NULL,
 		NULL,
 		NULL
