@@ -1,7 +1,5 @@
 doc
 *.DS_Store
-CC_API
-makefile
+*.dylib
+debug.bash
 .vscode/
-tags
-ctags-deamon.bash
