@@ -8,6 +8,7 @@
 #include "Messaging.h"
 #include "MarkSelection.h"
 #include "VectorsExtension.h"
+#include "ParsingUtils.h"
 
 static void Measure_Command(const cc_string* args, int argsCount);
 static void MeasureSelectionHandler(IVec3* marks, int count);
@@ -19,9 +20,9 @@ struct ChatCommand MeasureCommand = {
 	Measure_Command,
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
-		"&b/Measure",
+		"&b/Measure +",
 		"&fDisplay the dimensions between two points.",
-		"&b/Measure <block>",
+		"&b/Measure <block> +",
 		"&fAdditionally, counts the number of &b<block>&fs.",
 		NULL
 	},
@@ -30,6 +31,7 @@ struct ChatCommand MeasureCommand = {
 
 static BlockID s_Blocks[10];
 static int s_Count;
+static bool s_Repeat;
 
 static void ShowCountedBlocks(int* counts) {
 	cc_string currentBlockName;
@@ -89,9 +91,16 @@ static void MeasureSelectionHandler(IVec3* marks, int count) {
 	IVec3 max = Max(marks[0], marks[1]);
 	
 	CountBlocks(min.X, min.Y, min.Z, max.X, max.Y, max.Z);
+
+	if (s_Repeat) {
+        MarkSelection_Make(MeasureSelectionHandler, 2, "Measure");
+        return;
+    }
 }
 
 static void Measure_Command(const cc_string* args, int argsCount) {
+	s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+
 	if (argsCount > 10) {
 		Message_Player("Cannot measure more than 10 blocks.");
 		return;
@@ -109,6 +118,10 @@ static void Measure_Command(const cc_string* args, int argsCount) {
 		}
 
 		s_Blocks[i] = (BlockID)currentBlock;
+	}
+
+	if (s_Repeat) {
+		Message_Player("Now repeating &bMeasure&f.");
 	}
 
 	Message_Player("Place or break two blocks to determine the edges.");
