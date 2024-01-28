@@ -8,12 +8,12 @@
 typedef int DeltaBlockID;
 
 // Initialisation and cleaning.
-void UndoTree_Enable(void);
+bool UndoTree_Enable(void);
 void UndoTree_Disable(void);
 
 // Undo tree navigation.
 bool UndoTree_Undo(void);
-bool UndoTree_Earlier(int deltaTime_Second, int* commit); 
+bool UndoTree_Earlier(int deltaTime_Second, int* out_commit); 
 bool UndoTree_Later(int deltaTime_S, int* commit);
 bool UndoTree_Checkout(int commit, int* out_ascended, int* out_descended);
 bool UndoTree_Redo(void);

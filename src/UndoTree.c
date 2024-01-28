@@ -6,6 +6,7 @@
 #include "ClassiCube/src/Game.h"
 #include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/Event.h"
+#include "ClassiCube/src/Constants.h"
 
 #include "Messaging.h"
 #include "UndoTree.h"
@@ -24,7 +25,7 @@ typedef struct UndoNode_ UndoNode;
 
 typedef struct UndoNode_ {
 	int commit;
-	char description[64];
+	char description[STRING_SIZE];
 	int blocksAffected;
 	BlockChangeEntry* entries;
 	time_t timestamp;
@@ -35,137 +36,138 @@ typedef struct UndoNode_ {
 
 static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID block);
 static void SetRedoChild(UndoNode* node);
-static void Attach(UndoNode* parent, UndoNode* child);
 static void CheckoutFromNode(UndoNode* target, int* ascended, int* descended);
 static void Ancestors(UndoNode* node, List* out_ancestors);
 static UndoNode* FindNode(int commit);
 static void Descend(void);
 static void Ascend(void);
-static bool BuildingNode(void);
 static void FreeUndoNode(UndoNode* node);
 static bool TryInitRoot(void);
 static void GetLeaves(List* out_leaves);
+static UndoNode* HistoryTryAdd(void);
 
 static UndoNode s_Root;
 static UndoNode* s_Here = NULL;
 static UndoNode* s_BuildingNode = NULL;
 static int s_EntriesSize = 1;
-static int s_CommitAutoIncrement = 0;
 static bool s_Enabled = false;
-static List* s_History = NULL;
+
+static UndoNode* s_History = NULL;
+static size_t s_HistoryCount = 0;
+static size_t s_HistoryCapacity = 0;
+
 static List* s_RedoStack = NULL;
 
-void UndoTree_Enable(void) {
-	if (s_Enabled) return;
+bool UndoTree_Enable(void) {
+	if (s_Enabled) {
+		return false;
+	}
 
-	TryInitRoot();
-	s_Here = &s_Root;
+	if (!TryInitRoot()) {
+		return false;
+	}
+
+	s_Here = &s_History[0];
 	s_BuildingNode = NULL;
-	s_CommitAutoIncrement = 0;
-	s_History = List_CreateEmpty();
-	List_Append(s_History, &s_Root);
 	s_RedoStack = List_CreateEmpty();
 
-	s_Enabled = true;
+	if (s_RedoStack == NULL) {
+		FreeUndoNode(&s_History[0]);
+		free(s_History);
+		s_HistoryCount = 0;
+		s_HistoryCapacity = 0;
+		return false;
+	}
 
-    struct Event_Void* event = (struct Event_Void*) &UserEvents.BlockChanged;
-    Event_Void_Callback callback = (Event_Void_Callback)OnBlockChanged;
-    Event_Register(event, NULL, callback);
+    Event_Register((struct Event_Void*) &UserEvents.BlockChanged, NULL, (Event_Void_Callback)OnBlockChanged);
+	s_Enabled = true;
+	return true;
 }
 
 void UndoTree_Disable(void) {
-	if (!s_Enabled) return;
-
-	UndoNode* currentNode = NULL;
-
-	while (!List_IsEmpty(s_History)) {
-		currentNode = (UndoNode*) List_Pop(s_History);
-		FreeUndoNode(currentNode);
+	if (!s_Enabled) {
+		return;
 	}
 
-	if (s_BuildingNode != NULL) {
-		FreeUndoNode(s_BuildingNode);
-		s_BuildingNode = NULL;
+	for (int i = 0; i < s_HistoryCount; i++) {
+		FreeUndoNode(&s_History[i]);
 	}
 
-	List_Free(s_History);
+	free(s_History);
+	s_History = NULL;
+	s_HistoryCapacity = 0;
+	s_HistoryCount = 0;
+
 	List_Free(s_RedoStack);
-	s_Enabled = false;
-	Message_MessageOf("", MSG_TYPE_STATUS_1);
-	Message_MessageOf("", MSG_TYPE_STATUS_2);
+    Event_Unregister((struct Event_Void*) &UserEvents.BlockChanged, NULL, (Event_Void_Callback)OnBlockChanged);
 
-    struct Event_Void* event = (struct Event_Void*) &UserEvents.BlockChanged;
-    Event_Void_Callback callback = (Event_Void_Callback)OnBlockChanged;
-    Event_Unregister(event, NULL, callback);
+	s_Enabled = false;
 }
 
 bool UndoTree_Enabled(void) {
 	return s_Enabled;
 }
 
-bool UndoTree_Earlier(int deltaTimeSeconds, int* commit) {
-	if (!s_Enabled || BuildingNode()) return false;
-	if (deltaTimeSeconds <= 0) return false;
+bool UndoTree_Earlier(int deltaTimeSeconds, int* out_commit) {
+	if (!s_Enabled) {
+		return false;
+	}
 
-	int historyIndex = List_IndexOf(s_History, s_Here);
+	if (deltaTimeSeconds <= 0) {
+		return false;
+	}
 
 	int newIndex = -1;
-	UndoNode* currentNode;
 
-	for (int i = historyIndex - 1; i > 0; i--) {
-		currentNode = (UndoNode*) List_Get(s_History, i);
-		if (s_Here->timestamp - currentNode->timestamp > deltaTimeSeconds) {
+	for (int i = s_Here->commit - 1; i > 0; i--) {
+		if (s_Here->timestamp - s_History[i].timestamp > deltaTimeSeconds) {
 			newIndex = i;
 			break;
 		}
 	}
 
-	if (newIndex < 0) {
-		newIndex = 0;
+	if (newIndex == s_Here->commit) {
+		return false;
 	}
 
-	if (newIndex == historyIndex) return false;
-
-	UndoNode* target = List_Get(s_History, newIndex);
 	List_Append(s_RedoStack, s_Here);
-	CheckoutFromNode(target, NULL, NULL);
-	*commit = s_Here->commit;
+	CheckoutFromNode(&s_History[newIndex], NULL, NULL);
+	*out_commit = s_Here->commit;
 	return true;
 }
 
 bool UndoTree_Later(int deltaTimeSeconds, int* commit) {
-	if (!s_Enabled || BuildingNode()) return false;
-	if (deltaTimeSeconds <= 0) return false;
+	if (!s_Enabled) {
+		return false;
+	}
 
-	int historyIndex = List_IndexOf(s_History, s_Here);
+	if (deltaTimeSeconds <= 0) {
+		return false;
+	}
 
-	int count = List_Count(s_History);
-	int newIndex = count;
-	UndoNode* currentNode;
+	int newIndex = s_HistoryCount;
 
-	for (int i = historyIndex + 1; i < count - 1; i++) {
-		currentNode = (UndoNode*) List_Get(s_History, i);
-		if (currentNode->timestamp - s_Here->timestamp > deltaTimeSeconds) {
+	for (int i = s_Here->commit; i < s_HistoryCount - 1; i++) {
+		if (s_History[i].timestamp - s_Here->timestamp > deltaTimeSeconds) {
 			newIndex = i;
 			break;
 		}
 	}
 
-	if (newIndex >= count) {
-		newIndex = count - 1;
+	if (newIndex == s_Here->commit) {
+		return false;
 	}
 
-	if (newIndex == historyIndex) return false;
-
-	UndoNode* target = List_Get(s_History, newIndex);
 	List_Append(s_RedoStack, s_Here);
-	CheckoutFromNode(target, NULL, NULL);
+	CheckoutFromNode(&s_History[newIndex], NULL, NULL);
 	*commit = s_Here->commit;
 	return true;
 }
 
 bool UndoTree_Undo(void) {
-	if (!s_Enabled || BuildingNode() || s_Here->parent == NULL) return false;
+	if (!s_Enabled || s_Here->parent == NULL) {
+		return false;
+	}
 
 	List_Append(s_RedoStack, s_Here);
 	Ascend();
@@ -173,18 +175,21 @@ bool UndoTree_Undo(void) {
 }
 
 bool UndoTree_Checkout(int commit, int* ascended, int* descended) {
-	if (!s_Enabled || BuildingNode()) return false;
+	if (!s_Enabled) {
+		return false;
+	}
 
-    UndoNode* target = FindNode(commit);
-	if (target == NULL) return false;
+	if (0 < commit || s_HistoryCount <= commit) {
+		return false;
+	}
 
 	List_Append(s_RedoStack, s_Here);
-	CheckoutFromNode(target, ascended, descended);
+	CheckoutFromNode(&s_History[commit], ascended, descended);
 	return true;
 }
 
 bool UndoTree_Redo(void) {
-	if (!s_Enabled || BuildingNode() || List_Count(s_RedoStack) == 0) {
+	if (!s_Enabled || List_Count(s_RedoStack) == 0) {
 		return false;
 	}
 
@@ -194,28 +199,35 @@ bool UndoTree_Redo(void) {
 }
 
 bool UndoTree_TryPrepareNewNode(char* description) {
-	if (!s_Enabled || BuildingNode()) return false;
+	if (!s_Enabled) {
+		return false;
+	}
 
-	s_BuildingNode = malloc(sizeof(UndoNode));
+	s_BuildingNode = HistoryTryAdd();
 
 	if (s_BuildingNode == NULL) {
 		return false;
 	}
+	
+	s_BuildingNode->children = List_CreateEmpty();
 
-	s_CommitAutoIncrement++;
-	s_BuildingNode->commit = s_CommitAutoIncrement;
+	if (s_BuildingNode->children == NULL) {
+		s_HistoryCount--;
+		return false;
+	}
+
+	s_BuildingNode->commit = s_HistoryCount - 1;
 	strncpy(s_BuildingNode->description, description, sizeof(s_BuildingNode->description));
 	s_BuildingNode->blocksAffected = 0;
 	s_BuildingNode->entries = NULL;
 	s_EntriesSize = 0;
 	s_BuildingNode->timestamp = time(NULL);
 	s_BuildingNode->redoChild = NULL;
-	s_BuildingNode->children = List_CreateEmpty();
 	return true;
 }
 
 void UndoTree_AddBlockChangeEntry(int x, int y, int z, DeltaBlockID delta) {
-	if (!s_Enabled || !BuildingNode()) return;
+	if (!s_Enabled) return;
 
 	BlockChangeEntry entry = {
 		.x = x,
@@ -232,6 +244,7 @@ void UndoTree_AddBlockChangeEntry(int x, int y, int z, DeltaBlockID delta) {
 		BlockChangeEntry* newEntries = realloc(s_BuildingNode->entries, s_EntriesSize * sizeof(BlockChangeEntry));
 
 		if (newEntries == NULL) {
+			// TODO: Don't do that
 			exit(1);
 		}
 
@@ -242,7 +255,9 @@ void UndoTree_AddBlockChangeEntry(int x, int y, int z, DeltaBlockID delta) {
 }
 
 void UndoTree_Commit(void) {
-	if (!s_Enabled || !BuildingNode()) return;
+	if (!s_Enabled) {
+		return;
+	}
 
 	if (s_BuildingNode->blocksAffected == 0) {
 		FreeUndoNode(s_BuildingNode);
@@ -250,9 +265,9 @@ void UndoTree_Commit(void) {
 		return;
 	}
 
-	Attach(s_Here, s_BuildingNode);
+	List_Append(s_Here->children, s_BuildingNode);
+	s_BuildingNode->parent = s_Here;
 	s_Here = s_BuildingNode;
-	List_Append(s_History, s_Here);
 	List_Clear(s_RedoStack);
 	SetRedoChild(s_Here);
 	s_BuildingNode = NULL;
@@ -304,7 +319,7 @@ long UndoTree_CurrentTimestamp(void) {
 static void GetLeaves(List* out_leaves) {
 	UndoNode* currentNode;
 	List* stack = List_CreateEmpty();
-	List_Append(stack, &s_Root);
+	List_Append(stack, &s_History[0]);
 
 	while (!List_IsEmpty(stack)) {
 		currentNode = (UndoNode*) List_Pop(stack);
@@ -324,15 +339,29 @@ static void GetLeaves(List* out_leaves) {
 }
 
 static bool TryInitRoot(void) {
-	s_Root.commit = 0;
+	UndoNode* root = HistoryTryAdd();
+
+	if (root == NULL) {
+		return false;
+	}
+
+	root->commit = 0;
 	char description[] = "World loaded";
-	strncpy(s_Root.description, description, sizeof(description));
-	s_Root.blocksAffected = World.Width * World.Height * World.Length;
-	s_Root.entries = NULL;
-	s_Root.timestamp = time(NULL);
-	s_Root.parent = NULL;
-	s_Root.children = List_CreateEmpty();
-	s_Root.redoChild = NULL;
+	strncpy(root->description, description, sizeof(description));
+	root->blocksAffected = World.Width * World.Height * World.Length;
+	root->entries = NULL;
+	root->timestamp = time(NULL);
+	root->parent = NULL;
+	root->children = List_CreateEmpty();
+
+	if (root->children == NULL) {
+		free(s_History);
+		s_HistoryCapacity = 0;
+		s_HistoryCount = 0;
+		return false;
+	}
+
+	root->redoChild = NULL;
 
 	return true;
 }
@@ -340,11 +369,6 @@ static bool TryInitRoot(void) {
 static void FreeUndoNode(UndoNode* node) {
 	free(node->entries);
 	List_Free(node->children);
-	free(node);
-}
-
-static bool BuildingNode(void) {
-	return s_BuildingNode != NULL;
 }
 
 static void Ascend(void) {
@@ -373,7 +397,7 @@ static void Descend(void) {
 static UndoNode* FindNode(int commit) {
 	UndoNode* currentNode;
 	List* stack = List_CreateEmpty();
-	List_Append(stack, &s_Root);
+	List_Append(stack, &s_History[0]);
 
 	while (!List_IsEmpty(stack)) {
 		currentNode = (UndoNode*) List_Pop(stack);
@@ -427,11 +451,6 @@ static void CheckoutFromNode(UndoNode* target, int* ascended, int* descended) {
 	List_Free(targetAncestors);
 }
 
-static void Attach(UndoNode* parent, UndoNode* child) {
-	List_Append(parent->children, child);
-	child->parent = parent;
-}
-
 static void SetRedoChild(UndoNode* node) {
 	UndoNode* currentNode = node;
 
@@ -446,15 +465,15 @@ static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID bl
 		return;
 	}
 
-	char formattedCoordinates[64];
+	char formattedCoordinates[STRING_SIZE];
 	Format_Coordinates(coords, formattedCoordinates, sizeof(formattedCoordinates));
 
-	char description[64];
+	char description[STRING_SIZE];
 
 	if (block == BLOCK_AIR) {
 		snprintf(description, sizeof(description), "Destroy %s", formattedCoordinates);
 	} else {
-		char formattedBlock[64];
+		char formattedBlock[STRING_SIZE];
 		Format_Block(block, formattedBlock, sizeof(formattedBlock));
 		snprintf(description, sizeof(description), "Place %s %s", formattedBlock, formattedCoordinates);
 	}
@@ -462,4 +481,22 @@ static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID bl
 	UndoTree_TryPrepareNewNode(description);
 	UndoTree_AddBlockChangeEntry(coords.X, coords.Y, coords.Z, block - oldBlock);
 	UndoTree_Commit();
+}
+
+static UndoNode* HistoryTryAdd(void) {
+	if (s_HistoryCount >= s_HistoryCapacity) {
+		size_t newCapacity = (s_HistoryCapacity + 1) * 2;
+
+		UndoNode* newHistory = realloc(s_History, newCapacity * sizeof(UndoNode));
+
+		if (newHistory == NULL) {
+			return NULL;
+		}
+
+		s_HistoryCapacity = newCapacity;
+		s_History = newHistory;
+	}
+
+	s_HistoryCount += 1;
+	return &s_History[s_HistoryCount - 1];
 }
