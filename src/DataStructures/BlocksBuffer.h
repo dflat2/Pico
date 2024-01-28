@@ -15,8 +15,8 @@ typedef struct BlocksBuffer_ {
 bool BlocksBuffer_TryRotate(Axis axis, int count);
 bool BlocksBuffer_TryFlip(Axis axis);
 
-BlocksBuffer BlocksBuffer_GetCopied();
-bool BlocksBuffer_IsEmpty();
+BlocksBuffer BlocksBuffer_GetCopied(void);
+bool BlocksBuffer_IsEmpty(void);
 bool BlocksBuffer_TryCopy(IVec3 mark1, IVec3 mark2, int* out_amountCopied);
 
-#endif /* BLOCKS_BUFFER_H */
+#endif

@@ -24,7 +24,6 @@ static bool s_Repeat = false;
 static CircleMode s_Mode;
 static Axis s_Axis;
 static int s_Radius;
-static IVec3 s_Center;
 
 static void Circle_Command(const cc_string* args, int argsCount);
 
@@ -59,7 +58,7 @@ static void CircleSelectionHandler(IVec3* marks, int count) {
 
             distance = sqrt(IVec2_Dot(current2D, current2D));
 
-            if ((s_Mode == MODE_SOLID && distance <= s_Radius) || s_Radius - 1 <= distance && distance <= s_Radius) {
+            if ((s_Mode == MODE_SOLID && distance <= s_Radius) || (s_Radius - 1 <= distance && distance <= s_Radius)) {
                 current = Add(marks[0], Transform2DTo3D(current2D, s_Axis));
                 Draw_Brush(current.X, current.Y, current.Z);
             }
@@ -105,7 +104,7 @@ static void Circle_Command(const cc_string* args, int argsCount) {
 	size_t modesCount = sizeof(modesString) / sizeof(modesString[0]);
 
 	bool hasMode = (argsCount >= 3) && Array_ContainsString(&args[2], modesString, modesCount);
-    bool hasBlockOrBrush = (argsCount >= 4) || (argsCount == 3) && !hasMode;
+    bool hasBlockOrBrush = (argsCount >= 4) || ((argsCount == 3) && !hasMode);
 
 	if (hasMode) {
 		s_Mode = Array_IndexOfStringCaseless(&args[2], modesString, modesCount);

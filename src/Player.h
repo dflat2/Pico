@@ -1,8 +1,8 @@
-#ifndef WORLD_UTILS_H
-#define WORLD_UTILS_H
+#ifndef PLAYER_H
+#define PLAYER_H
 
 #include "ClassiCube/src/Vectors.h"
 
-IVec3 Player_GetPosition();
+IVec3 Player_GetPosition(void);
 
-#endif /* WORLD_UTILS_H */
+#endif

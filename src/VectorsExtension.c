@@ -74,7 +74,6 @@ double Distance(IVec3 a, IVec3 b) {
 }
 
 double IVec2_Distance(IVec2 a, IVec2 b) {
-    IVec2 difference = IVec2_Substract(a, b);
     return sqrt(IVec2_Dot(a, b));
 }
 

@@ -16,4 +16,4 @@ void Message_ShowInvalidDegrees(const cc_string* string);
 void Message_UndoCheckedOut(int commit, int timestamp);
 void Message_CommandUsage(struct ChatCommand command);
 
-#endif /* MESSAGING_H */
+#endif

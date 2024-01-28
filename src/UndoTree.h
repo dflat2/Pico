@@ -8,24 +8,24 @@
 typedef int DeltaBlockID;
 
 // Initialisation and cleaning.
-void UndoTree_Enable();
-void UndoTree_Disable();
+void UndoTree_Enable(void);
+void UndoTree_Disable(void);
 
 // Undo tree navigation.
-bool UndoTree_Undo();
+bool UndoTree_Undo(void);
 bool UndoTree_Earlier(int deltaTime_Second, int* commit); 
 bool UndoTree_Later(int deltaTime_S, int* commit);
 bool UndoTree_Checkout(int commit, int* out_ascended, int* out_descended);
-bool UndoTree_Redo();
+bool UndoTree_Redo(void);
 
 // Attaching a new node.
 bool UndoTree_TryPrepareNewNode(char* description);
 void UndoTree_AddBlockChangeEntry(int x, int y, int z, DeltaBlockID delta);
-void UndoTree_Commit();
+void UndoTree_Commit(void);
 
 // Information.
 void UndoTree_DescribeFiveLastLeaves(cc_string* descriptions, int* descriptionsCount);
-bool UndoTree_Enabled();
-long UndoTree_CurrentTimestamp();
+bool UndoTree_Enabled(void);
+long UndoTree_CurrentTimestamp(void);
 
 #endif

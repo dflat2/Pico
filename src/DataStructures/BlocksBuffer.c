@@ -21,7 +21,6 @@ static IVec3 ApplyPermutation(S3 permutation, IVec3 vector);
 static IVec3 ApplyTransform(Transform transform, IVec3 coordinates, IVec3 previousDimensions);
 static bool TryTransformBuffer(Transform transform);
 static int Pack(IVec3 vector);
-static void FreeBuffer();
 
 static const Transform RotateX90 = { XZY, .flipX = false, .flipY = false, .flipZ = true };
 static const Transform RotateX180 = { XYZ, .flipX = false, .flipY = true, .flipZ = true };
@@ -36,11 +35,11 @@ static const Transform FlipX = { XYZ, .flipX = true, .flipY = false, .flipZ = fa
 static const Transform FlipY = { XYZ, .flipX = false, .flipY = true, .flipZ = false };
 static const Transform FlipZ = { XYZ, .flipX = false, .flipY = false, .flipZ = true };
 
-BlocksBuffer BlocksBuffer_GetCopied() {
+BlocksBuffer BlocksBuffer_GetCopied(void) {
 	return s_Buffer;
 }
 
-bool BlocksBuffer_IsEmpty() {
+bool BlocksBuffer_IsEmpty(void) {
 	return s_BufferIsEmpty;
 }
 
@@ -92,7 +91,7 @@ bool BlocksBuffer_TryRotate(Axis axis, int count) {
 		return false;
 	}
 
-	Transform transform;
+	Transform transform = RotateY90;
 
 	if (axis == AXIS_X) {
 		if (count == 1) {
@@ -133,15 +132,6 @@ bool BlocksBuffer_TryFlip(Axis axis) {
 	}
 
 	return false;
-}
-
-static void FreeBuffer() {
-	if (s_BufferIsEmpty) {
-		return;
-	}
-
-	free(s_Buffer.content);
-	s_BufferIsEmpty = true;
 }
 
 static bool TryTransformBuffer(Transform transform) {

@@ -8,8 +8,8 @@
 typedef void (*SelectionHandler)(IVec3* marks, int count);
 
 void MarkSelection_Make(SelectionHandler handler, int count, const char* operation);
-void MarkSelection_Abort();
+void MarkSelection_Abort(void);
 void MarkSelection_DoMark(IVec3 coordinates);
-int MarkSelection_RemainingMarks();
+int MarkSelection_RemainingMarks(void);
 
-#endif /* MARK_SELECTION_H */
+#endif

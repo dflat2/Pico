@@ -77,7 +77,7 @@ bool Parse_TryParseDeltaTime_Second(const cc_string* string, int* out_total_Seco
 	return true;
 }
 
-void Parse_ShowExamplesDeltaTime() {
+void Parse_ShowExamplesDeltaTime(void) {
 	Message_Player("Duration must be of the form &b[count]h[count]m[count]s&f.");
 	Message_Player("Example: &b1h30m&f means one hour and thirty minutes.");
 }

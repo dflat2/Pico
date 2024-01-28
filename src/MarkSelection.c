@@ -20,11 +20,11 @@ static cc_string s_Operation = String_FromArray(s_OperationBuffer);
 static IVec3 s_Marks[MAX_MARKS] = { 0 };
 static SelectionHandler s_Handler = NULL;
 
-static void ValidateSelection();
-static void ResetSelectionState();
-static void ShowMarksLeft();
-static void UnregisterBlockChanged();
-static void RegisterBlockChanged();
+static void ValidateSelection(void);
+static void ResetSelectionState(void);
+static void ShowMarksLeft(void);
+static void UnregisterBlockChanged(void);
+static void RegisterBlockChanged(void);
 static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock);
 
 void MarkSelection_DoMark(IVec3 coords) {
@@ -42,13 +42,13 @@ void MarkSelection_DoMark(IVec3 coords) {
     }
 }
 
-void MarkSelection_Abort() {
+void MarkSelection_Abort(void) {
     ResetSelectionState();
     UnregisterBlockChanged();
     ShowMarksLeft();
 }
 
-int MarkSelection_RemainingMarks() {
+int MarkSelection_RemainingMarks(void) {
     if (!s_InProgress) {
         return 0;
     }
@@ -72,7 +72,7 @@ void MarkSelection_Make(SelectionHandler handler, int count, const char* operati
     RegisterBlockChanged();
 }
 
-static void ShowMarksLeft() {
+static void ShowMarksLeft(void) {
     int marksLeft = s_TotalMarks - s_CurrentMark;
 
     if (marksLeft == 0) {
@@ -110,22 +110,22 @@ static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, B
 	MarkSelection_DoMark(coords);
 }
 
-static void RegisterBlockChanged() {
+static void RegisterBlockChanged(void) {
     Event_Register((struct Event_Void*) &UserEvents.BlockChanged, NULL, (Event_Void_Callback)BlockChangedCallback);
 }
 
-static void UnregisterBlockChanged() {
+static void UnregisterBlockChanged(void) {
     Event_Unregister((struct Event_Void*) &UserEvents.BlockChanged, NULL, (Event_Void_Callback)BlockChangedCallback);
 }
 
-static void ResetSelectionState() {
+static void ResetSelectionState(void) {
     s_InProgress = false;
     s_CurrentMark = 0;
     s_TotalMarks = 0;
     s_Handler = NULL;
 }
 
-static void ValidateSelection() {
+static void ValidateSelection(void) {
 	UnregisterBlockChanged();
 	s_InProgress = false;
     s_Handler(s_Marks, s_TotalMarks);

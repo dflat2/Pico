@@ -7,4 +7,4 @@ typedef enum Axis_ {
     AXIS_Z,
 } Axis;
 
-#endif /* AXIS_H */
+#endif

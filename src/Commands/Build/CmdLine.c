@@ -22,7 +22,7 @@ static LineMode s_Mode;
 static bool s_Repeat;
 
 static void Line_Command(const cc_string *args, int argsCount);
-static void MakeSelection();
+static void MakeSelection(void);
 static bool TryParseArguments(const cc_string* args, int argsCount);
 static void LineSelectionHandler(IVec3* marks, int count);
 static void DoLine(IVec3 from, IVec3 to);
@@ -32,7 +32,7 @@ static int GreatestInteger2(int a, int b);
 static int GreatestInteger3(int a, int b, int c);
 static FVec3 Bezier(FVec3 from, FVec3 controlPoint, FVec3 to, float t);
 static void Line(IVec3 from, IVec3 to);
-static void MakeSelection();
+static void MakeSelection(void);
 
 struct ChatCommand LineCommand = {
 	"Line",
@@ -208,7 +208,7 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 		s_Mode = MODE_NORMAL;
 	}
 
-	if (hasMode && s_Mode == -1) {
+	if (hasMode && (int)s_Mode == -1) {
 		Message_ShowUnknownMode(&args[0]);
 		Message_ShowAvailableModes(modesString, modesCount);
 		return false;
@@ -254,7 +254,7 @@ static void Line_Command(const cc_string* args, int argsCount) {
     MakeSelection();
 }
 
-static void MakeSelection() {
+static void MakeSelection(void) {
     if (s_Mode != MODE_BEZIER) {
         MarkSelection_Make(LineSelectionHandler, 2, "Line");
         

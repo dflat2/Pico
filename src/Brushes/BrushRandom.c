@@ -14,8 +14,8 @@
 static bool BrushRandom_TryParseArguments(const cc_string* args, int argsCount);
 static BlockID BrushRandom_Paint(int x, int y, int z);
 static bool TryParseBlockWeight(const cc_string* argument, BlockID* out_block, int* out_weight);
-static void UpdateCumulativeWeights();
-static void UpdateTotal();
+static void UpdateCumulativeWeights(void);
+static void UpdateTotal(void);
 
 Brush BrushRandom = {
 	.TryParseArguments = &BrushRandom_TryParseArguments,
@@ -94,7 +94,7 @@ static bool TryParseBlockWeight(const cc_string* argument, BlockID* out_block, i
 	return true;
 }
 
-static void UpdateCumulativeWeights() {
+static void UpdateCumulativeWeights(void) {
 	s_CumulativeWeights[0] = s_Weights[0];
 
 	for (int i = 1; i < s_Count; i++) {
@@ -102,7 +102,7 @@ static void UpdateCumulativeWeights() {
 	}
 }
 
-static void UpdateTotal() {
+static void UpdateTotal(void) {
 	s_Total = 0;
 
 	for (int i = 0; i < s_Count; i++) {

@@ -13,7 +13,7 @@ typedef struct IVec3FastQueue_ {
 static bool TryAllocateMore(IVec3FastQueue* queue);
 static bool IsSaturated(IVec3FastQueue* queue);
 
-IVec3FastQueue* IVec3FastQueue_CreateEmpty() {
+IVec3FastQueue* IVec3FastQueue_CreateEmpty(void) {
 	IVec3FastQueue* queue = (IVec3FastQueue*)calloc(1, sizeof(IVec3FastQueue));
 	return queue;
 }

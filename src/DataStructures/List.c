@@ -79,7 +79,7 @@ bool List_IsEmpty(List* list) {
     return list->firstElement == NULL;
 }
 
-List* List_CreateEmpty() {
+List* List_CreateEmpty(void) {
     List* list = (List*)malloc(sizeof(List));
     list->firstElement = NULL;
     return list;

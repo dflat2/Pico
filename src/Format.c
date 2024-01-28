@@ -12,7 +12,7 @@ void Format_Block(BlockID block, char* buffer, size_t size) {
 	cc_string cc_blockName = Block_UNSAFE_GetName(block);
 
 	for (int i = 0; i < cc_blockName.length; i++) {
-		if (i == size - 1) {
+		if ((size_t)i == size - 1) {
 			buffer[i] = '\0';
 			return;
 		}

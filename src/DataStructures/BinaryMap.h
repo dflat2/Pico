@@ -9,4 +9,4 @@ void BinaryMap_Set(BinaryMap* binaryMap, int x, int y, int z);
 void BinaryMap_Unset(BinaryMap* binaryMap, int x, int y, int z);
 int BinaryMap_Get(BinaryMap* binaryMap, int x, int y, int z);
 
-#endif /* BINARY_MAP_H */
+#endif

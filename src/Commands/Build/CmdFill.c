@@ -64,7 +64,7 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 		s_Mode = MODE_3D;
 	}
 
-	if (hasMode && s_Mode == -1) {
+	if (hasMode && (int)s_Mode == -1) {
 		Message_ShowUnknownMode(&args[0]);
 		Message_ShowAvailableModes(modesString, modesCount);
 		return false;

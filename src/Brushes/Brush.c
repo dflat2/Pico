@@ -50,7 +50,7 @@ bool Brush_TryLoadSolid(const cc_string* blockName) {
 	return true;
 }
 
-void Brush_LoadInventory() {
+void Brush_LoadInventory(void) {
 	s_CurrentBrushPaint = BrushInventory.Paint;
 }
 

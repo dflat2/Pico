@@ -23,7 +23,7 @@ static int s_Radius;
 static IVec3 s_Center;
 
 static void Sphere_Command(const cc_string* args, int argsCount);
-static void DoSphere();
+static void DoSphere(void);
 static bool ShouldDraw(int x, int y, int z);
 
 struct ChatCommand SphereCommand = {
@@ -40,7 +40,7 @@ struct ChatCommand SphereCommand = {
 	NULL
 };
 
-static void DoSphere() {
+static void DoSphere(void) {
     Draw_Start("Sphere");
 
     for (int x = s_Center.X - s_Radius; x <= s_Center.X + s_Radius; x++) {
@@ -105,7 +105,7 @@ static void Sphere_Command(const cc_string* args, int argsCount) {
 	size_t modesCount = sizeof(modesString) / sizeof(modesString[0]);
 
 	bool hasMode = (argsCount >= 2) && Array_ContainsString(&args[1], modesString, modesCount);
-    bool hasBlockOrBrush = (argsCount >= 3) || (argsCount == 2) && !hasMode;
+    bool hasBlockOrBrush = (argsCount >= 3) || ((argsCount == 2) && !hasMode);
 
 	if (hasMode) {
 		s_Mode = Array_IndexOfStringCaseless(&args[1], modesString, modesCount);

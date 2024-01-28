@@ -1,6 +1,6 @@
 SHELL=/bin/sh
 COMPILER=gcc
-FLAGS=-Wall -pedantic -arch x86_64 -shared -undefined dynamic_lookup
+FLAGS=-Wall -Wextra -pedantic -Wno-unused-parameter -arch x86_64 -shared -undefined dynamic_lookup
 SOURCE=$(shell find src/ -name '*.c')
 SOURCE_DIRECTORY=./src/
 INCLUDE=-I./ -I./src/

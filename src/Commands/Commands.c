@@ -31,7 +31,7 @@ extern struct ChatCommand UndoListCommand;
 extern struct ChatCommand UndoCommand;
 extern struct ChatCommand ZCommand;
 
-void Commands_RegisterAll() {
+void Commands_RegisterAll(void) {
 	Commands_Register(&AbortCommand);
 	Commands_Register(&AscendCommand);
 	Commands_Register(&BrushesCommand);

@@ -20,21 +20,51 @@
 #include "MarkSelection.h"
 
 static void OnChatSending(void* obj, const cc_string* msg, int msgType);
-static void OnMapLoaded(void* obj);
-static void WarnOnCuboid();
-static void EnabledUndoOnMapLoaded();
 
-static void SinglePlayerCommandsPlugin_Init(void) {
+static void SPC_Init(void) {
 	if (!Server.IsSinglePlayer) {
 		return;
 	}
 
 	Commands_RegisterAll();
-	WarnOnCuboid();
-	EnabledUndoOnMapLoaded();
-	MarkSelection_Abort();
-    
+
+    // Warns the user when doing `/Cuboid` instead of `/Z`.
+    Event_Register((struct Event_Void*) &ChatEvents.ChatSending, NULL, (Event_Void_Callback)OnChatSending);
+
+    // Disables physics as they are incompatible with undo.    
     Physics.Enabled = false;
+}
+
+static void SPC_Free(void) {
+    if (!Server.IsSinglePlayer) {
+		return;
+	}
+
+    // TODO: Find a way to unregister commands.
+
+    // Abort selection in case there is currently a selection in progress.
+    MarkSelection_Abort();
+
+    // Disable warning when doing `/Cuboid` instead of `/Z`
+    Event_Unregister((struct Event_Void*) &ChatEvents.ChatSending, NULL, (Event_Void_Callback)OnChatSending);
+
+    // Free UndoTree
+    // if (UndoTree_Enabled()) {
+    //     UndoTree_Disable();
+    // }
+}
+
+static void SPC_OnNewMapLoaded(void) {
+    if (!Server.IsSinglePlayer) {
+		return;
+	}
+
+    // Clears the undo tree when loading a new map.
+	if (UndoTree_Enabled()) {
+		UndoTree_Disable();
+	}
+
+	UndoTree_Enable();
 }
 
 static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
@@ -51,25 +81,11 @@ static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
     }
 }
 
-static void OnMapLoaded(void* obj) {
-	if (UndoTree_Enabled()) {
-		UndoTree_Disable();
-	}
-
-	UndoTree_Enable();
-}
-
-static void WarnOnCuboid() {
-    struct Event_Void* event = (struct Event_Void*) &ChatEvents.ChatSending;
-    Event_Void_Callback callback = (Event_Void_Callback)OnChatSending;
-    Event_Register(event, NULL, callback);
-}
-
-static void EnabledUndoOnMapLoaded() {
-    struct Event_Void* event = (struct Event_Void*) &WorldEvents.MapLoaded;
-    Event_Void_Callback callback = (Event_Void_Callback)OnMapLoaded;
-    Event_Register(event, NULL, callback);
-}
-
 EXPORT int Plugin_ApiVersion = 1;
-EXPORT struct IGameComponent Plugin_Component = { SinglePlayerCommandsPlugin_Init };
+EXPORT struct IGameComponent Plugin_Component = {
+    .Init = SPC_Init,
+    .Free = SPC_Free,
+    .Reset = NULL,
+    .OnNewMap = NULL,
+    .OnNewMapLoaded = SPC_OnNewMapLoaded,
+};

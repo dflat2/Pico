@@ -13,6 +13,6 @@ typedef struct Brush_ {
 BlockID Brush_Paint(int x, int y, int z);
 bool Brush_TryLoad(const cc_string* name, const cc_string* args, int argsCount);
 bool Brush_TryLoadSolid(const cc_string* blockName);
-void Brush_LoadInventory();
+void Brush_LoadInventory(void);
 
-#endif /* BRUSH_H */
+#endif

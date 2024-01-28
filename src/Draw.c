@@ -40,7 +40,7 @@ void Draw_Brush(int x, int y, int z) {
 	Draw_Block(x, y, z, block);
 }
 
-int Draw_End() {
+int Draw_End(void) {
 	if (UndoTree_Enabled()) {
 		UndoTree_Commit();
 	}

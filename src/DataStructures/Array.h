@@ -10,4 +10,4 @@
 int Array_IndexOfStringCaseless(const cc_string* element, const cc_string* list, int listCount);
 bool Array_ContainsString(const cc_string* element, const cc_string* list, int listCount);
 
-#endif /* ARRAY_H */
+#endif

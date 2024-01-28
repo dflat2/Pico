@@ -11,7 +11,6 @@
 
 static void Replace_Command(const cc_string* args, int argsCount);
 static bool TryParseArguments(const cc_string* args, int argsCount);
-static void ShowUsage();
 static void ReplaceSelectionHandler(IVec3* marks, int count);
 static void DoReplace(IVec3 min, IVec3 max);
 
@@ -57,10 +56,6 @@ static void ReplaceSelectionHandler(IVec3* marks, int count) {
     }
 
     DoReplace(Min(marks[0], marks[1]), Max(marks[0], marks[1]));
-}
-
-static void ShowUsage() {
-	Message_Player("Usage: &b/Replace[Not/All] <block> [brush/block]&f.");
 }
 
 static bool TryParseArguments(const cc_string* args, int argsCount) {

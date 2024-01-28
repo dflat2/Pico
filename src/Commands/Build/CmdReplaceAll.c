@@ -9,8 +9,7 @@
 
 static void ReplaceAll_Command(const cc_string* args, int argsCount);
 static bool TryParseArguments(const cc_string* args, int argsCount);
-static void ReplaceSelectionHandler(IVec3* marks, int count);
-static void DoReplaceAll();
+static void DoReplaceAll(void);
 
 static BlockID s_ReplacedBlock;
 
@@ -28,7 +27,7 @@ struct ChatCommand ReplaceAllCommand = {
 	NULL
 };
 
-static void DoReplaceAll() {
+static void DoReplaceAll(void) {
 	Draw_Start("Replace");
 
 	for (int x = 0; x <= World.Width - 1; x++) {

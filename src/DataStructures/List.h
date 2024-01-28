@@ -11,7 +11,7 @@ int List_IndexOf(List* list, void* data);
 bool List_Contains(List* list, void* data);
 int List_Count(List* list);
 bool List_IsEmpty(List* list);
-List* List_CreateEmpty();
+List* List_CreateEmpty(void);
 void List_Append(List* list, void* data);
 void List_Clear(List* list);
 void List_Free(List* list);

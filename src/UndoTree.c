@@ -39,11 +39,11 @@ static void Attach(UndoNode* parent, UndoNode* child);
 static void CheckoutFromNode(UndoNode* target, int* ascended, int* descended);
 static void Ancestors(UndoNode* node, List* out_ancestors);
 static UndoNode* FindNode(int commit);
-static void Descend();
-static void Ascend();
-static bool BuildingNode();
+static void Descend(void);
+static void Ascend(void);
+static bool BuildingNode(void);
 static void FreeUndoNode(UndoNode* node);
-static bool TryInitRoot();
+static bool TryInitRoot(void);
 static void GetLeaves(List* out_leaves);
 
 static UndoNode s_Root;
@@ -55,7 +55,7 @@ static bool s_Enabled = false;
 static List* s_History = NULL;
 static List* s_RedoStack = NULL;
 
-void UndoTree_Enable() {
+void UndoTree_Enable(void) {
 	if (s_Enabled) return;
 
 	TryInitRoot();
@@ -73,7 +73,7 @@ void UndoTree_Enable() {
     Event_Register(event, NULL, callback);
 }
 
-void UndoTree_Disable() {
+void UndoTree_Disable(void) {
 	if (!s_Enabled) return;
 
 	UndoNode* currentNode = NULL;
@@ -99,7 +99,7 @@ void UndoTree_Disable() {
     Event_Unregister(event, NULL, callback);
 }
 
-bool UndoTree_Enabled() {
+bool UndoTree_Enabled(void) {
 	return s_Enabled;
 }
 
@@ -133,9 +133,9 @@ bool UndoTree_Earlier(int deltaTimeSeconds, int* commit) {
 	return true;
 }
 
-bool UndoTree_Later(int deltaTime_S, int* commit) {
+bool UndoTree_Later(int deltaTimeSeconds, int* commit) {
 	if (!s_Enabled || BuildingNode()) return false;
-	if (deltaTime_S <= 0) return false;
+	if (deltaTimeSeconds <= 0) return false;
 
 	int historyIndex = List_IndexOf(s_History, s_Here);
 
@@ -145,7 +145,7 @@ bool UndoTree_Later(int deltaTime_S, int* commit) {
 
 	for (int i = historyIndex + 1; i < count - 1; i++) {
 		currentNode = (UndoNode*) List_Get(s_History, i);
-		if (currentNode->timestamp - s_Here->timestamp > deltaTime_S) {
+		if (currentNode->timestamp - s_Here->timestamp > deltaTimeSeconds) {
 			newIndex = i;
 			break;
 		}
@@ -164,7 +164,7 @@ bool UndoTree_Later(int deltaTime_S, int* commit) {
 	return true;
 }
 
-bool UndoTree_Undo() {
+bool UndoTree_Undo(void) {
 	if (!s_Enabled || BuildingNode() || s_Here->parent == NULL) return false;
 
 	List_Append(s_RedoStack, s_Here);
@@ -183,7 +183,7 @@ bool UndoTree_Checkout(int commit, int* ascended, int* descended) {
 	return true;
 }
 
-bool UndoTree_Redo() {
+bool UndoTree_Redo(void) {
 	if (!s_Enabled || BuildingNode() || List_Count(s_RedoStack) == 0) {
 		return false;
 	}
@@ -241,7 +241,7 @@ void UndoTree_AddBlockChangeEntry(int x, int y, int z, DeltaBlockID delta) {
 	s_BuildingNode->entries[s_BuildingNode->blocksAffected - 1] = entry;
 }
 
-void UndoTree_Commit() {
+void UndoTree_Commit(void) {
 	if (!s_Enabled || !BuildingNode()) return;
 
 	if (s_BuildingNode->blocksAffected == 0) {
@@ -259,7 +259,7 @@ void UndoTree_Commit() {
 }
 
 void UndoTree_DescribeFiveLastLeaves(cc_string* descriptions, int* descriptionsCount) {
-	const size_t max = 5;
+	const int max = 5;
 	List* leaves = List_CreateEmpty();
 	GetLeaves(leaves);
 
@@ -297,7 +297,7 @@ void UndoTree_DescribeFiveLastLeaves(cc_string* descriptions, int* descriptionsC
 	List_Free(leaves);
 }
 
-long UndoTree_CurrentTimestamp() {
+long UndoTree_CurrentTimestamp(void) {
 	return s_Here->timestamp;
 }
 
@@ -323,7 +323,7 @@ static void GetLeaves(List* out_leaves) {
 	List_Free(stack);
 }
 
-static bool TryInitRoot() {
+static bool TryInitRoot(void) {
 	s_Root.commit = 0;
 	char description[] = "World loaded";
 	strncpy(s_Root.description, description, sizeof(description));
@@ -343,11 +343,11 @@ static void FreeUndoNode(UndoNode* node) {
 	free(node);
 }
 
-static bool BuildingNode() {
+static bool BuildingNode(void) {
 	return s_BuildingNode != NULL;
 }
 
-static void Ascend() {
+static void Ascend(void) {
 	BlockChangeEntry* entries = s_Here->entries;
 	BlockID currentBlock; 
 
@@ -359,7 +359,7 @@ static void Ascend() {
 	s_Here = s_Here->parent;
 }
 
-static void Descend() {
+static void Descend(void) {
 	s_Here = s_Here->redoChild;
 	BlockChangeEntry* entries = s_Here->entries;
 	BlockID currentBlock; 

@@ -32,4 +32,4 @@ FVec3 FVec3_Substract(const FVec3 a, const FVec3 b);
 FVec3 IVec3_ConvertFVec3(const IVec3 a);
 IVec3 FVec3_ConvertIVec3(const FVec3 a);
 
-#endif /* VECTORS_H */
+#endif
