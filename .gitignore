@@ -3,3 +3,4 @@ doc
 *.dylib
 debug.bash
 .vscode/
+*.dylib.dSYM
