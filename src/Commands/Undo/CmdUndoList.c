@@ -44,7 +44,7 @@ static void UndoList_Command(const cc_string* args, int argsCount) {
 	int descriptionsCount = 0;
 
 	Message_Player("Most recent terminal operations:");
-	UndoTree_DescribeFiveLastLeaves(descriptions, &descriptionsCount);
+	UndoTree_UndoList(descriptions, &descriptionsCount);
 
 	for (int i = 0; i < descriptionsCount; i++) {
 		Chat_Add(&descriptions[i]);

@@ -24,7 +24,7 @@ void UndoTree_AddBlockChangeEntry(int x, int y, int z, DeltaBlockID delta);
 void UndoTree_Commit(void);
 
 // Information.
-void UndoTree_DescribeFiveLastLeaves(cc_string* descriptions, int* descriptionsCount);
+void UndoTree_UndoList(cc_string* descriptions, int* descriptionsCount);
 bool UndoTree_Enabled(void);
 long UndoTree_CurrentTimestamp(void);
 

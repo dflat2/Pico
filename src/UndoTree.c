@@ -31,19 +31,14 @@ typedef struct UndoNode_ {
 	time_t timestamp;
 	UndoNode* parent;
 	List* children;
-	UndoNode* redoChild;
 } UndoNode;
 
 static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID block);
-static void SetRedoChild(UndoNode* node);
-static void CheckoutFromNode(UndoNode* target, int* ascended, int* descended);
-static void Ancestors(UndoNode* node, List* out_ancestors);
-static UndoNode* FindNode(int commit);
-static void Descend(void);
+static void Checkout(UndoNode* target, int* ascended, int* descended);
+static void Descend(UndoNode* child);
 static void Ascend(void);
 static void FreeUndoNode(UndoNode* node);
 static bool TryInitRoot(void);
-static void GetLeaves(List* out_leaves);
 static UndoNode* HistoryTryAdd(void);
 
 static UndoNode s_Root;
@@ -117,7 +112,7 @@ bool UndoTree_Earlier(int deltaTimeSeconds, int* out_commit) {
 		return false;
 	}
 
-	int newIndex = -1;
+	int newIndex = 0;
 
 	for (int i = s_Here->commit - 1; i > 0; i--) {
 		if (s_Here->timestamp - s_History[i].timestamp > deltaTimeSeconds) {
@@ -131,7 +126,7 @@ bool UndoTree_Earlier(int deltaTimeSeconds, int* out_commit) {
 	}
 
 	List_Append(s_RedoStack, s_Here);
-	CheckoutFromNode(&s_History[newIndex], NULL, NULL);
+	Checkout(&s_History[newIndex], NULL, NULL);
 	*out_commit = s_Here->commit;
 	return true;
 }
@@ -159,7 +154,7 @@ bool UndoTree_Later(int deltaTimeSeconds, int* commit) {
 	}
 
 	List_Append(s_RedoStack, s_Here);
-	CheckoutFromNode(&s_History[newIndex], NULL, NULL);
+	Checkout(&s_History[newIndex], NULL, NULL);
 	*commit = s_Here->commit;
 	return true;
 }
@@ -184,7 +179,7 @@ bool UndoTree_Checkout(int commit, int* ascended, int* descended) {
 	}
 
 	List_Append(s_RedoStack, s_Here);
-	CheckoutFromNode(&s_History[commit], ascended, descended);
+	Checkout(&s_History[commit], ascended, descended);
 	return true;
 }
 
@@ -194,7 +189,7 @@ bool UndoTree_Redo(void) {
 	}
 
 	UndoNode* target = List_Pop(s_RedoStack);
-	CheckoutFromNode(target, NULL, NULL);
+	Checkout(target, NULL, NULL);
 	return true;
 }
 
@@ -222,12 +217,13 @@ bool UndoTree_TryPrepareNewNode(char* description) {
 	s_BuildingNode->entries = NULL;
 	s_EntriesSize = 0;
 	s_BuildingNode->timestamp = time(NULL);
-	s_BuildingNode->redoChild = NULL;
 	return true;
 }
 
 void UndoTree_AddBlockChangeEntry(int x, int y, int z, DeltaBlockID delta) {
-	if (!s_Enabled) return;
+	if (!s_Enabled) {
+		return;
+	}
 
 	BlockChangeEntry entry = {
 		.x = x,
@@ -269,19 +265,24 @@ void UndoTree_Commit(void) {
 	s_BuildingNode->parent = s_Here;
 	s_Here = s_BuildingNode;
 	List_Clear(s_RedoStack);
-	SetRedoChild(s_Here);
 	s_BuildingNode = NULL;
 }
 
-void UndoTree_DescribeFiveLastLeaves(cc_string* descriptions, int* descriptionsCount) {
+void UndoTree_UndoList(cc_string* descriptions, int* count) {
 	const int max = 5;
-	List* leaves = List_CreateEmpty();
-	GetLeaves(leaves);
 
-	*descriptionsCount = List_Count(leaves);
+	UndoNode* terminalNodes[max];
+	*count = 0;
 
-	if (*descriptionsCount > max) {
-		*descriptionsCount = max;
+	for (int i = s_HistoryCount - 1; i > 0; i--) {
+		if (List_Count(s_History[i].children) == 0) {
+			terminalNodes[*count] = &s_History[i];
+			*count += 1;
+		}
+
+		if (*count == max) {
+			break;
+		}
 	}
 
 	char buffer_formattedTime[STRING_SIZE];
@@ -295,8 +296,8 @@ void UndoTree_DescribeFiveLastLeaves(cc_string* descriptions, int* descriptionsC
 
 	UndoNode* currentNode;
 
-	for (int i = 0; i < *descriptionsCount; i++) {
-		currentNode = (UndoNode*) List_Get(leaves, i);
+	for (int i = 0; i < *count; i++) {
+		currentNode = terminalNodes[i];
 
 		Format_HHMMSS(&formattedTime, currentNode->timestamp);
 		Format_Int32(&formattedBlocks, currentNode->blocksAffected);
@@ -308,34 +309,10 @@ void UndoTree_DescribeFiveLastLeaves(cc_string* descriptions, int* descriptionsC
 			String_Format4(&descriptions[i], "[&b%s&f] %c @ %s (%s blocks)", &formattedCommit, currentNode->description, &formattedTime, &formattedBlocks);
 		}
 	}
-
-	List_Free(leaves);
 }
 
 long UndoTree_CurrentTimestamp(void) {
 	return s_Here->timestamp;
-}
-
-static void GetLeaves(List* out_leaves) {
-	UndoNode* currentNode;
-	List* stack = List_CreateEmpty();
-	List_Append(stack, &s_History[0]);
-
-	while (!List_IsEmpty(stack)) {
-		currentNode = (UndoNode*) List_Pop(stack);
-
-		int childrenCount = List_Count(currentNode->children);
-
-		for (int i = 0; i < childrenCount; i++) {
-			List_Append(stack, List_Get(currentNode->children, i));
-		}
-
-		if (childrenCount == 0) {
-			List_Append(out_leaves, currentNode);
-		}
-	}
-
-	List_Free(stack);
 }
 
 static bool TryInitRoot(void) {
@@ -361,8 +338,6 @@ static bool TryInitRoot(void) {
 		return false;
 	}
 
-	root->redoChild = NULL;
-
 	return true;
 }
 
@@ -383,8 +358,9 @@ static void Ascend(void) {
 	s_Here = s_Here->parent;
 }
 
-static void Descend(void) {
-	s_Here = s_Here->redoChild;
+static void Descend(UndoNode* child) {
+	// Note: `child` must be a child of `s_Here`, otherwise the behaviour is undefined.
+	s_Here = child;
 	BlockChangeEntry* entries = s_Here->entries;
 	BlockID currentBlock; 
 
@@ -394,70 +370,42 @@ static void Descend(void) {
 	}
 }
 
-static UndoNode* FindNode(int commit) {
-	UndoNode* currentNode;
-	List* stack = List_CreateEmpty();
-	List_Append(stack, &s_History[0]);
-
-	while (!List_IsEmpty(stack)) {
-		currentNode = (UndoNode*) List_Pop(stack);
-
-		if (currentNode->commit == commit) {
-			List_Free(stack);
-			return currentNode;
-		}
-
-		int childrenCount = List_Count(currentNode->children);
-
-		for (int i = 0; i < childrenCount; i++) {
-			List_Append(stack, List_Get(currentNode->children, i));
-		}
-	}
-
-	List_Free(stack);
-	return NULL;
-}
-
-static void Ancestors(UndoNode* node, List* out_ancestors) {
-	if (node == NULL) return;
-
-	do {
-		List_Append(out_ancestors, node);
-		node = node->parent;
-	} while (node != NULL);
-}
-
-static void CheckoutFromNode(UndoNode* target, int* ascended, int* descended) {
+static void Checkout(UndoNode* target, int* ascended, int* descended) {
 	if (ascended != NULL && descended != NULL) {
 		*ascended = 0;
 		*descended = 0;
 	}
 
+	// Calculate the ancestors of the target.
 	List* targetAncestors = List_CreateEmpty();
-	Ancestors(target, targetAncestors);
 
+	do {
+		List_Append(targetAncestors, target);
+		target = target->parent;
+	} while (target != NULL);
+
+	// Ascend while the current node is not an ancestor of the target.
 	while (!List_Contains(targetAncestors, s_Here)) {
 		Ascend();
-		if (ascended != NULL) (*ascended)++;
+		
+		if (ascended != NULL) {
+			(*ascended)++;
+		}
 	}
 
-	SetRedoChild(target);
+	// Remove all ancestors above `s_Here` until last element of `targetAncestors` is a child of `s_Here`.
+	while (s_Here != (UndoNode*) List_Pop(targetAncestors));
 
+	// Then, descend to the target.
 	while (s_Here != target) {
-		Descend();
-		if (descended != NULL) (*descended)++;
+		Descend((UndoNode*) List_Pop(targetAncestors));
+		
+		if (descended != NULL) {
+			(*descended)++;
+		}
 	}
 
 	List_Free(targetAncestors);
-}
-
-static void SetRedoChild(UndoNode* node) {
-	UndoNode* currentNode = node;
-
-	while (currentNode->parent != NULL) {
-		currentNode->parent->redoChild = currentNode;
-		currentNode = currentNode->parent;
-	}
 }
 
 static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID block) {
@@ -465,20 +413,12 @@ static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID bl
 		return;
 	}
 
-	char formattedCoordinates[STRING_SIZE];
-	Format_Coordinates(coords, formattedCoordinates, sizeof(formattedCoordinates));
-
-	char description[STRING_SIZE];
-
 	if (block == BLOCK_AIR) {
-		snprintf(description, sizeof(description), "Destroy %s", formattedCoordinates);
+		UndoTree_TryPrepareNewNode("Destroy");
 	} else {
-		char formattedBlock[STRING_SIZE];
-		Format_Block(block, formattedBlock, sizeof(formattedBlock));
-		snprintf(description, sizeof(description), "Place %s %s", formattedBlock, formattedCoordinates);
+		UndoTree_TryPrepareNewNode("Place");
 	}
  
-	UndoTree_TryPrepareNewNode(description);
 	UndoTree_AddBlockChangeEntry(coords.X, coords.Y, coords.Z, block - oldBlock);
 	UndoTree_Commit();
 }
