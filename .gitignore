@@ -1,6 +1,6 @@
 doc
 *.DS_Store
 *.dylib
-debug.bash
 .vscode/
 *.dylib.dSYM
+classicube-path.txt
