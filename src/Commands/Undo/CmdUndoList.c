@@ -27,11 +27,6 @@ static void UndoList_Command(const cc_string* args, int argsCount) {
 		return;
 	}
 
-	if (!UndoTree_Enabled()) {
-		Message_UndoDisabled("/UndoList");
-		return;
-	}
-
 	char buffers[5][STRING_SIZE];
 	cc_string descriptions[STRING_SIZE];
 

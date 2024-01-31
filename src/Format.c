@@ -2,6 +2,8 @@
 #include <time.h>
 
 #include "ClassiCube/src/Block.h"
+#include "ClassiCube/src/String.h"
+#include "Format.h"
 
 void Format_HHMMSS(cc_string* destination, time_t time) {
 	struct tm* timeStruct = localtime(&time);

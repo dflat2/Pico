@@ -1,13 +1,14 @@
 #ifndef UNDO_TREE_H
 #define UNDO_TREE_H
 
+#include <stdlib.h>
 #include <stdbool.h>
 
 // DeltaBlockID is a difference between two BlockIDs. Only deltas are saved in each operation.
 // e.g. BLOCK_LOG - BLOCK_SAND = 5 may happen if one did /replace sand log.
 typedef int DeltaBlockID;
 
-// Initialisation and cleaning.
+// Initialisation
 bool UndoTree_Enable(void);
 void UndoTree_Disable(void);
 
@@ -25,7 +26,6 @@ void UndoTree_Commit(void);
 
 // Information.
 void UndoTree_UndoList(cc_string* descriptions, int* descriptionsCount);
-bool UndoTree_Enabled(void);
 long UndoTree_CurrentTimestamp(void);
 
 #endif

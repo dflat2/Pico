@@ -47,11 +47,7 @@ static void SPC_Free(void) {
 
     // Disable warning when doing `/Cuboid` instead of `/Z`
     Event_Unregister((struct Event_Void*) &ChatEvents.ChatSending, NULL, (Event_Void_Callback)OnChatSending);
-
-    // Free UndoTree
-    // if (UndoTree_Enabled()) {
-    //     UndoTree_Disable();
-    // }
+    UndoTree_Disable();
 }
 
 static void SPC_OnNewMapLoaded(void) {
@@ -60,10 +56,7 @@ static void SPC_OnNewMapLoaded(void) {
 	}
 
     // Clears the undo tree when loading a new map.
-	if (UndoTree_Enabled()) {
-		UndoTree_Disable();
-	}
-
+	UndoTree_Disable();
 	UndoTree_Enable();
 }
 

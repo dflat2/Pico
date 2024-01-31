@@ -26,11 +26,6 @@ static void Earlier_Command(const cc_string* args, int argsCount) {
 		return;
 	}
 
-	if (!UndoTree_Enabled()) {
-		Message_UndoDisabled("/Earlier");
-		return;
-	}
-
 	int duration_Second;
 
 	if (!Parse_TryParseDeltaTime_Second(&(args[0]), &duration_Second)) {

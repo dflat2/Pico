@@ -41,7 +41,6 @@ static void Checkout(int target, int* ascended, int* descended);
 static void Descend(UndoNode* child);
 static void Ascend(void);
 static void FreeUndoNode(UndoNode* node);
-static bool TryInitRoot(void);
 static bool TryAddNode(UndoNode node);
 static bool TryStackRedo(int commit);
 static bool TryAddChildren(int commit);
@@ -62,7 +61,20 @@ bool UndoTree_Enable(void) {
 		return false;
 	}
 
-	if (!TryInitRoot()) {
+	UndoNode root;
+	root.commit = 0;
+	root.description[0] = '#';
+	root.description[1] = '\0';
+	root.blockDeltasCount = 0;
+	root.blockDeltasCapacity = 0;
+	root.blockDeltas = NULL;
+	root.timestamp = time(NULL);
+	root.parentIndex = 0;
+	root.children = NULL;
+	root.childrenCount = 0;
+	root.childrenCapacity = 0;
+
+	if (!TryAddNode(root)) {
 		return false;
 	}
 
@@ -77,7 +89,7 @@ void UndoTree_Disable(void) {
 		return;
 	}
 
-	for (int i = 0; i < s_NodesCount; i++) {
+	for (size_t i = 0; i < s_NodesCount; i++) {
 		FreeUndoNode(&s_Nodes[i]);
 	}
 
@@ -95,10 +107,6 @@ void UndoTree_Disable(void) {
 
     Event_Unregister((struct Event_Void*) &UserEvents.BlockChanged, NULL, (Event_Void_Callback)OnBlockChanged);
 	s_Enabled = false;
-}
-
-bool UndoTree_Enabled(void) {
-	return s_Enabled;
 }
 
 bool UndoTree_Earlier(int deltaTimeSeconds, int* out_commit) {
@@ -143,9 +151,9 @@ bool UndoTree_Later(int deltaTimeSeconds, int* commit) {
 
 	int newIndex = s_NodesCount - 1;
 
-	for (int i = s_CurrentNodeIndex; i < s_NodesCount - 1; i++) {
+	for (size_t i = s_CurrentNodeIndex; i < s_NodesCount - 1; i++) {
 		if (s_Nodes[i].timestamp - s_Nodes[s_CurrentNodeIndex].timestamp > deltaTimeSeconds) {
-			newIndex = i;
+			newIndex = (int)i;
 			break;
 		}
 	}
@@ -181,7 +189,7 @@ bool UndoTree_Checkout(int commit, int* ascended, int* descended) {
 		return false;
 	}
 
-	if (commit < 0 || s_NodesCount <= commit) {
+	if (commit < 0 || s_NodesCount <= (size_t)commit) {
 		return false;
 	}
 
@@ -327,28 +335,6 @@ void UndoTree_UndoList(cc_string* descriptions, int* count) {
 
 long UndoTree_CurrentTimestamp(void) {
 	return s_Nodes[s_CurrentNodeIndex].timestamp;
-}
-
-static bool TryInitRoot(void) {
-	UndoNode root;
-
-	root.commit = 0;
-	root.description[0] = '#';
-	root.description[1] = '\0';
-	root.blockDeltasCount = 0;
-	root.blockDeltasCapacity = 0;
-	root.blockDeltas = NULL;
-	root.timestamp = time(NULL);
-	root.parentIndex = 0;
-	root.children = NULL;
-	root.childrenCount = 0;
-	root.childrenCapacity = 0;
-
-	if (!TryAddNode(root)) {
-		return false;
-	}
-
-	return true;
 }
 
 static void FreeUndoNode(UndoNode* node) {

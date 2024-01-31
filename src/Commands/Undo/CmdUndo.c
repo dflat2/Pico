@@ -25,11 +25,6 @@ static void Undo_Command(const cc_string* args, int argsCount) {
 		Message_Player("If you want to go back in time, use &b/Earlier <duration>&f.");
 		return;
 	}
-	
-	if (!UndoTree_Enabled()) {
-		Message_UndoDisabled("/Undo");
-		return;
-	}
 
 	if (!UndoTree_Undo()) {
 		Message_Player("There is nothing to undo.");

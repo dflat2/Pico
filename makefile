@@ -23,9 +23,9 @@ $(TARGET): makefile
 	@set -e
 	@echo 'Generating $(MODE) build...'
 ifeq ($(MODE),RELEASE)
-	@$(CC) $(WARN) $(SOURCE) -I. -I$(SOURCE_DIRECTORY) -o $(TARGET) $(FLAGS)
+	@$(CC) $(SOURCE) -I. -I$(SOURCE_DIRECTORY) -o $(TARGET) $(FLAGS)
 else ifeq ($(MODE),DEBUG)
-	@$(CC) $(DEBUG_FLAGS) $(SOURCE) -I. -I$(SOURCE_DIRECTORY) -o $(TARGET) $(FLAGS)
+	@$(CC) $(WARN) $(DEBUG_FLAGS) $(SOURCE) -I. -I$(SOURCE_DIRECTORY) -o $(TARGET) $(FLAGS)
 	@mv -v SPCPlugin.dylib $(CLASSICUBE_PATH)/plugins
 	@$(DEBUGGER) $(CLASSICUBE_PATH)/ClassiCube $(USERNAME)
 else

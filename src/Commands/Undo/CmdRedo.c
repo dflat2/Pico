@@ -25,11 +25,6 @@ static void Redo_Command(const cc_string* args, int argsCount) {
 		return;
 	}
 
-	if (!UndoTree_Enabled()) {
-		Message_UndoDisabled("/Redo");
-		return;
-	}
-
 	if (!UndoTree_Redo()) {
 		Message_Player("You have nothing to redo.");
 		return;

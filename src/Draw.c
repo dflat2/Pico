@@ -10,10 +10,7 @@ static int s_blocksAffected;
 
 void Draw_Start(char* description) {
 	s_blocksAffected = 0;
-
-	if (UndoTree_Enabled()) {
-		UndoTree_TryPrepareNewNode(description);
-	}
+	UndoTree_TryPrepareNewNode(description);
 }
 
 void Draw_Block(int x, int y, int z, BlockID block) {
@@ -29,10 +26,7 @@ void Draw_Block(int x, int y, int z, BlockID block) {
 
 	s_blocksAffected++;
 	Game_UpdateBlock(x, y, z, block);
-
-	if (UndoTree_Enabled()) {
-		UndoTree_AddBlockChangeEntry(x, y, z, block - current);
-	}
+	UndoTree_AddBlockChangeEntry(x, y, z, block - current);
 }
 
 void Draw_Brush(int x, int y, int z) {
@@ -41,9 +35,6 @@ void Draw_Brush(int x, int y, int z) {
 }
 
 int Draw_End(void) {
-	if (UndoTree_Enabled()) {
-		UndoTree_Commit();
-	}
-
+	UndoTree_Commit();
 	return s_blocksAffected;
 }

@@ -75,12 +75,6 @@ void Message_ShowInvalidDegrees(const cc_string* string) {
 	Message_Player("Degrees must be integers, multiples of 90.");
 }
 
-void Message_UndoDisabled(const char* action) {
-	char cannotDoMsg[64];
-	snprintf(cannotDoMsg, sizeof(cannotDoMsg), "Cannot &b%s&f, as the &bUndoTree is disabled.", action);
-	Message_Player(cannotDoMsg);
-}
-
 void Message_UndoCheckedOut(int commit, int timestampInt) {
 	char buffer_timestamp[] = "00:00:00";
     cc_string timestamp = String_FromArray(buffer_timestamp);

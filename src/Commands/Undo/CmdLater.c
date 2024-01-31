@@ -29,11 +29,6 @@ static void Later_Command(const cc_string* args, int argsCount) {
 		return;
 	}
 
-	if (!UndoTree_Enabled()) {
-		Message_UndoDisabled("/Later");
-		return;
-	}
-
 	int duration_Second;
 
 	if (!Parse_TryParseDeltaTime_Second(&(args[0]), &duration_Second)) {

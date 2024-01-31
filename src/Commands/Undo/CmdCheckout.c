@@ -27,11 +27,6 @@ static void Checkout_Command(const cc_string* args, int argsCount) {
 		return;
 	}
 
-	if (!UndoTree_Enabled()) {
-		Message_UndoDisabled("/Checkout");
-		return;
-	}
-
 	int operation;
 
 	if (!Convert_ParseInt(&(args[0]), &operation) || operation < 0) {
