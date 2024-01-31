@@ -59,7 +59,7 @@ static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zma
 }
 
 static void DoCuboidSolid(IVec3 min, IVec3 max) {
-	Draw_Start("Cuboid solid");
+	Draw_Start("Z");
     DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, max.Z);
 
     int blocksAffected = Draw_End();
@@ -70,7 +70,7 @@ static void DoCuboidSolid(IVec3 min, IVec3 max) {
 }
 
 static void DoCuboidHollow(IVec3 min, IVec3 max) {
-	Draw_Start("Cuboid hollow");
+	Draw_Start("Z");
     DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, max.Z);
     DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, min.Z);
     DrawCuboid(min.X, min.Y, min.Z, max.X, min.Y, max.Z);
@@ -86,7 +86,7 @@ static void DoCuboidHollow(IVec3 min, IVec3 max) {
 }
 
 static void DoCuboidWalls(IVec3 min, IVec3 max) {
-	Draw_Start("Cuboid walls");
+	Draw_Start("Z");
     DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, max.Z);
     DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, min.Z);
     DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, max.Z);
@@ -100,7 +100,7 @@ static void DoCuboidWalls(IVec3 min, IVec3 max) {
 }
 
 static void DoCuboidWire(IVec3 min, IVec3 max) {
-	Draw_Start("Cuboid wire");
+	Draw_Start("Z");
     DrawCuboid(min.X, min.Y, min.Z, max.X, min.Y, min.Z);
     DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, min.Z);
     DrawCuboid(min.X, min.Y, min.Z, min.X, min.Y, max.Z);
@@ -118,7 +118,7 @@ static void DoCuboidWire(IVec3 min, IVec3 max) {
 }
 
 static void DoCuboidCorners(IVec3 min, IVec3 max) {
-	Draw_Start("Cuboid corners");
+	Draw_Start("Z");
     Draw_Brush(min.X, min.Y, min.Z);
     Draw_Brush(min.X, min.Y, max.Z);
     Draw_Brush(min.X, max.Y, min.Z);

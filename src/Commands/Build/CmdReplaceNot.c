@@ -31,7 +31,7 @@ struct ChatCommand ReplaceNotCommand = {
 };
 
 static void DoReplaceNot(IVec3 min, IVec3 max) {
-	Draw_Start("Replace");
+	Draw_Start("ReplaceNot");
 
 	for (int x = min.X; x <= max.X; x++) {
 		for (int y = min.Y; y <= max.Y; y++) {

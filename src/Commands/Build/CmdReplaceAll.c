@@ -28,7 +28,7 @@ struct ChatCommand ReplaceAllCommand = {
 };
 
 static void DoReplaceAll(void) {
-	Draw_Start("Replace");
+	Draw_Start("ReplaceAll");
 
 	for (int x = 0; x <= World.Width - 1; x++) {
 		for (int y = 0; y <= World.Height - 1; y++) {

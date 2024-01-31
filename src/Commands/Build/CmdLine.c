@@ -90,12 +90,12 @@ static void Line(IVec3 from, IVec3 to) {
 }
 
 static void DoLine(IVec3 from, IVec3 to) {
-	Draw_Start("Line normal");
+	Draw_Start("Line");
 	Line(from, to);
 }
 
 static void DoWall(IVec3 from, IVec3 to) {
-	Draw_Start("Line wall");
+	Draw_Start("Line");
 
 	int deltaX = to.X - from.X;
 	int deltaZ = to.Z - from.Z;
@@ -150,7 +150,7 @@ static FVec3 Bezier(FVec3 from, FVec3 controlPoint, FVec3 to, float t) {
 }
 
 static void DoBezier(IVec3 from, IVec3 controlPoint, IVec3 to) {
-	Draw_Start("Line bezier");
+	Draw_Start("Line");
 	const int subDivisions = 64;
 
 	FVec3 floatFrom = IVec3_ConvertFVec3(from);
