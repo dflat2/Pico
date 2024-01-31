@@ -41,6 +41,7 @@ static void Checkout(int target, int* ascended, int* descended);
 static void Descend(UndoNode* child);
 static void Ascend(void);
 static void FreeUndoNode(UndoNode* node);
+static void FormatNode(cc_string* destination, UndoNode* node);
 static bool TryAddNode(UndoNode node);
 static bool TryStackRedo(int commit);
 static bool TryAddChildren(int commit);
@@ -307,6 +308,30 @@ void UndoTree_UndoList(cc_string* descriptions, int* count) {
 		}
 	}
 
+	UndoNode* currentNode;
+
+	for (int i = 0; i < *count; i++) {
+		currentNode = terminalNodes[i];
+		FormatNode(&descriptions[i], currentNode);
+	}
+}
+
+long UndoTree_CurrentTimestamp(void) {
+	return s_Nodes[s_CurrentNodeIndex].timestamp;
+}
+
+void UndoTree_FormatCurrentNode(cc_string* destination) {
+	UndoNode* currentNode = &s_Nodes[s_CurrentNodeIndex];
+	FormatNode(destination, currentNode);
+}
+
+static void FormatNode(cc_string* destination, UndoNode* node) {
+	char buffer_result[STRING_SIZE];
+	cc_string result = String_FromArray(buffer_result);
+
+	char buffer_currentNodePrefix[] = { '&', 'b', 0x10, ' ', '&', 'f', '\0' };
+	cc_string currentNodePrefix = { buffer_currentNodePrefix, .length = 6, .capacity = 6 };
+
 	char buffer_formattedTime[STRING_SIZE];
 	cc_string formattedTime = String_FromArray(buffer_formattedTime);
 
@@ -316,25 +341,17 @@ void UndoTree_UndoList(cc_string* descriptions, int* count) {
 	char buffer_formattedCommit[STRING_SIZE];
 	cc_string formattedCommit = String_FromArray(buffer_formattedCommit);
 
-	UndoNode* currentNode;
+	Format_HHMMSS(&formattedTime, node->timestamp);
+	Format_Int32(&formattedBlocks, node->blockDeltasCount);
+	Format_Int32(&formattedCommit, node->commit);
 
-	for (int i = 0; i < *count; i++) {
-		currentNode = terminalNodes[i];
+	String_Format4(&result, "[&b%s&f] %c @ %s (%s)", &formattedCommit, node->description, &formattedTime, &formattedBlocks);
 
-		Format_HHMMSS(&formattedTime, currentNode->timestamp);
-		Format_Int32(&formattedBlocks, currentNode->blockDeltasCount);
-		Format_Int32(&formattedCommit, currentNode->commit);
-
-		if (currentNode->blockDeltasCount == 1) {
-			String_Format4(&descriptions[i], "[&b%s&f] %c @ %s (%s block)", &formattedCommit, currentNode->description, &formattedTime, &formattedBlocks);
-		} else {
-			String_Format4(&descriptions[i], "[&b%s&f] %c @ %s (%s blocks)", &formattedCommit, currentNode->description, &formattedTime, &formattedBlocks);
-		}
+	if (node->commit == s_CurrentNodeIndex) {
+		String_AppendString(destination, &currentNodePrefix);
 	}
-}
 
-long UndoTree_CurrentTimestamp(void) {
-	return s_Nodes[s_CurrentNodeIndex].timestamp;
+	String_AppendString(destination, &result);
 }
 
 static void FreeUndoNode(UndoNode* node) {

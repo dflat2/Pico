@@ -1,6 +1,8 @@
 #include <stdio.h>
 
 #include "ClassiCube/src/Chat.h"
+#include "ClassiCube/src/String.h"
+#include "ClassiCube/src/Constants.h"
 
 #include "Messaging.h"
 #include "UndoTree.h"
@@ -44,13 +46,8 @@ static void Checkout_Command(const cc_string* args, int argsCount) {
 		return;
 	}
 
-	char successMsg[64];
-
-	if (ascended == 0 && descended == 0) {
-		snprintf(successMsg, sizeof(successMsg), "Already at operation &b%d&f.", operation);
-	} else {
-		snprintf(successMsg, sizeof(successMsg), "Checked out operation &b%d&f.", operation);
-	}
-
-	Message_Player(successMsg);
+	char messageBuffer[STRING_SIZE];
+	cc_string message = { messageBuffer, .length = 0, .capacity = STRING_SIZE };
+	UndoTree_FormatCurrentNode(&message);
+	Chat_AddOf(&message, MSG_TYPE_SMALLANNOUNCEMENT);
 }

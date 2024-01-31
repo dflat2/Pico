@@ -39,6 +39,8 @@ static void Earlier_Command(const cc_string* args, int argsCount) {
 		return;
 	} 
 
-	int timestamp = (int)UndoTree_CurrentTimestamp();
-	Message_UndoCheckedOut(commit, timestamp);
+	char messageBuffer[STRING_SIZE];
+	cc_string message = { messageBuffer, .length = 0, .capacity = STRING_SIZE };
+	UndoTree_FormatCurrentNode(&message);
+	Chat_AddOf(&message, MSG_TYPE_SMALLANNOUNCEMENT);
 }

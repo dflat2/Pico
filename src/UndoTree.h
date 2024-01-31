@@ -26,6 +26,7 @@ void UndoTree_Commit(void);
 
 // Information.
 void UndoTree_UndoList(cc_string* descriptions, int* descriptionsCount);
+void UndoTree_FormatCurrentNode(cc_string* destination);
 long UndoTree_CurrentTimestamp(void);
 
 #endif
