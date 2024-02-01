@@ -14,7 +14,7 @@ struct ChatCommand FixGrassCommand = {
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
 		"&b/FixGrass",
-		"Fixes grass and dirt blocks according to the lightning.",
+		"Fixes grass and dirt blocks according to the lighting.",
 		NULL,
 		NULL,
 		NULL
