@@ -96,7 +96,6 @@ static void TreeSelectionHandler(IVec3* marks, int count) {
 
     if (s_Repeat) {
         MarkSelection_Make(TreeSelectionHandler, 1, "Tree");
-        Message_Player("Place or break a block to determine the root.");
         return;
     }
 

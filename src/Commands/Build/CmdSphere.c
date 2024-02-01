@@ -23,7 +23,6 @@ static int s_Radius;
 static IVec3 s_Center;
 
 static void Sphere_Command(const cc_string* args, int argsCount);
-static void DoSphere(void);
 static bool ShouldDraw(int x, int y, int z);
 
 struct ChatCommand SphereCommand = {
@@ -39,23 +38,6 @@ struct ChatCommand SphereCommand = {
 	},
 	NULL
 };
-
-static void DoSphere(void) {
-    Draw_Start("Sphere");
-
-    for (int x = s_Center.X - s_Radius; x <= s_Center.X + s_Radius; x++) {
-        for (int y = s_Center.Y - s_Radius; y <= s_Center.Y + s_Radius; y++) {
-            for (int z = s_Center.Z - s_Radius; z <= s_Center.Z + s_Radius; z++) {
-                if (ShouldDraw(x, y, z)) {
-                    Draw_Brush(x, y, z);
-                }
-            }
-        }
-    }
-
-    int blocksAffected = Draw_End();
-	Message_BlocksAffected(blocksAffected);
-}
 
 static bool ShouldDraw(int x, int y, int z) {
     IVec3 vector = { x, y, z };
@@ -74,12 +56,26 @@ static void SphereSelectionHandler(IVec3* marks, int count) {
     }
 
     s_Center = marks[0];
-    DoSphere();
+    Draw_Start("Sphere");
+
+    for (int x = s_Center.X - s_Radius; x <= s_Center.X + s_Radius; x++) {
+        for (int y = s_Center.Y - s_Radius; y <= s_Center.Y + s_Radius; y++) {
+            for (int z = s_Center.Z - s_Radius; z <= s_Center.Z + s_Radius; z++) {
+                if (ShouldDraw(x, y, z)) {
+                    Draw_Brush(x, y, z);
+                }
+            }
+        }
+    }
+
+    int blocksAffected = Draw_End();
 
     if (s_Repeat) {
         MarkSelection_Make(SphereSelectionHandler, 1, "Sphere");
-        Message_Player("&fPlace or break a block to determine the center.");
+        return;
     }
+
+    Message_BlocksAffected(blocksAffected);
 }
 
 static void Sphere_Command(const cc_string* args, int argsCount) {
