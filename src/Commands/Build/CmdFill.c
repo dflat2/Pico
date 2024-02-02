@@ -18,12 +18,15 @@
 typedef enum FillMode_ {
 	MODE_3D = 0,
 	MODE_2DX = 1,
-	MODE_2DY = 2,
+	MODE_LAYER = 2,
 	MODE_2DZ = 3,
+	MODE_DOWN = 4,
+	MODE_UP = 5
 } FillMode;
 
 static bool s_Repeat;
 static FillMode s_Mode;
+static int s_SourceY;
 
 static bool TryExpand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlock, BinaryMap* map);
 static void Fill_Command(const cc_string* args, int argsCount);
@@ -37,7 +40,7 @@ struct ChatCommand FillCommand = {
 	{
 		"&b/Fill [mode] [brush/block] +",
         "&fFills the specified area.",
-		"&fList of modes: &b3d&f (default), &b2d-x&f, &b2d-y&f, &b2d-z&f.",
+		"&fList of modes: &b3d&f (default), &b2d-x&f, &blayer&f, &b2d-z&f, &bdown&f, &bup&f.",
 		NULL,
 		NULL
 	},
@@ -48,8 +51,10 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
     cc_string modesString[] = {
         String_FromConst("3d"),
         String_FromConst("2d-x"),
-        String_FromConst("2d-y"),
+        String_FromConst("layer"),
         String_FromConst("2d-z"),
+		String_FromConst("down"),
+		String_FromConst("up"),
     };
 
 	size_t modesCount = sizeof(modesString) / sizeof(modesString[0]);
@@ -94,24 +99,60 @@ static bool TryExpand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlo
 	IVec3 neighbors[MAX_NEIGHBORS];
 	short count = 0;
 
-	if (s_Mode == MODE_3D || s_Mode == MODE_2DY || s_Mode == MODE_2DZ) {
-		neighbors[count].X = target.X - 1; neighbors[count].Y = target.Y; neighbors[count].Z = target.Z;
+	if (s_Mode == MODE_3D || s_Mode == MODE_LAYER || s_Mode == MODE_2DZ || s_Mode == MODE_DOWN || s_Mode == MODE_UP) {
+		neighbors[count].X = target.X - 1;
+		neighbors[count].Y = target.Y;
+		neighbors[count].Z = target.Z;
 		count++;
-		neighbors[count].X = target.X + 1; neighbors[count].Y = target.Y; neighbors[count].Z = target.Z;
+		neighbors[count].X = target.X + 1;
+		neighbors[count].Y = target.Y;
+		neighbors[count].Z = target.Z;
 		count++;
 	}
 	
 	if (s_Mode == MODE_3D || s_Mode == MODE_2DX || s_Mode == MODE_2DZ) {
-		neighbors[count].X = target.X; neighbors[count].Y = target.Y - 1; neighbors[count].Z = target.Z;
+		neighbors[count].X = target.X;
+		neighbors[count].Y = target.Y - 1;
+		neighbors[count].Z = target.Z;
 		count++;
-		neighbors[count].X = target.X; neighbors[count].Y = target.Y + 1; neighbors[count].Z = target.Z;
+		neighbors[count].X = target.X;
+		neighbors[count].Y = target.Y + 1;
+		neighbors[count].Z = target.Z;
 		count++;
+	} else if (s_Mode == MODE_DOWN) {
+		neighbors[count].X = target.X;
+		neighbors[count].Y = target.Y - 1;
+		neighbors[count].Z = target.Z;
+		count++;
+
+		if (target.Y < s_SourceY) {
+			neighbors[count].X = target.X;
+			neighbors[count].Y = target.Y + 1;
+			neighbors[count].Z = target.Z;
+			count++;
+		}
+	} else if (s_Mode == MODE_UP) {
+		neighbors[count].X = target.X;
+		neighbors[count].Y = target.Y + 1;
+		neighbors[count].Z = target.Z;
+		count++;
+
+		if (target.Y > s_SourceY) {
+			neighbors[count].X = target.X;
+			neighbors[count].Y = target.Y - 1;
+			neighbors[count].Z = target.Z;
+			count++;
+		}
 	}
 	
-	if (s_Mode == MODE_3D || s_Mode == MODE_2DX || s_Mode == MODE_2DY) {
-		neighbors[count].X = target.X; neighbors[count].Y = target.Y; neighbors[count].Z = target.Z - 1;
+	if (s_Mode == MODE_3D || s_Mode == MODE_2DX || s_Mode == MODE_LAYER || s_Mode == MODE_DOWN || s_Mode == MODE_UP) {
+		neighbors[count].X = target.X;
+		neighbors[count].Y = target.Y;
+		neighbors[count].Z = target.Z - 1;
 		count++;
-		neighbors[count].X = target.X; neighbors[count].Y = target.Y; neighbors[count].Z = target.Z + 1;
+		neighbors[count].X = target.X;
+		neighbors[count].Y = target.Y;
+		neighbors[count].Z = target.Z + 1;
 		count++;
 	}
 
@@ -138,6 +179,7 @@ static bool TryExpand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlo
 
 static void FillSelectionHandler(IVec3* marks, int count) {
 	IVec3 fillOrigin = marks[0];
+	s_SourceY = fillOrigin.Y;
 	BlockID filledOverBlock = World_GetBlock(fillOrigin.X, fillOrigin.Y, fillOrigin.Z);
 	BinaryMap* binaryMap = BinaryMap_CreateEmpty(World.Width, World.Height, World.Length);
 	IVec3FastQueue* queue = IVec3FastQueue_CreateEmpty();

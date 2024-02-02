@@ -14,7 +14,7 @@
 static bool s_Repeat;
 static unsigned short s_Block;
 static const int PERCENTAGE_THRESHOLD = 50;
-static const int SIZE = 3;
+static const int SIZE = 2;
 
 // ie. when clicking a block, the volume ((BRUSH_SIZE + 1) * 2) ^ 3 around the block will be affected.
 static const int BRUSH_SIZE = 7;
