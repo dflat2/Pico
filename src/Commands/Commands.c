@@ -18,6 +18,7 @@ extern struct ChatCommand LineCommand;
 extern struct ChatCommand MarkAllCommand;
 extern struct ChatCommand MarkCommand;
 extern struct ChatCommand MeasureCommand;
+extern struct ChatCommand OutlineCommand;
 extern struct ChatCommand PaintCommand;
 extern struct ChatCommand PasteCommand;
 extern struct ChatCommand ReachDistanceCommand;
@@ -52,6 +53,7 @@ void Commands_RegisterAll(void) {
 	Commands_Register(&MarkAllCommand);
 	Commands_Register(&MarkCommand);
 	Commands_Register(&MeasureCommand);
+	Commands_Register(&OutlineCommand);
 	Commands_Register(&PaintCommand);
 	Commands_Register(&PasteCommand);
 	Commands_Register(&ReachDistanceCommand);
