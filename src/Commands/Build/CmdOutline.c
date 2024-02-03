@@ -14,18 +14,16 @@
 #include "DataStructures/BinaryMap.h"
 #include "DataStructures/IVec3FastQueue.h"
 
-#define MAX_NEIGHBORS 6
-
-typedef enum FillMode_ {
+typedef enum OutlineMode_ {
 	MODE_3D = 0,
 	MODE_LAYER = 1,
 	MODE_UP = 2,
 	MODE_DOWN = 3,
-} FillMode;
+} OutlineMode;
 
 static BlockID s_OutlinedBlock;
 static bool s_Repeat;
-static FillMode s_Mode;
+static OutlineMode s_Mode;
 
 static void Outline_Command(const cc_string* args, int argsCount);
 static bool TryParseArguments(const cc_string* args, int argsCount);
@@ -36,10 +34,10 @@ struct ChatCommand OutlineCommand = {
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
 		"&b/Outline <mode> <block> [brush/block] +",
-        "Outlines &bblock&fs. Blocks outside of selected region are ignored.",
-		"Only air blocks can be affected.",
+        "Outlines &bblock&fs. Only air blocks can be affected.",
 		"&fList of modes: &b3d&f, &blayer&f, &bup&f, &bdown&f.",
 		NULL,
+		NULL
 	},
 	NULL
 };
@@ -84,10 +82,6 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 	}
 }
 
-static bool InCuboid(IVec3 vec, IVec3 min, IVec3 max) {
-	return min.X <= vec.X && vec.X <= max.X && min.Y <= vec.Y && vec.Y <= max.Y && min.Z <= vec.Z && vec.Z <= max.Z;
-}
-
 static bool ShouldOutline(IVec3 coordinates, IVec3 min, IVec3 max) {
 	IVec3 neighbors[6];
 	int count = 0;
@@ -97,7 +91,7 @@ static bool ShouldOutline(IVec3 coordinates, IVec3 min, IVec3 max) {
 		neighbors[count].Y = coordinates.Y;
 		neighbors[count].Z = coordinates.Z;
 
-		if (InCuboid(neighbors[count], min, max)) {
+		if (World_Contains(neighbors[count].X, neighbors[count].Y, neighbors[count].Z)) {
 			count++;
 		}
 
@@ -105,7 +99,7 @@ static bool ShouldOutline(IVec3 coordinates, IVec3 min, IVec3 max) {
 		neighbors[count].Y = coordinates.Y;
 		neighbors[count].Z = coordinates.Z;
 
-		if (InCuboid(neighbors[count], min, max)) {
+		if (World_Contains(neighbors[count].X, neighbors[count].Y, neighbors[count].Z)) {
 			count++;
 		}
 		
@@ -113,7 +107,7 @@ static bool ShouldOutline(IVec3 coordinates, IVec3 min, IVec3 max) {
 		neighbors[count].Y = coordinates.Y;
 		neighbors[count].Z = coordinates.Z + 1;
 
-		if (InCuboid(neighbors[count], min, max)) {
+		if (World_Contains(neighbors[count].X, neighbors[count].Y, neighbors[count].Z)) {
 			count++;
 		}
 
@@ -121,7 +115,7 @@ static bool ShouldOutline(IVec3 coordinates, IVec3 min, IVec3 max) {
 		neighbors[count].Y = coordinates.Y;
 		neighbors[count].Z = coordinates.Z - 1;
 
-		if (InCuboid(neighbors[count], min, max)) {
+		if (World_Contains(neighbors[count].X, neighbors[count].Y, neighbors[count].Z)) {
 			count++;
 		}
 	}
@@ -131,7 +125,7 @@ static bool ShouldOutline(IVec3 coordinates, IVec3 min, IVec3 max) {
 		neighbors[count].Y = coordinates.Y - 1;
 		neighbors[count].Z = coordinates.Z;
 
-		if (InCuboid(neighbors[count], min, max)) {
+		if (World_Contains(neighbors[count].X, neighbors[count].Y, neighbors[count].Z)) {
 			count++;
 		}
 	}
@@ -141,7 +135,7 @@ static bool ShouldOutline(IVec3 coordinates, IVec3 min, IVec3 max) {
 		neighbors[count].Y = coordinates.Y - 1;
 		neighbors[count].Z = coordinates.Z;
 
-		if (InCuboid(neighbors[count], min, max)) {
+		if (World_Contains(neighbors[count].X, neighbors[count].Y, neighbors[count].Z)) {
 			count++;
 		}
 	}
@@ -159,13 +153,12 @@ static void OutlineSelectionHandler(IVec3* marks, int count) {
 	IVec3 min = Min(marks[0], marks[1]);
 	IVec3 max = Max(marks[0], marks[1]);
 
-	// 
 	IVec3FastQueue* outline = IVec3FastQueue_CreateEmpty();
 	IVec3 here;
 
-	for (int x = min.X; x < max.X; x++) {
-		for (int y = min.Y; y < max.Y; y++) {
-			for (int z = min.Z; z < max.Z; z++) {
+	for (int x = min.X; x <= max.X; x++) {
+		for (int y = min.Y; y <= max.Y; y++) {
+			for (int z = min.Z; z <= max.Z; z++) {
 				if (World_GetBlock(x, y, z) == BLOCK_AIR) {
 					here.X = x;
 					here.Y = y;
