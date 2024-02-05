@@ -26,6 +26,8 @@ bool Brush_TryLoad(const cc_string* name, const cc_string* args, int argsCount) 
 		brush = &BrushRandom;
 	} else if (String_CaselessEqualsConst(name, "@Solid")) {
 		brush = &BrushSolid;
+	} else if (String_CaselessEqualsConst(name, "@Striped")) {
+		brush = &BrushStriped;
 	} else {
 		ShowCouldNotFindBrush(name);
 		return false;
