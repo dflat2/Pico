@@ -4,7 +4,7 @@
 #include "ClassiCube/src/World.h"
 
 #include "Draw.h"
-#include "ParsingUtils.h"
+#include "Parse.h"
 #include "DataStructures/BlocksBuffer.h"
 #include "MarkSelection.h"
 #include "Messaging.h"

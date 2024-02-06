@@ -1,7 +1,7 @@
 #include "ClassiCube/src/BlockID.h"
 #include "ClassiCube/src/Inventory.h"
 
-#include "ParsingUtils.h"
+#include "Parse.h"
 #include "Messaging.h"
 
 static bool BrushInventory_TryParseArguments(const cc_string* args, int argsCount);

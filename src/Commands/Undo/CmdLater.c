@@ -5,7 +5,7 @@
 #include "Messaging.h"
 #include "UndoTree.h"
 #include "Format.h"
-#include "ParsingUtils.h"
+#include "Parse.h"
 
 static void Later_Command(const cc_string* args, int argsCount);
 

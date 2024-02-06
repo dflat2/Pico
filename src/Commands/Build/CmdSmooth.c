@@ -8,7 +8,7 @@
 #include "MarkSelection.h"
 #include "Messaging.h"
 #include "VectorsExtension.h"
-#include "ParsingUtils.h"
+#include "Parse.h"
 #include "DataStructures/IVec3FastQueue.h"
 
 static bool s_Repeat;

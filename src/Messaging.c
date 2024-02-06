@@ -55,7 +55,7 @@ void Message_ShowUnknownBlock(const cc_string* block) {
 }
 
 void Message_ShowInvalidAxis(const cc_string* axis) {
-    char buffer[128];
+    char buffer[STRING_SIZE];
     cc_string message = String_FromArray(buffer);
     String_Format1(&message, "&fCould not read axis: &b%s&f.", axis);
     Chat_Add(&message);
@@ -63,7 +63,7 @@ void Message_ShowInvalidAxis(const cc_string* axis) {
 }
 
 void Message_ShowInvalidDegrees(const cc_string* string) {
-    char buffer[64];
+    char buffer[STRING_SIZE];
     cc_string message = String_FromArray(buffer);
     String_Format1(&message, "&fInvalid degrees: &b%s&f.", string);
     Chat_Add(&message);

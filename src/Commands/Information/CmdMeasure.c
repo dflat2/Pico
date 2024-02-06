@@ -8,7 +8,7 @@
 #include "Messaging.h"
 #include "MarkSelection.h"
 #include "VectorsExtension.h"
-#include "ParsingUtils.h"
+#include "Parse.h"
 
 static void Measure_Command(const cc_string* args, int argsCount);
 static void MeasureSelectionHandler(IVec3* marks, int count);

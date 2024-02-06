@@ -2,7 +2,7 @@
 
 #include "Messaging.h"
 #include "UndoTree.h"
-#include "ParsingUtils.h"
+#include "Parse.h"
 
 static void Earlier_Command(const cc_string* args, int argsCount);
 

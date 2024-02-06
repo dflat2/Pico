@@ -5,7 +5,7 @@
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Messaging.h"
-#include "ParsingUtils.h"
+#include "Parse.h"
 
 static void ReplaceAll_Command(const cc_string* args, int argsCount);
 static bool TryParseArguments(const cc_string* args, int argsCount);
