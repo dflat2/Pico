@@ -17,11 +17,6 @@ static bool TryParseBlockWeight(const cc_string* argument, BlockID* out_block, i
 static void UpdateCumulativeWeights(void);
 static void UpdateTotal(void);
 
-Brush BrushRandom = {
-	.TryParseArguments = &BrushRandom_TryParseArguments,
-	.Paint = &BrushRandom_Paint,
-}; 
-
 static BlockID s_Blocks[MAX_BLOCKS];
 static int s_Weights[MAX_BLOCKS];
 static int s_CumulativeWeights[MAX_BLOCKS];
@@ -109,3 +104,16 @@ static void UpdateTotal(void) {
 		s_Total += s_Weights[i];
 	}
 }
+
+static void BrushRandom_Help(void) {
+	Message_Player("&b@Random <block1> <block2>");
+	Message_Player("Outputs a block randomly between &bblock1 &fand &bblock2&f.");
+	Message_Player("You can use more than two blocks. You can also weight blocks,");
+	Message_Player("for example &b@Random grass/49 dirt/1 gravel/1&f.");
+}
+
+Brush BrushRandom = {
+	.TryParseArguments = &BrushRandom_TryParseArguments,
+	.Paint = &BrushRandom_Paint,
+	.HelpFunction = &BrushRandom_Help
+};

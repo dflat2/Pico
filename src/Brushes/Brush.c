@@ -2,10 +2,9 @@
 
 #include "ClassiCube/src/String.h"
 #include "ClassiCube/src/Chat.h"
+#include "ClassiCube/src/Constants.h"
 
 #include "Brushes.h"
-
-static void ShowCouldNotFindBrush(const cc_string* name);
 
 static BlockID (*s_CurrentBrushPaint)(int x, int y, int z) = NULL;
 
@@ -13,22 +12,35 @@ BlockID Brush_Paint(int x, int y, int z) {
 	return s_CurrentBrushPaint(x, y, z);
 }
 
-bool Brush_TryLoad(const cc_string* name, const cc_string* args, int argsCount) {
-	Brush* brush = NULL;
-
+static Brush* TryFindBrush(const cc_string* name) {
 	if (String_CaselessEqualsConst(name, "@Checkered")) {
-		brush = &BrushCheckered;
+		return &BrushCheckered;
 	} else if (String_CaselessEqualsConst(name, "@Inventory")) {
-		brush = &BrushInventory;
+		return &BrushInventory;
 	} else if (String_CaselessEqualsConst(name, "@Rainbow")) {
-		brush = &BrushRainbow;
+		return &BrushRainbow;
 	} else if (String_CaselessEqualsConst(name, "@Random")) {
-		brush = &BrushRandom;
+		return &BrushRandom;
 	} else if (String_CaselessEqualsConst(name, "@Solid")) {
-		brush = &BrushSolid;
+		return &BrushSolid;
 	} else if (String_CaselessEqualsConst(name, "@Striped")) {
-		brush = &BrushStriped;
-	} else {
+		return &BrushStriped;
+	}
+
+	return NULL;
+}
+
+static void ShowCouldNotFindBrush(const cc_string* name) {
+	char buffer[STRING_SIZE];
+	cc_string message = { buffer, 0, STRING_SIZE };
+	String_Format1(&message, "Could not find brush &b%s&f.", name);
+	Chat_Add(&message);
+}
+
+bool Brush_TryLoad(const cc_string* name, const cc_string* args, int argsCount) {
+	Brush* brush = TryFindBrush(name);
+
+	if (brush == NULL) {
 		ShowCouldNotFindBrush(name);
 		return false;
 	}
@@ -56,9 +68,13 @@ void Brush_LoadInventory(void) {
 	s_CurrentBrushPaint = BrushInventory.Paint;
 }
 
-static void ShowCouldNotFindBrush(const cc_string* name) {
-	char buffer[64];
-	cc_string message = { buffer, 0, 64 };
-	String_Format1(&message, "Could not find brush &b%s&f.", name);
-	Chat_Add(&message);
+void Brush_Help(const cc_string* name) {
+	Brush* brush = TryFindBrush(name);
+
+	if (brush == NULL) {
+		ShowCouldNotFindBrush(name);
+		return;
+	}
+
+	brush->HelpFunction();
 }

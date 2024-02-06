@@ -4,14 +4,6 @@
 #include "Parse.h"
 #include "Messaging.h"
 
-static bool BrushSolid_TryParseArguments(const cc_string* args, int argsCount);
-static BlockID BrushSolid_Paint(int x, int y, int z);
-
-Brush BrushSolid = {
-	.TryParseArguments = &BrushSolid_TryParseArguments,
-	.Paint = &BrushSolid_Paint,
-}; 
-
 static BlockID s_Block;
 
 static bool BrushSolid_TryParseArguments(const cc_string* args, int argsCount) {
@@ -30,3 +22,14 @@ static bool BrushSolid_TryParseArguments(const cc_string* args, int argsCount) {
 static BlockID BrushSolid_Paint(int x, int y, int z) {
 	return s_Block;
 }
+
+static void BrushSolid_Help(void) {
+	Message_Player("&b@Solid <block>");
+	Message_Player("Outputs &bblock&f.");
+}
+
+Brush BrushSolid = {
+	.TryParseArguments = &BrushSolid_TryParseArguments,
+	.Paint = &BrushSolid_Paint,
+	.HelpFunction = &BrushSolid_Help,
+}; 

@@ -1,14 +1,6 @@
 #include "Parse.h"
 #include "Messaging.h"
 
-static BlockID BrushCheckered_Paint(int x, int y, int z);
-static bool BrushCheckered_TryParseArguments(const cc_string* args, int argsCount);
-
-Brush BrushCheckered = {
-	.TryParseArguments = &BrushCheckered_TryParseArguments,
-	.Paint = &BrushCheckered_Paint,
-}; 
-
 static BlockID s_Block1;
 static BlockID s_Block2;
 
@@ -35,3 +27,14 @@ static BlockID BrushCheckered_Paint(int x, int y, int z) {
 
 	return s_Block2;
 }
+
+static void BrushCheckered_Help(void) {
+	Message_Player("&b@Checkered <block1> <block2>");
+	Message_Player("Alternates between &bblock1 &fand &bblock2&f.");
+}
+
+Brush BrushCheckered = {
+	.TryParseArguments = &BrushCheckered_TryParseArguments,
+	.Paint = &BrushCheckered_Paint,
+	.HelpFunction = &BrushCheckered_Help,
+}; 

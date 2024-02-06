@@ -1,17 +1,7 @@
 #include "ClassiCube/src/BlockID.h"
 
 #include "Messaging.h"
-#include "Brush.h"
-
-static bool BrushRainbow_TryParseArguments(const cc_string* args, int argsCount);
-static BlockID BrushRainbow_Paint(int x, int y, int z);
-
-Brush BrushRainbow = {
-	.TryParseArguments = &BrushRainbow_TryParseArguments,
-	.Paint = &BrushRainbow_Paint,
-}; 
-
-static const int s_BlocksCount = BLOCK_PINK - BLOCK_RED + 1;
+#include "Brush.h" 
 
 static bool BrushRainbow_TryParseArguments(const cc_string* args, int argsCount) {
 	if (argsCount > 0) {
@@ -23,5 +13,17 @@ static bool BrushRainbow_TryParseArguments(const cc_string* args, int argsCount)
 }
 
 static BlockID BrushRainbow_Paint(int x, int y, int z) {
-	return BLOCK_RED + ((x + y + z) % s_BlocksCount);
+	const int BLOCKS_COUNT = BLOCK_PINK - BLOCK_RED + 1;
+	return BLOCK_RED + ((x + y + z) % BLOCKS_COUNT);
 }
+
+static void BrushRainbow_Help(void) {
+	Message_Player("&b@Rainbow");
+	Message_Player("Draws a rainbow using wool blocks.");
+}
+
+Brush BrushRainbow = {
+	.TryParseArguments = &BrushRainbow_TryParseArguments,
+	.Paint = &BrushRainbow_Paint,
+	.HelpFunction = &BrushRainbow_Help
+};

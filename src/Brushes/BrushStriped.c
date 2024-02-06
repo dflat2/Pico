@@ -1,14 +1,6 @@
 #include "Parse.h"
 #include "Messaging.h"
 
-static BlockID BrushStriped_Paint(int x, int y, int z);
-static bool BrushStriped_TryParseArguments(const cc_string* args, int argsCount);
-
-Brush BrushStriped = {
-	.TryParseArguments = &BrushStriped_TryParseArguments,
-	.Paint = &BrushStriped_Paint,
-}; 
-
 static BlockID s_Block1;
 static BlockID s_Block2;
 
@@ -35,3 +27,14 @@ static BlockID BrushStriped_Paint(int x, int y, int z) {
 
 	return s_Block2;
 }
+
+static void BrushStriped_Help(void) {
+	Message_Player("&b@Striped <block1> <block2>");
+	Message_Player("Alternates between &bblock1 &fand &bblock2&f diagonally.");
+}
+
+Brush BrushStriped = {
+	.TryParseArguments = &BrushStriped_TryParseArguments,
+	.Paint = &BrushStriped_Paint,
+	.HelpFunction = &BrushStriped_Help,
+};

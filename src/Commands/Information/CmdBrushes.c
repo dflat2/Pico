@@ -24,8 +24,10 @@ static void Brushes_Command(const cc_string* args, int argsCount) {
 	}
 
 	Message_Player("Available brushes:");
-	Message_Player(" &b@Solid <block>");
-	Message_Player(" &b@Inventory");
 	Message_Player(" &b@Checkered <block1> <block2>");
+	Message_Player(" &b@Inventory");
 	Message_Player(" &b@Rainbow");
+	Message_Player(" &b@Random <block1> <block2>");
+	Message_Player(" &b@Solid <block>");
+	Message_Player(" &b@Striped <block1> <block2>");
 }
