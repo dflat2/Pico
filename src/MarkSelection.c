@@ -76,7 +76,8 @@ static void ShowMarksLeft(void) {
     int marksLeft = s_TotalMarks - s_CurrentMark;
 
     if (marksLeft == 0) {
-        Message_MessageOf("", MSG_TYPE_BOTTOMRIGHT_1);
+        cc_string emptyMessage = String_FromReadonly("");
+	    Chat_AddOf(&emptyMessage, MSG_TYPE_BOTTOMRIGHT_1);
         return;
     }
 

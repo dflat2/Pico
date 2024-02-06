@@ -11,13 +11,8 @@ void Message_Player(const char* message) {
 	Chat_Add(&ccStringMessage);
 }
 
-void Message_MessageOf(const char* message, int messageType) {
-	cc_string ccStringMessage = String_FromReadonly(message);
-	Chat_AddOf(&ccStringMessage, messageType);
-}
-
 void Message_BlocksAffected(int blocksAffected) {
-	char message[64];
+	char message[STRING_SIZE];
 
 	if (blocksAffected == 0) {
 		snprintf(message, sizeof(message), "No blocks affected.");
@@ -31,14 +26,14 @@ void Message_BlocksAffected(int blocksAffected) {
 }
 
 void Message_ShowUnknownMode(const cc_string* mode) {
-    char message[64];
+    char message[STRING_SIZE];
     cc_string cc_message = { message, .length = 0, .capacity = sizeof(message) };
     String_Format1(&cc_message, "&fUnkown mode: &b%s&f.", mode);
     Chat_Add(&cc_message);
 }
 
 void Message_ShowAvailableModes(const cc_string* modes, int modesCount) {
-    char buffer[128];
+    char buffer[STRING_SIZE];
     cc_string message = { buffer, .length = 0, .capacity = sizeof(buffer) };
     String_AppendConst(&message, "&fAvailable modes: &b");
 
@@ -53,7 +48,7 @@ void Message_ShowAvailableModes(const cc_string* modes, int modesCount) {
 }
 
 void Message_ShowUnknownBlock(const cc_string* block) {
-    char buffer[128];
+    char buffer[STRING_SIZE];
     cc_string message = { buffer, .length = 0, .capacity = sizeof(buffer) };
     String_Format1(&message, "&fCould not find block specified: &b%s&f.", block);
     Chat_Add(&message);

@@ -5,7 +5,6 @@
 #include "ClassiCube/src/String.h"
 
 void Message_BlocksAffected(int blocksAffected);
-void Message_MessageOf(const char* message, int messageType);
 void Message_ShowAvailableModes(const cc_string* modes, int modesCount);
 void Message_ShowUnknownMode(const cc_string* mode);
 void Message_Player(const char* message);
