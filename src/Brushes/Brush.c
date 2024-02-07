@@ -17,6 +17,8 @@ static Brush* TryFindBrush(const cc_string* name) {
 		return &BrushCheckered;
 	} else if (String_CaselessEqualsConst(name, "@Inventory")) {
 		return &BrushInventory;
+	} else if (String_CaselessEqualsConst(name, "@Perlin")) {
+		return &BrushPerlin;
 	} else if (String_CaselessEqualsConst(name, "@Rainbow")) {
 		return &BrushRainbow;
 	} else if (String_CaselessEqualsConst(name, "@Random")) {

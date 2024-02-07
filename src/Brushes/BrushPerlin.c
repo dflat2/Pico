@@ -10,25 +10,13 @@
 #include "Parse.h"
 #include "Messaging.h"
 
-#define MAX_BLOCKS 10
-
 static bool BrushPerlin_TryParseArguments(const cc_string* args, int argsCount);
 static BlockID BrushPerlin_Paint(int x, int y, int z);
-static bool TryParseBlockWeight(const cc_string* argument, BlockID* out_block, int* out_weight);
-static void UpdateCumulativeWeights(void);
-static void UpdateTotal(void);
 
 Brush BrushPerlin = {
 	.TryParseArguments = &BrushPerlin_TryParseArguments,
 	.Paint = &BrushPerlin_Paint,
 }; 
-
-static BlockID s_Blocks[MAX_BLOCKS];
-static int s_Weights[MAX_BLOCKS];
-static int s_CumulativeWeights[MAX_BLOCKS];
-static int s_Total = 0;
-static int s_Count = 0;
-static const BlockID BLOCK_ERROR = BLOCK_GOLD;
 
 static const int permutation[512] = {
 	158,83,170,101,150,200,118,236,63,135,149,235,109,189,153,73,207,171,157,97,
@@ -61,99 +49,95 @@ static const int permutation[512] = {
 
 static double PerlinSmoothFunction(double t) {
 	return t * t * t * (t * (6 * t - 15) + 10);
+	return t;
 }
 
-static float Perlin(float x, float y, float z) {
+// Source: http://riven8192.blogspot.com/2010/08/calculate-perlinnoise-twice-as-fast.html
+static double Gradient(int hash, double x, double y, double z) {
+	switch(hash & 0xF)
+    {
+        case 0x0: return  x + y;
+        case 0x1: return -x + y;
+        case 0x2: return  x - y;
+        case 0x3: return -x - y;
+        case 0x4: return  x + z;
+        case 0x5: return -x + z;
+        case 0x6: return  x - z;
+        case 0x7: return -x - z;
+        case 0x8: return  y + z;
+        case 0x9: return -y + z;
+        case 0xA: return  y - z;
+        case 0xB: return -y - z;
+        case 0xC: return  y + x;
+        case 0xD: return -y + z;
+        case 0xE: return  y - x;
+        case 0xF: return -y - z;
+        default: return 0;
+    }
+}
+
+static double LinearInterpolation(double t, double min, double max) {
+	return min + t * (max - min);
+}
+
+static double Perlin(double x, double y, double z) {
+	// Each input must be between 0.0 (inclusive) and 256.0 (exclusive).
 	x = fmod(x, 256.0);
 	y = fmod(y, 256.0);
 	z = fmod(z, 256.0);
 
-	float xFloor = floor(x);
-	float yFloor = floor(y);
-	float zFloor = floor(z);
+	int xIntegralPart = (int)floor(x);
+	int yIntegralPart = (int)floor(y);
+	int zIntegralPart = (int)floor(z);
 
-	float xFractionalPart = x - xFloor;
-	float yFractionalPart = y - yFloor;
-	float zFractionalPart = z - zFloor;	
+	double xFractionalPart = x - (double)xIntegralPart;
+	double yFractionalPart = y - (double)yIntegralPart;
+	double zFractionalPart = z - (double)zIntegralPart;	
+
+	double xFadedFractionalPart = PerlinSmoothFunction(xFractionalPart);
+	double yFadedFractionalPart = PerlinSmoothFunction(yFractionalPart);
+	double zFadedFractionalPart = PerlinSmoothFunction(zFractionalPart);
+
+    int aaaHash = permutation[permutation[permutation[xIntegralPart] + yIntegralPart] + zIntegralPart];
+    int abaHash = permutation[permutation[permutation[xIntegralPart] + yIntegralPart + 1] + zIntegralPart];
+    int aabHash = permutation[permutation[permutation[xIntegralPart] + yIntegralPart] + zIntegralPart + 1];
+    int abbHash = permutation[permutation[permutation[xIntegralPart] + yIntegralPart + 1] + zIntegralPart + 1];
+    int baaHash = permutation[permutation[permutation[xIntegralPart + 1] + yIntegralPart]+ zIntegralPart];
+    int bbaHash = permutation[permutation[permutation[xIntegralPart + 1] + yIntegralPart + 1] + zIntegralPart];
+    int babHash = permutation[permutation[permutation[xIntegralPart + 1] + yIntegralPart] + zIntegralPart + 1];
+    int bbbHash = permutation[permutation[permutation[xIntegralPart + 1] + yIntegralPart + 1] + zIntegralPart + 1];
+
+    double aaaInfluence = Gradient(aaaHash, xFractionalPart, yFractionalPart, zFractionalPart);
+	double abaInfluence = Gradient(abaHash, xFractionalPart, yFractionalPart - 1, zFractionalPart);
+	double aabInfluence = Gradient(aabHash, xFractionalPart, yFractionalPart, zFractionalPart - 1);
+	double abbInfluence = Gradient(abbHash, xFractionalPart, yFractionalPart - 1, zFractionalPart - 1);
+	double baaInfluence = Gradient(baaHash, xFractionalPart - 1, yFractionalPart, zFractionalPart);
+	double bbaInfluence = Gradient(bbaHash, xFractionalPart - 1, yFractionalPart - 1, zFractionalPart);
+	double babInfluence = Gradient(babHash, xFractionalPart - 1, yFractionalPart, zFractionalPart - 1);
+	double bbbInfluence = Gradient(bbbHash, xFractionalPart - 1, yFractionalPart - 1, zFractionalPart - 1);
+
+	double xaaInterpolation = LinearInterpolation(xFadedFractionalPart, aaaInfluence, baaInfluence);
+	double xbaInterpolation = LinearInterpolation(xFadedFractionalPart, abaInfluence, bbaInfluence);
+	double xabInterpolation = LinearInterpolation(xFadedFractionalPart, aabInfluence, babInfluence);
+	double xbbInterpolation = LinearInterpolation(xFadedFractionalPart, abbInfluence, bbbInfluence);
+	
+	double xyaInterpolation = LinearInterpolation(yFadedFractionalPart, xaaInterpolation, xbaInterpolation);
+	double xybInterpolation = LinearInterpolation(yFadedFractionalPart, xabInterpolation, xbbInterpolation);
+
+	return LinearInterpolation(zFadedFractionalPart, xyaInterpolation, xybInterpolation);;
 }
 
 static bool BrushPerlin_TryParseArguments(const cc_string* args, int argsCount) {
-	if (argsCount > MAX_BLOCKS) {
-		Message_Player("Cannot use &b@Perlin &fwith more than ten blocks.");
-		return false;
-	} else if (argsCount == 0) {
-		Message_Player("&b@Perlin&f: no blocks provided.");
-		Message_Player("Example: &b@Perlin Stone/9 Air/1&f.");
-		return false;
-	}
-
-	for (int i = 0; i < argsCount; i++) {
-		if (!TryParseBlockWeight(&args[i], &s_Blocks[i], &s_Weights[i])) {
-			return false;
-		}
-	}
-
-	s_Count = argsCount;
-	UpdateCumulativeWeights();
-	UpdateTotal();
-
-	srand(time(NULL));
 	return true;
 }
 
 static BlockID BrushPerlin_Paint(int x, int y, int z) {
-	int random = rand() % s_Total;
+	double scale = 10.0;
+	double result = Perlin((double)x / scale, (double)y / scale, (double)z / scale);
 
-	for (int i = 0; i < s_Count; i++) {
-		if (random < s_CumulativeWeights[i]) {
-			return s_Blocks[i];
-		}
-	}
-
-	return BLOCK_ERROR;
-}
-
-static bool TryParseBlockWeight(const cc_string* argument, BlockID* out_block, int* out_weight) {
-	cc_string parts[2];
-	int partsCount;
-
-	partsCount = String_UNSAFE_Split(argument, '/', parts, 2);
-
-	if (!Parse_TryParseBlock(&parts[0], out_block)) {
-		return false;
-	}
-
-	if (partsCount == 1) {
-		*out_weight = 1;
-		return true;
-	}
-
-	char buffer[STRING_SIZE];
-	cc_string errorMessage = String_FromArray(buffer);
-
-	if (!Convert_ParseInt(&parts[1], out_weight)) {
-		String_Format1(&errorMessage, "Could not parse integer &b%s&f.", &parts[0]);
-		return false;
-	} else if (*out_weight <= 0) {
-		String_Format1(&errorMessage, "Invalid &b@Perlin &fweight: &b%s&f.", &parts[0]);
-		return false;
-	}
-
-	return true;
-}
-
-static void UpdateCumulativeWeights(void) {
-	s_CumulativeWeights[0] = s_Weights[0];
-
-	for (int i = 1; i < s_Count; i++) {
-		s_CumulativeWeights[i] = s_CumulativeWeights[i - 1] + s_Weights[i];
-	}
-}
-
-static void UpdateTotal(void) {
-	s_Total = 0;
-
-	for (int i = 0; i < s_Count; i++) {
-		s_Total += s_Weights[i];
+	if (result >= 0.0) {
+		return BLOCK_WHITE;
+	} else {
+		return BLOCK_BLACK;
 	}
 }
