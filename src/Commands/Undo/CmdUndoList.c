@@ -13,7 +13,7 @@ struct ChatCommand UndoListCommand = {
 	COMMAND_FLAG_SINGLEPLAYER_ONLY,
 	{
 		"&b/UndoList",
-		"Lists the five most recent operations.",
+		"Lists the five most recent leaves in the undo tree.",
 		NULL,
 		NULL,
 		NULL
@@ -37,9 +37,9 @@ static void UndoList_Command(const cc_string* args, int argsCount) {
 	}
 
 	int descriptionsCount = 0;
-
-	Message_Player("Most recent terminal operations:");
 	UndoTree_UndoList(descriptions, &descriptionsCount);
+
+	Message_Player("Undo list:");
 
 	for (int i = 0; i < descriptionsCount; i++) {
 		Chat_Add(&descriptions[i]);

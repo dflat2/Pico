@@ -297,7 +297,7 @@ void UndoTree_UndoList(cc_string* descriptions, int* count) {
 	UndoNode* terminalNodes[max];
 	*count = 0;
 
-	for (int i = s_NodesCount - 1; i > 0; i--) {
+	for (int i = s_NodesCount - 1; i >= 0; i--) {
 		if (s_Nodes[i].childrenCount == 0) {
 			terminalNodes[*count] = &s_Nodes[i];
 			*count += 1;
