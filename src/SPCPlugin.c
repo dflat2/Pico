@@ -22,11 +22,11 @@
 static void OnChatSending(void* obj, const cc_string* msg, int msgType);
 
 static void SPC_Init(void) {
-	if (!Server.IsSinglePlayer) {
-		return;
-	}
+    if (!Server.IsSinglePlayer) {
+        return;
+    }
 
-	Commands_RegisterAll();
+    Commands_RegisterAll();
 
     // Warns the user when doing `/Cuboid` instead of `/Z`.
     Event_Register((struct Event_Void*) &ChatEvents.ChatSending, NULL, (Event_Void_Callback)OnChatSending);
@@ -37,8 +37,8 @@ static void SPC_Init(void) {
 
 static void SPC_Free(void) {
     if (!Server.IsSinglePlayer) {
-		return;
-	}
+        return;
+    }
 
     // TODO: Find a way to unregister commands.
 
@@ -52,19 +52,19 @@ static void SPC_Free(void) {
 
 static void SPC_OnNewMapLoaded(void) {
     if (!Server.IsSinglePlayer) {
-		return;
-	}
+        return;
+    }
 
     // Clears the undo tree when loading a new map.
-	UndoTree_Disable();
-	UndoTree_Enable();
+    UndoTree_Disable();
+    UndoTree_Enable();
 }
 
 static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
     const cc_string clientCuboid = String_FromReadonly("/client cuboid");
     const cc_string cuboid = String_FromReadonly("/cuboid");
 
-	cc_string text;
+    cc_string text;
 
     if (String_CaselessStarts(msg, &clientCuboid) || String_CaselessStarts(msg, &cuboid)) {
         text = String_FromReadonly("&cWarning. &fYou are using the vanilla &b/Cuboid&f.");

@@ -57,9 +57,9 @@ int MarkSelection_RemainingMarks(void) {
 }
 
 void MarkSelection_Make(SelectionHandler handler, int count, const char* operation) {
-	if (s_InProgress) {
-		MarkSelection_Abort();
-	}
+    if (s_InProgress) {
+        MarkSelection_Abort();
+    }
 
     cc_string cc_operation = String_FromReadonly(operation);
     String_Copy(&s_Operation, &cc_operation);
@@ -77,7 +77,7 @@ static void ShowMarksLeft(void) {
 
     if (marksLeft == 0) {
         cc_string emptyMessage = String_FromReadonly("");
-	    Chat_AddOf(&emptyMessage, MSG_TYPE_BOTTOMRIGHT_1);
+        Chat_AddOf(&emptyMessage, MSG_TYPE_BOTTOMRIGHT_1);
         return;
     }
 
@@ -107,8 +107,8 @@ static void ShowMarksLeft(void) {
 }
 
 static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock) {
-	Game_UpdateBlock(coords.X, coords.Y, coords.Z, oldBlock);
-	MarkSelection_DoMark(coords);
+    Game_UpdateBlock(coords.X, coords.Y, coords.Z, oldBlock);
+    MarkSelection_DoMark(coords);
 }
 
 static void RegisterBlockChanged(void) {
@@ -127,7 +127,7 @@ static void ResetSelectionState(void) {
 }
 
 static void ValidateSelection(void) {
-	UnregisterBlockChanged();
-	s_InProgress = false;
+    UnregisterBlockChanged();
+    s_InProgress = false;
     s_Handler(s_Marks, s_TotalMarks);
 }

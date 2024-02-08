@@ -9,17 +9,17 @@
 static void FixGrass_Command(const cc_string* args, int argsCount);
 
 struct ChatCommand FixGrassCommand = {
-	"FixGrass",
-	FixGrass_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/FixGrass",
-		"Fixes grass and dirt blocks according to the lighting.",
-		NULL,
-		NULL,
-		NULL
-	},
-	NULL
+    "FixGrass",
+    FixGrass_Command,
+    COMMAND_FLAG_SINGLEPLAYER_ONLY,
+    {
+        "&b/FixGrass",
+        "Fixes grass and dirt blocks according to the lighting.",
+        NULL,
+        NULL,
+        NULL
+    },
+    NULL
 };
 
 static void FixGrass_Command(const cc_string* args, int argsCount) {

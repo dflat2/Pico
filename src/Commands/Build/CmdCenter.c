@@ -15,17 +15,17 @@ static void Center_Command(const cc_string* args, int argsCount);
 static void CenterSelectionHandler(IVec3* marks, int count);
 
 struct ChatCommand CenterCommand = {
-	"Center",
-	Center_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Center [block/brush] +",
-		"&fPlaces blocks at the center of your selection.",
-		NULL,
-		NULL,
-		NULL
-	},
-	NULL
+    "Center",
+    Center_Command,
+    COMMAND_FLAG_SINGLEPLAYER_ONLY,
+    {
+        "&b/Center [block/brush] +",
+        "&fPlaces blocks at the center of your selection.",
+        NULL,
+        NULL,
+        NULL
+    },
+    NULL
 };
 
 static void CenterSelectionHandler(IVec3* marks, int count) {
@@ -54,7 +54,7 @@ static void CenterSelectionHandler(IVec3* marks, int count) {
         (delta.Z % 2) == 0 ? centerCuboidMin.Z : (centerCuboidMin.Z + 1)
     };
 
-	Draw_Start("Center");
+    Draw_Start("Center");
     for (int i = centerCuboidMin.X; i <= centerCuboidMax.X; i++) {
         for (int j = centerCuboidMin.Y; j <= centerCuboidMax.Y; j++) {
             for (int k = centerCuboidMin.Z; k <= centerCuboidMax.Z; k++) {
@@ -62,7 +62,7 @@ static void CenterSelectionHandler(IVec3* marks, int count) {
             }
         }
     }
-	int blocksAffected = Draw_End();
+    int blocksAffected = Draw_End();
 
     char message[128];
 
@@ -91,8 +91,8 @@ static void Center_Command(const cc_string* args, int argsCount) {
     }
 
     if (s_Repeat) {
-		Message_Player("Now repeating &bCenter&f.");
-	}
+        Message_Player("Now repeating &bCenter&f.");
+    }
 
     MarkSelection_Make(CenterSelectionHandler, 2, "Center");
     Message_Player("&fPlace or break two blocks to determine the edges.");

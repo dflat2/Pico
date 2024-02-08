@@ -8,10 +8,10 @@
 typedef enum S3_ { XYZ, XZY, ZYX, YXZ, ZXY, YZX } S3;
 
 typedef struct Transform_ {
-	S3 permutation;
-	bool flipX;
-	bool flipY;
-	bool flipZ;
+    S3 permutation;
+    bool flipX;
+    bool flipY;
+    bool flipZ;
 } Transform;
 
 static BlocksBuffer s_Buffer = { 0 };
@@ -36,186 +36,186 @@ static const Transform FlipY = { XYZ, .flipX = false, .flipY = true, .flipZ = fa
 static const Transform FlipZ = { XYZ, .flipX = false, .flipY = false, .flipZ = true };
 
 BlocksBuffer BlocksBuffer_GetCopied(void) {
-	return s_Buffer;
+    return s_Buffer;
 }
 
 bool BlocksBuffer_IsEmpty(void) {
-	return s_BufferIsEmpty;
+    return s_BufferIsEmpty;
 }
 
 bool BlocksBuffer_TryCopy(IVec3 mark1, IVec3 mark2, int* out_amountCopied) {
-	IVec3 min = Min(mark1, mark2);
-	IVec3 max = Max(mark1, mark2);
-	IVec3 anchor = Substract(mark1, min);
+    IVec3 min = Min(mark1, mark2);
+    IVec3 max = Max(mark1, mark2);
+    IVec3 anchor = Substract(mark1, min);
 
-	int width = max.X - min.X + 1;
-	int height = max.Y - min.Y + 1;
-	int length = max.Z - min.Z + 1;
+    int width = max.X - min.X + 1;
+    int height = max.Y - min.Y + 1;
+    int length = max.Z - min.Z + 1;
 
-	BlockID* blocks = calloc(width * height * length, sizeof(BlockID));
+    BlockID* blocks = calloc(width * height * length, sizeof(BlockID));
 
-	if (blocks == NULL) {
-		return false;
-	}
+    if (blocks == NULL) {
+        return false;
+    }
 
-	int index = 0;
+    int index = 0;
 
-	for (int x = min.X; x <= max.X; x++) {
-		for (int y = min.Y; y <= max.Y; y++) {
-			for (int z = min.Z; z <= max.Z; z++) {
-				blocks[index] = World_GetBlock(x, y, z);
-				index++;
-			}
-		}
-	}
+    for (int x = min.X; x <= max.X; x++) {
+        for (int y = min.Y; y <= max.Y; y++) {
+            for (int z = min.Z; z <= max.Z; z++) {
+                blocks[index] = World_GetBlock(x, y, z);
+                index++;
+            }
+        }
+    }
 
-	s_Buffer.dimensions.X = max.X - min.X + 1;
-	s_Buffer.dimensions.Y = max.Y - min.Y + 1;
-	s_Buffer.dimensions.Z = max.Z - min.Z + 1;
-	s_Buffer.anchor = anchor;
+    s_Buffer.dimensions.X = max.X - min.X + 1;
+    s_Buffer.dimensions.Y = max.Y - min.Y + 1;
+    s_Buffer.dimensions.Z = max.Z - min.Z + 1;
+    s_Buffer.anchor = anchor;
 
-	if (!s_BufferIsEmpty) {
-		free(s_Buffer.content);
-	}
+    if (!s_BufferIsEmpty) {
+        free(s_Buffer.content);
+    }
 
-	s_Buffer.content = blocks;
-	s_BufferIsEmpty = false;
-	*out_amountCopied = width * height * length;
-	return true;
+    s_Buffer.content = blocks;
+    s_BufferIsEmpty = false;
+    *out_amountCopied = width * height * length;
+    return true;
 }
 
 bool BlocksBuffer_TryRotate(Axis axis, int count) {
-	count = count % 4;
+    count = count % 4;
 
-	if (count == 0) {
-		return false;
-	}
+    if (count == 0) {
+        return false;
+    }
 
-	Transform transform = RotateY90;
+    Transform transform = RotateY90;
 
-	if (axis == AXIS_X) {
-		if (count == 1) {
-			transform = RotateX90;
-		} else if (count == 2) {
-			transform = RotateX180;
-		} else {
-			transform = RotateX270;
-		}
-	} else if (axis == AXIS_Y) {
-		if (count == 1) {
-			transform = RotateY90;
-		} else if (count == 2) {
-			transform = RotateY180;
-		} else {
-			transform = RotateY270;
-		}
-	} else if (axis == AXIS_Z) {
-		if (count == 1) {
-			transform = RotateZ90;
-		} else if (count == 2) {
-			transform = RotateZ180;
-		} else {
-			transform = RotateZ270;
-		}
-	}
+    if (axis == AXIS_X) {
+        if (count == 1) {
+            transform = RotateX90;
+        } else if (count == 2) {
+            transform = RotateX180;
+        } else {
+            transform = RotateX270;
+        }
+    } else if (axis == AXIS_Y) {
+        if (count == 1) {
+            transform = RotateY90;
+        } else if (count == 2) {
+            transform = RotateY180;
+        } else {
+            transform = RotateY270;
+        }
+    } else if (axis == AXIS_Z) {
+        if (count == 1) {
+            transform = RotateZ90;
+        } else if (count == 2) {
+            transform = RotateZ180;
+        } else {
+            transform = RotateZ270;
+        }
+    }
 
-	return TryTransformBuffer(transform);
+    return TryTransformBuffer(transform);
 }
 
 bool BlocksBuffer_TryFlip(Axis axis) {
-	if (axis == AXIS_X) {
-		return TryTransformBuffer(FlipX);
-	} else if (axis == AXIS_Y) {
-		return TryTransformBuffer(FlipY);
-	} else if (axis == AXIS_Z) {
-		return TryTransformBuffer(FlipZ);
-	}
+    if (axis == AXIS_X) {
+        return TryTransformBuffer(FlipX);
+    } else if (axis == AXIS_Y) {
+        return TryTransformBuffer(FlipY);
+    } else if (axis == AXIS_Z) {
+        return TryTransformBuffer(FlipZ);
+    }
 
-	return false;
+    return false;
 }
 
 static bool TryTransformBuffer(Transform transform) {
-	BlockID* newContent = malloc(sizeof(BlockID) * s_Buffer.dimensions.X * s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
+    BlockID* newContent = malloc(sizeof(BlockID) * s_Buffer.dimensions.X * s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
 
-	if (newContent == NULL) {
-		return false;
-	}
+    if (newContent == NULL) {
+        return false;
+    }
 
-	IVec3 previousDimensions = s_Buffer.dimensions;
-	s_Buffer.dimensions = ApplyPermutation(transform.permutation, s_Buffer.dimensions);
+    IVec3 previousDimensions = s_Buffer.dimensions;
+    s_Buffer.dimensions = ApplyPermutation(transform.permutation, s_Buffer.dimensions);
 
-	IVec3 coordinates;
-	IVec3 transformed;
-	int index = 0;
+    IVec3 coordinates;
+    IVec3 transformed;
+    int index = 0;
 
-	for (coordinates.X = 0; coordinates.X < previousDimensions.X; coordinates.X++) {
-		for (coordinates.Y = 0; coordinates.Y < previousDimensions.Y; coordinates.Y++) {
-			for (coordinates.Z = 0; coordinates.Z < previousDimensions.Z; coordinates.Z++) {
-				transformed = ApplyTransform(transform, coordinates, previousDimensions);
-				newContent[Pack(transformed)] = s_Buffer.content[index];
-				index++;
-			}
-		}
-	}
+    for (coordinates.X = 0; coordinates.X < previousDimensions.X; coordinates.X++) {
+        for (coordinates.Y = 0; coordinates.Y < previousDimensions.Y; coordinates.Y++) {
+            for (coordinates.Z = 0; coordinates.Z < previousDimensions.Z; coordinates.Z++) {
+                transformed = ApplyTransform(transform, coordinates, previousDimensions);
+                newContent[Pack(transformed)] = s_Buffer.content[index];
+                index++;
+            }
+        }
+    }
 
-	free(s_Buffer.content);
-	s_Buffer.content = newContent;
-	s_Buffer.anchor = ApplyTransform(transform, s_Buffer.anchor, previousDimensions);
-	return true;
+    free(s_Buffer.content);
+    s_Buffer.content = newContent;
+    s_Buffer.anchor = ApplyTransform(transform, s_Buffer.anchor, previousDimensions);
+    return true;
 }
 
 static IVec3 ApplyTransform(Transform transform, IVec3 coordinates, IVec3 previousDimensions) {
-	if (transform.flipX) {
-		coordinates.X = previousDimensions.X - 1 - coordinates.X;
-	}
+    if (transform.flipX) {
+        coordinates.X = previousDimensions.X - 1 - coordinates.X;
+    }
 
-	if (transform.flipY) {
-		coordinates.Y = previousDimensions.Y - 1 - coordinates.Y;
-	}
+    if (transform.flipY) {
+        coordinates.Y = previousDimensions.Y - 1 - coordinates.Y;
+    }
 
-	if (transform.flipZ) {
-		coordinates.Z = previousDimensions.Z - 1 - coordinates.Z;
-	}
+    if (transform.flipZ) {
+        coordinates.Z = previousDimensions.Z - 1 - coordinates.Z;
+    }
 
-	coordinates = ApplyPermutation(transform.permutation, coordinates);
-	return coordinates;
+    coordinates = ApplyPermutation(transform.permutation, coordinates);
+    return coordinates;
 }
 
 static IVec3 ApplyPermutation(S3 permutation, IVec3 vector) {
-	IVec3 result = { .X = vector.X, .Y = vector.Y, .Z = vector.Z };
+    IVec3 result = { .X = vector.X, .Y = vector.Y, .Z = vector.Z };
 
-	switch (permutation) {
-		case XYZ:
-			break;
-		case XZY:
-			result.Y = vector.Z;
-			result.Z = vector.Y;
-			break;
-		case YXZ:
-			result.X = vector.Y;
-			result.Y = vector.X;
-			break;
-		case ZYX:
-			result.X = vector.Z;
-			result.Z = vector.X;
-			break;
-		case ZXY:
-			result.X = vector.Z;
-			result.Y = vector.X;
-			result.Z = vector.Y;
-			break;
-		case YZX:
-			result.X = vector.Y;
-			result.Y = vector.Z;
-			result.Z = vector.X;
-			break;
-		default:
-			break;
-	}
+    switch (permutation) {
+        case XYZ:
+            break;
+        case XZY:
+            result.Y = vector.Z;
+            result.Z = vector.Y;
+            break;
+        case YXZ:
+            result.X = vector.Y;
+            result.Y = vector.X;
+            break;
+        case ZYX:
+            result.X = vector.Z;
+            result.Z = vector.X;
+            break;
+        case ZXY:
+            result.X = vector.Z;
+            result.Y = vector.X;
+            result.Z = vector.Y;
+            break;
+        case YZX:
+            result.X = vector.Y;
+            result.Y = vector.Z;
+            result.Z = vector.X;
+            break;
+        default:
+            break;
+    }
 
-	return result;
+    return result;
 }
 
 static int Pack(IVec3 vector) {
-	return vector.Z + (vector.Y * s_Buffer.dimensions.Z) + vector.X * (s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
+    return vector.Z + (vector.Y * s_Buffer.dimensions.Z) + vector.X * (s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
 }

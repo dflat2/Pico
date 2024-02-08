@@ -7,9 +7,9 @@
 #include "Axis.h"
 
 typedef struct BlocksBuffer_ {
-	IVec3 dimensions;
-	BlockID* content;
-	IVec3 anchor;
+    IVec3 dimensions;
+    BlockID* content;
+    IVec3 anchor;
 } BlocksBuffer;
 
 bool BlocksBuffer_TryRotate(Axis axis, int count);

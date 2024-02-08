@@ -11,9 +11,9 @@ typedef struct IVec2_ {
 } IVec2;
 
 typedef struct FVec3_ {
-	float X;
-	float Y;
-	float Z;
+    float X;
+    float Y;
+    float Z;
 } FVec3;
 
 IVec3 Min(IVec3 a, IVec3 b);

@@ -24,17 +24,17 @@ static void SmoothSelectionHandler(IVec3* marks, int count);
 static int CountBlocksAround(int x, int y, int z);
 
 struct ChatCommand SmoothCommand = {
-	"Smooth",
-	Smooth_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Smooth <block> +",
+    "Smooth",
+    Smooth_Command,
+    COMMAND_FLAG_SINGLEPLAYER_ONLY,
+    {
+        "&b/Smooth <block> +",
         "Smooths structures made of &bblock &faround clicked block.",
         NULL,
         NULL,
         NULL
-	},
-	NULL
+    },
+    NULL
 };
 
 static int CountBlocksAround(int x, int y, int z) {
@@ -142,7 +142,7 @@ static void SmoothSelectionHandler(IVec3* marks, int count) {
 
 
 static void Smooth_Command(const cc_string* args, int argsCount) {
-	s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (argsCount != 1) {
         Message_CommandUsage(SmoothCommand);
@@ -153,9 +153,9 @@ static void Smooth_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-	if (s_Repeat) {
-		Message_Player("Now repeating &bSmooth&f.");
-	}
+    if (s_Repeat) {
+        Message_Player("Now repeating &bSmooth&f.");
+    }
 
     MarkSelection_Make(SmoothSelectionHandler, 1, "Smooth");
     Message_Player("Place or break a block.");

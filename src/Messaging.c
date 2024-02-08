@@ -7,22 +7,22 @@
 #include "Format.h"
 
 void Message_Player(const char* message) {
-	cc_string ccStringMessage = String_FromReadonly(message);
-	Chat_Add(&ccStringMessage);
+    cc_string ccStringMessage = String_FromReadonly(message);
+    Chat_Add(&ccStringMessage);
 }
 
 void Message_BlocksAffected(int blocksAffected) {
-	char message[STRING_SIZE];
+    char message[STRING_SIZE];
 
-	if (blocksAffected == 0) {
-		snprintf(message, sizeof(message), "No blocks affected.");
-	} else if (blocksAffected == 1) {
-		snprintf(message, sizeof(message), "&b%d&f block affected.", blocksAffected);
-	} else {
-		snprintf(message, sizeof(message), "&b%d&f blocks affected.", blocksAffected);
-	}
+    if (blocksAffected == 0) {
+        snprintf(message, sizeof(message), "No blocks affected.");
+    } else if (blocksAffected == 1) {
+        snprintf(message, sizeof(message), "&b%d&f block affected.", blocksAffected);
+    } else {
+        snprintf(message, sizeof(message), "&b%d&f blocks affected.", blocksAffected);
+    }
 
-	Message_Player(message);
+    Message_Player(message);
 }
 
 void Message_ShowUnknownMode(const cc_string* mode) {
@@ -59,7 +59,7 @@ void Message_ShowInvalidAxis(const cc_string* axis) {
     cc_string message = String_FromArray(buffer);
     String_Format1(&message, "&fCould not read axis: &b%s&f.", axis);
     Chat_Add(&message);
-	Message_Player("An axis parameter must be &bX&f, &bY&f or &bZ&f.");
+    Message_Player("An axis parameter must be &bX&f, &bY&f or &bZ&f.");
 }
 
 void Message_ShowInvalidDegrees(const cc_string* string) {
@@ -67,15 +67,15 @@ void Message_ShowInvalidDegrees(const cc_string* string) {
     cc_string message = String_FromArray(buffer);
     String_Format1(&message, "&fInvalid degrees: &b%s&f.", string);
     Chat_Add(&message);
-	Message_Player("Degrees must be integers, multiples of 90.");
+    Message_Player("Degrees must be integers, multiples of 90.");
 }
 
 void Message_UndoCheckedOut(int commit, int timestampInt) {
-	char buffer_timestamp[] = "00:00:00";
+    char buffer_timestamp[] = "00:00:00";
     cc_string timestamp = String_FromArray(buffer_timestamp);
     Format_HHMMSS(&timestamp, timestampInt);
 
-	char successMessageBuffer[STRING_SIZE];
+    char successMessageBuffer[STRING_SIZE];
     cc_string successMessage = String_FromArray(successMessageBuffer);
 
     String_Format2(&successMessage, "Checked out operation &b%i&f [&b%s&f].", &commit, &timestamp);

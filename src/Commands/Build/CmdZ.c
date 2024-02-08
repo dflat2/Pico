@@ -11,11 +11,11 @@
 #include "DataStructures/Array.h"
 
 typedef enum ZMode_ {
-	MODE_SOLID = 0,
-	MODE_HOLLOW = 1,
-	MODE_WALLS = 2,
-	MODE_WIRE = 3,
-	MODE_CORNERS = 4
+    MODE_SOLID = 0,
+    MODE_HOLLOW = 1,
+    MODE_WALLS = 2,
+    MODE_WIRE = 3,
+    MODE_CORNERS = 4
 } ZMode;
 
 static bool s_Repeat;
@@ -35,17 +35,17 @@ static void DoCuboidSolid(IVec3 min, IVec3 max);
 static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zmax);
 
 struct ChatCommand ZCommand = {
-	"Z",
-	Z_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Z [mode] [brush/block] +",
+    "Z",
+    Z_Command,
+    COMMAND_FLAG_SINGLEPLAYER_ONLY,
+    {
+        "&b/Z [mode] [brush/block] +",
         "&fDraws a cuboid between two points.",
-		"&fList of modes: &bsolid&f (default), &bhollow&f, &bwalls&f, &bwire&f, &bcorners&f.",
-		NULL,
-		NULL
-	},
-	NULL
+        "&fList of modes: &bsolid&f (default), &bhollow&f, &bwalls&f, &bwire&f, &bcorners&f.",
+        NULL,
+        NULL
+    },
+    NULL
 };
 
 static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zmax) {
@@ -59,18 +59,18 @@ static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zma
 }
 
 static void DoCuboidSolid(IVec3 min, IVec3 max) {
-	Draw_Start("Z");
+    Draw_Start("Z");
     DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, max.Z);
 
     int blocksAffected = Draw_End();
 
     if (!s_Repeat) {
-	    Message_BlocksAffected(blocksAffected);
+        Message_BlocksAffected(blocksAffected);
     }
 }
 
 static void DoCuboidHollow(IVec3 min, IVec3 max) {
-	Draw_Start("Z");
+    Draw_Start("Z");
     DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, max.Z);
     DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, min.Z);
     DrawCuboid(min.X, min.Y, min.Z, max.X, min.Y, max.Z);
@@ -81,12 +81,12 @@ static void DoCuboidHollow(IVec3 min, IVec3 max) {
     int blocksAffected = Draw_End();
 
     if (!s_Repeat) {
-	    Message_BlocksAffected(blocksAffected);
+        Message_BlocksAffected(blocksAffected);
     }
 }
 
 static void DoCuboidWalls(IVec3 min, IVec3 max) {
-	Draw_Start("Z");
+    Draw_Start("Z");
     DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, max.Z);
     DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, min.Z);
     DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, max.Z);
@@ -95,12 +95,12 @@ static void DoCuboidWalls(IVec3 min, IVec3 max) {
     int blocksAffected = Draw_End();
 
     if (!s_Repeat) {
-	    Message_BlocksAffected(blocksAffected);
+        Message_BlocksAffected(blocksAffected);
     }
 }
 
 static void DoCuboidWire(IVec3 min, IVec3 max) {
-	Draw_Start("Z");
+    Draw_Start("Z");
     DrawCuboid(min.X, min.Y, min.Z, max.X, min.Y, min.Z);
     DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, min.Z);
     DrawCuboid(min.X, min.Y, min.Z, min.X, min.Y, max.Z);
@@ -118,7 +118,7 @@ static void DoCuboidWire(IVec3 min, IVec3 max) {
 }
 
 static void DoCuboidCorners(IVec3 min, IVec3 max) {
-	Draw_Start("Z");
+    Draw_Start("Z");
     Draw_Brush(min.X, min.Y, min.Z);
     Draw_Brush(min.X, min.Y, max.Z);
     Draw_Brush(min.X, max.Y, min.Z);
@@ -131,7 +131,7 @@ static void DoCuboidCorners(IVec3 min, IVec3 max) {
     int blocksAffected = Draw_End();
 
     if (!s_Repeat) {
-	    Message_BlocksAffected(blocksAffected);
+        Message_BlocksAffected(blocksAffected);
     }
 }
 
@@ -160,9 +160,9 @@ static void ZSelectionHandler(IVec3* marks, int count) {
     CuboidOperation Operation = GetFunction(s_Mode);
     Operation(Min(marks[0], marks[1]), Max(marks[0], marks[1]));
 
-	if (s_Repeat) {
-		MarkSelection_Make(ZSelectionHandler, 2, "Z");
-	}
+    if (s_Repeat) {
+        MarkSelection_Make(ZSelectionHandler, 2, "Z");
+    }
 }
 
 static bool TryParseArguments(const cc_string* args, int argsCount) {
@@ -174,55 +174,55 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
         String_FromConst("corners"),
     };
 
-	size_t modesCount = sizeof(modesString) / sizeof(modesString[0]);
+    size_t modesCount = sizeof(modesString) / sizeof(modesString[0]);
 
-	bool hasBlockOrBrush = (argsCount >= 2) ||
-		((argsCount == 1) && (!Array_ContainsString(&args[0], modesString, modesCount)));
-	bool hasMode = (argsCount >= 1) && Array_ContainsString(&args[0], modesString, modesCount);
+    bool hasBlockOrBrush = (argsCount >= 2) ||
+        ((argsCount == 1) && (!Array_ContainsString(&args[0], modesString, modesCount)));
+    bool hasMode = (argsCount >= 1) && Array_ContainsString(&args[0], modesString, modesCount);
 
-	if (hasMode) {
-		s_Mode = Array_IndexOfStringCaseless(&args[0], modesString, modesCount);
-	} else {
-		s_Mode = MODE_SOLID;
-	}
+    if (hasMode) {
+        s_Mode = Array_IndexOfStringCaseless(&args[0], modesString, modesCount);
+    } else {
+        s_Mode = MODE_SOLID;
+    }
 
-	if (hasMode && (int)s_Mode == -1) {
-		Message_ShowUnknownMode(&args[0]);
-		Message_ShowAvailableModes(modesString, modesCount);
-		return false;
-	}
+    if (hasMode && (int)s_Mode == -1) {
+        Message_ShowUnknownMode(&args[0]);
+        Message_ShowAvailableModes(modesString, modesCount);
+        return false;
+    }
 
-	if (hasBlockOrBrush) {
-		int brushIndex;
+    if (hasBlockOrBrush) {
+        int brushIndex;
 
-		if (hasMode) {
-			brushIndex = 1;
-		} else {
-			brushIndex = 0;
-		}
+        if (hasMode) {
+            brushIndex = 1;
+        } else {
+            brushIndex = 0;
+        }
 
-		if (!Parse_TryParseBlockOrBrush(&args[brushIndex], argsCount - brushIndex)) {
-			return false;
-		}
+        if (!Parse_TryParseBlockOrBrush(&args[brushIndex], argsCount - brushIndex)) {
+            return false;
+        }
 
-		return true;
-	} else {
-		Brush_LoadInventory();
-		return true;
-	}
+        return true;
+    } else {
+        Brush_LoadInventory();
+        return true;
+    }
 }
 
 static void Z_Command(const cc_string* args, int argsCount) {
-	s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
-	if (!TryParseArguments(args, argsCount)) {
-		MarkSelection_Abort();
-		return;
-	}
+    if (!TryParseArguments(args, argsCount)) {
+        MarkSelection_Abort();
+        return;
+    }
 
-	if (s_Repeat) {
-		Message_Player("Now repeating &bZ&f.");
-	}
+    if (s_Repeat) {
+        Message_Player("Now repeating &bZ&f.");
+    }
 
     MarkSelection_Make(ZSelectionHandler, 2, "Z");
     Message_Player("&fPlace or break two blocks to determine the edges.");

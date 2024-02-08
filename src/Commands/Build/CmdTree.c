@@ -18,17 +18,17 @@ static bool s_Repeat = false;
 static void Tree_Command(const cc_string* args, int argsCount);
 
 struct ChatCommand TreeCommand = {
-	"Tree",
-	Tree_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Tree +",
+    "Tree",
+    Tree_Command,
+    COMMAND_FLAG_SINGLEPLAYER_ONLY,
+    {
+        "&b/Tree +",
         "&fGrows a tree.",
         NULL,
         NULL,
-		NULL
-	},
-	NULL
+        NULL
+    },
+    NULL
 };
 
 static void DrawTrunk(int x, int y, int z) {
@@ -99,7 +99,7 @@ static void TreeSelectionHandler(IVec3* marks, int count) {
         return;
     }
 
-	Message_BlocksAffected(blocksAffected);
+    Message_BlocksAffected(blocksAffected);
 }
 
 static void Tree_Command(const cc_string* args, int argsCount) {
@@ -111,8 +111,8 @@ static void Tree_Command(const cc_string* args, int argsCount) {
     }
 
     if (s_Repeat) {
-		Message_Player("Now repeating &bTree&f.");
-	}
+        Message_Player("Now repeating &bTree&f.");
+    }
 
     MarkSelection_Make(TreeSelectionHandler, 1, "Tree");
     Message_Player("Place or break a block to determine the root.");

@@ -16,8 +16,8 @@
 #include "Draw.h"
 
 typedef enum CircleMode_ {
-	MODE_SOLID = 0,
-	MODE_HOLLOW = 1,
+    MODE_SOLID = 0,
+    MODE_HOLLOW = 1,
 } CircleMode;
 
 static bool s_Repeat = false;
@@ -28,17 +28,17 @@ static int s_Radius;
 static void Circle_Command(const cc_string* args, int argsCount);
 
 struct ChatCommand CircleCommand = {
-	"Circle",
-	Circle_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Circle <radius> <axis> [mode] [brush/block] +",
+    "Circle",
+    Circle_Command,
+    COMMAND_FLAG_SINGLEPLAYER_ONLY,
+    {
+        "&b/Circle <radius> <axis> [mode] [brush/block] +",
         "Draws a circle of radius &b<radius>&f.",
         "&b<axis> &fmust be &bX&f, &bY&f or &bZ&f.",
         "List of modes: &bsolid&f (default) or &bhollow&f.",
         NULL,
-	},
-	NULL
+    },
+    NULL
 };
 
 static void CircleSelectionHandler(IVec3* marks, int count) {
@@ -65,7 +65,7 @@ static void CircleSelectionHandler(IVec3* marks, int count) {
         }
     }
 
-	int blocksAffected = Draw_End();
+    int blocksAffected = Draw_End();
 
     if (s_Repeat) {
         MarkSelection_Make(CircleSelectionHandler, 1, "Circle");
@@ -101,16 +101,16 @@ static void Circle_Command(const cc_string* args, int argsCount) {
         String_FromConst("hollow"),
     };
 
-	size_t modesCount = sizeof(modesString) / sizeof(modesString[0]);
+    size_t modesCount = sizeof(modesString) / sizeof(modesString[0]);
 
-	bool hasMode = (argsCount >= 3) && Array_ContainsString(&args[2], modesString, modesCount);
+    bool hasMode = (argsCount >= 3) && Array_ContainsString(&args[2], modesString, modesCount);
     bool hasBlockOrBrush = (argsCount >= 4) || ((argsCount == 3) && !hasMode);
 
-	if (hasMode) {
-		s_Mode = Array_IndexOfStringCaseless(&args[2], modesString, modesCount);
-	} else {
-		s_Mode = MODE_SOLID;
-	}
+    if (hasMode) {
+        s_Mode = Array_IndexOfStringCaseless(&args[2], modesString, modesCount);
+    } else {
+        s_Mode = MODE_SOLID;
+    }
 
     int blockOrBrushIndex = hasMode ? 3 : 2;
 
@@ -118,13 +118,13 @@ static void Circle_Command(const cc_string* args, int argsCount) {
         if (!Parse_TryParseBlockOrBrush(&args[blockOrBrushIndex], argsCount - blockOrBrushIndex)) {
             return;
         }
-	} else {
-		Brush_LoadInventory();
-	}
+    } else {
+        Brush_LoadInventory();
+    }
 
     if (s_Repeat) {
-		Message_Player("Now repeating &bCircle&f.");
-	}
+        Message_Player("Now repeating &bCircle&f.");
+    }
 
     MarkSelection_Make(CircleSelectionHandler, 1, "Circle");
     Message_Player("&fPlace or break a block to determine the center.");

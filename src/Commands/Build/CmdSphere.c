@@ -13,8 +13,8 @@
 #include "Draw.h"
 
 typedef enum SphereMode_ {
-	MODE_SOLID = 0,
-	MODE_HOLLOW = 1,
+    MODE_SOLID = 0,
+    MODE_HOLLOW = 1,
 } SphereMode;
 
 static bool s_Repeat;
@@ -26,17 +26,17 @@ static void Sphere_Command(const cc_string* args, int argsCount);
 static bool ShouldDraw(int x, int y, int z);
 
 struct ChatCommand SphereCommand = {
-	"Sphere",
-	Sphere_Command,
-	COMMAND_FLAG_SINGLEPLAYER_ONLY,
-	{
-		"&b/Sphere <radius> [mode] [brush/block] +",
+    "Sphere",
+    Sphere_Command,
+    COMMAND_FLAG_SINGLEPLAYER_ONLY,
+    {
+        "&b/Sphere <radius> [mode] [brush/block] +",
         "&fDraws a sphere of radius &b<radius>&f.",
         "&fList of modes: &bsolid&f (default), &bhollow&f.",
         NULL,
-		NULL
-	},
-	NULL
+        NULL
+    },
+    NULL
 };
 
 static bool ShouldDraw(int x, int y, int z) {
@@ -98,16 +98,16 @@ static void Sphere_Command(const cc_string* args, int argsCount) {
         String_FromConst("hollow"),
     };
 
-	size_t modesCount = sizeof(modesString) / sizeof(modesString[0]);
+    size_t modesCount = sizeof(modesString) / sizeof(modesString[0]);
 
-	bool hasMode = (argsCount >= 2) && Array_ContainsString(&args[1], modesString, modesCount);
+    bool hasMode = (argsCount >= 2) && Array_ContainsString(&args[1], modesString, modesCount);
     bool hasBlockOrBrush = (argsCount >= 3) || ((argsCount == 2) && !hasMode);
 
-	if (hasMode) {
-		s_Mode = Array_IndexOfStringCaseless(&args[1], modesString, modesCount);
-	} else {
-		s_Mode = MODE_SOLID;
-	}
+    if (hasMode) {
+        s_Mode = Array_IndexOfStringCaseless(&args[1], modesString, modesCount);
+    } else {
+        s_Mode = MODE_SOLID;
+    }
 
     int blockOrBrushIndex = hasMode ? 2 : 1;
 
@@ -115,13 +115,13 @@ static void Sphere_Command(const cc_string* args, int argsCount) {
         if (!Parse_TryParseBlockOrBrush(&args[blockOrBrushIndex], argsCount - blockOrBrushIndex)) {
             return;
         }
-	} else {
-		Brush_LoadInventory();
-	}
+    } else {
+        Brush_LoadInventory();
+    }
 
     if (s_Repeat) {
-		Message_Player("Now repeating &bSphere&f.");
-	}
+        Message_Player("Now repeating &bSphere&f.");
+    }
 
     MarkSelection_Make(SphereSelectionHandler, 1, "Sphere");
     Message_Player("&fPlace or break a block to determine the center.");
