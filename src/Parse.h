@@ -16,5 +16,6 @@ bool Parse_TryParseBlockOrBrush(const cc_string* arguments, int argumentsCount);
 bool Parse_TryParseAxis(const cc_string* string, Axis* out_axis);
 bool Parse_TryParseDegrees(const cc_string* string, int* out_degrees);
 bool Parse_TryParseCoordinates(const cc_string* coordinates, IVec3* out_result);
+bool Parse_TryParseFloat(const cc_string* string, float* out_float);
 
 #endif

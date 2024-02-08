@@ -10,14 +10,10 @@
 #include "Parse.h"
 #include "Messaging.h"
 
-static bool BrushPerlin_TryParseArguments(const cc_string* args, int argsCount);
-static BlockID BrushPerlin_Paint(int x, int y, int z);
-
-Brush BrushPerlin = {
-	.TryParseArguments = &BrushPerlin_TryParseArguments,
-	.Paint = &BrushPerlin_Paint,
-}; 
-
+static BlockID s_Block1;
+static BlockID s_Block2;
+static int s_Scale;
+static float s_Threshold;
 static int s_Permutation[512] = { 0 };
 
 static double PerlinSmoothFunction(double t) {
@@ -139,17 +135,60 @@ static void GenerateRandomPermutation(void) {
 }
 
 static bool BrushPerlin_TryParseArguments(const cc_string* args, int argsCount) {
+	if (argsCount <= 2 || argsCount > 4) {
+		Message_Player("&b@Perlin&f usage: &b@Perlin <block1> <block2> <scale> [threshold]&f.");
+		return false;
+	}
+
+	if (!Parse_TryParseBlock(&args[0], &s_Block1)) {
+		return false;
+	}
+
+	if (!Parse_TryParseBlock(&args[1], &s_Block2)) {
+		return false;
+	}
+
+	if (!Parse_TryParseNumber(&args[2], &s_Scale)) {
+		return false;
+	}
+
+	if (s_Scale < 0) {
+		Message_Player("&bscale &fmust be a positive integer.");
+		return false;
+	}
+
+	if (argsCount >= 4) {
+		if (!Parse_TryParseFloat(&args[3], &s_Threshold)) {
+			return false;
+		} else if (s_Threshold <= -1.0 || s_Threshold >= 1.0) {
+			Message_Player("&bthreshold &fmust be between &b-1.0 &fand &b1.0&f.");
+			return false;
+		}
+	} else {
+		s_Threshold = 0.0;
+	}
+
 	GenerateRandomPermutation();
 	return true;
 }
 
 static BlockID BrushPerlin_Paint(int x, int y, int z) {
-	double scale = 10.0;
-	double result = Perlin((double)x / scale, (double)y / scale, (double)z / scale);
+	double result = Perlin((double)x / s_Scale, (double)y / s_Scale, (double)z / s_Scale);
 
-	if (result >= 0.0) {
-		return BLOCK_WHITE;
+	if (result >= (double)s_Threshold) {
+		return s_Block2;
 	} else {
-		return BLOCK_BLACK;
+		return s_Block1;
 	}
 }
+
+static void BrushPerlin_Help(void) {
+	Message_Player("&b@Perlin <block1> <block2> <scale> [threshold]");
+	Message_Player("Perlin noise based brush.");
+}
+
+Brush BrushPerlin = {
+	.TryParseArguments = &BrushPerlin_TryParseArguments,
+	.Paint = &BrushPerlin_Paint,
+	.HelpFunction = &BrushPerlin_Help,
+};

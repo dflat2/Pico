@@ -194,6 +194,20 @@ bool Parse_TryParseNumber(const cc_string* string, int* out_number) {
 	return true;
 }
 
+bool Parse_TryParseFloat(const cc_string* string, float* out_float) {
+	bool success = Convert_ParseFloat(string, out_float);
+
+	if (!success) {
+		char invalidFloatMessageBuffer[STRING_SIZE];
+		cc_string invalidFloatMessage = String_FromArray(invalidFloatMessageBuffer);
+		String_Format1(&invalidFloatMessage, "Invalid decimal: &b%s&f.", string);
+		Chat_Add(&invalidFloatMessage);
+		return false;
+	}
+
+	return true;
+}
+
 static bool TryParseTimeUnit(const cc_string* string, int* cursor, TimeUnit* out_unit) {
 	if (*cursor >= string->length) {
 		return false;
