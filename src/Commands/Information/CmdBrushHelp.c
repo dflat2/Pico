@@ -1,6 +1,6 @@
 #include "ClassiCube/src/Chat.h"
 
-#include "Messaging.h"
+#include "Message.h"
 #include "Brushes/Brush.h"
 
 static void BrushHelp_Command(const cc_string* args, int argsCount);

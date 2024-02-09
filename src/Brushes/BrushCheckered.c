@@ -1,5 +1,5 @@
 #include "Parse.h"
-#include "Messaging.h"
+#include "Message.h"
 
 static BlockID s_Block1;
 static BlockID s_Block2;

@@ -1,6 +1,6 @@
 #include "ClassiCube/src/Block.h"
 
-#include "Messaging.h"
+#include "Message.h"
 #include "Parse.h"
 #include "Player.h"
 #include "DataStructures/Axis.h"

@@ -2,7 +2,7 @@
 #include "ClassiCube/src/World.h"
 #include "ClassiCube/src/Chat.h"
 
-#include "Messaging.h"
+#include "Message.h"
 #include "Brushes/Brush.h"
 #include "UndoTree.h"
 

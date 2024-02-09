@@ -2,7 +2,7 @@
 #include "ClassiCube/src/Inventory.h"
 
 #include "Parse.h"
-#include "Messaging.h"
+#include "Message.h"
 
 static BlockID s_Block;
 

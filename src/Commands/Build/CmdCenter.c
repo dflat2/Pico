@@ -5,7 +5,7 @@
 
 #include "Draw.h"
 #include "MarkSelection.h"
-#include "Messaging.h"
+#include "Message.h"
 #include "VectorsExtension.h"
 #include "Parse.h"
 

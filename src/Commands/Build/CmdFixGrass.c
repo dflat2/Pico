@@ -4,7 +4,7 @@
 #include "ClassiCube/src/Lighting.h"
 
 #include "Draw.h"
-#include "Messaging.h"
+#include "Message.h"
 
 static void FixGrass_Command(const cc_string* args, int argsCount);
 

@@ -2,7 +2,7 @@
 
 #include "ClassiCube/src/Chat.h"
 
-#include "Messaging.h"
+#include "Message.h"
 #include "UndoTree.h"
 #include "Format.h"
 #include "Parse.h"

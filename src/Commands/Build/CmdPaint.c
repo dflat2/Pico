@@ -5,7 +5,7 @@
 #include "Brushes/Brush.h"
 #include "Draw.h"
 #include "MarkSelection.h"
-#include "Messaging.h"
+#include "Message.h"
 #include "Parse.h"
 
 static bool s_Repeat = false;

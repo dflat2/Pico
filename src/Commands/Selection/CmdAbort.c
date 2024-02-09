@@ -1,7 +1,7 @@
 #include "ClassiCube/src/Chat.h"
 
 #include "MarkSelection.h"
-#include "Messaging.h"
+#include "Message.h"
 
 static void Abort_Command(const cc_string* args, int argsCount);
 

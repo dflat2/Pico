@@ -1,7 +1,7 @@
 #include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/World.h"
 
-#include "Messaging.h"
+#include "Message.h"
 #include "MarkSelection.h"
 
 static void MarkAll_Command(const cc_string* args, int argsCount);

@@ -8,7 +8,7 @@
 #include "ClassiCube/src/Inventory.h"
 
 #include "MarkSelection.h"
-#include "Messaging.h"
+#include "Message.h"
 #include "VectorsExtension.h"
 #include "Parse.h"
 #include "DataStructures/Axis.h"

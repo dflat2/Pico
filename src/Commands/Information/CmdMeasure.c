@@ -5,7 +5,7 @@
 #include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/World.h"
 
-#include "Messaging.h"
+#include "Message.h"
 #include "MarkSelection.h"
 #include "VectorsExtension.h"
 #include "Parse.h"

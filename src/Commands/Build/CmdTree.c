@@ -9,7 +9,7 @@
 #include "ClassiCube/src/BlockID.h"
 
 #include "MarkSelection.h"
-#include "Messaging.h"
+#include "Message.h"
 #include "Parse.h"
 #include "Draw.h"
 

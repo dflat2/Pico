@@ -2,7 +2,7 @@
 #include "ClassiCube/src/Inventory.h"
 
 #include "Parse.h"
-#include "Messaging.h"
+#include "Message.h"
 
 static bool BrushInventory_TryParseArguments(const cc_string* args, int argsCount) {
     if (argsCount != 0) {

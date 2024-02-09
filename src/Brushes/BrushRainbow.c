@@ -1,6 +1,6 @@
 #include "ClassiCube/src/BlockID.h"
 
-#include "Messaging.h"
+#include "Message.h"
 #include "Brush.h" 
 
 static bool BrushRainbow_TryParseArguments(const cc_string* args, int argsCount) {

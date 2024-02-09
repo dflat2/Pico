@@ -4,7 +4,7 @@
 
 #include "DataStructures/BlocksBuffer.h"
 #include "MarkSelection.h"
-#include "Messaging.h"
+#include "Message.h"
 
 static void Copy_Command(const cc_string* args, int argsCount);
 static void CopySelectionHandler(IVec3* marks, int count);

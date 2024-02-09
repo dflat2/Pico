@@ -3,7 +3,7 @@
 #include "ClassiCube/src/Block.h"
 #include "ClassiCube/src/World.h"
 
-#include "Messaging.h"
+#include "Message.h"
 #include "Player.h"
 
 static void Ascend_Command(const cc_string* args, int argsCount);

@@ -4,7 +4,7 @@
 
 #include "Draw.h"
 #include "MarkSelection.h"
-#include "Messaging.h"
+#include "Message.h"
 #include "Parse.h"
 
 static void ReplaceAll_Command(const cc_string* args, int argsCount);

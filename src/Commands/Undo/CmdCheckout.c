@@ -4,7 +4,7 @@
 #include "ClassiCube/src/String.h"
 #include "ClassiCube/src/Constants.h"
 
-#include "Messaging.h"
+#include "Message.h"
 #include "UndoTree.h"
 
 static void Checkout_Command(const cc_string* args, int argsCount);

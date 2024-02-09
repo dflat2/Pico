@@ -1,7 +1,7 @@
 #include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/Entity.h"
 
-#include "Messaging.h"
+#include "Message.h"
 
 static void ReachDistance_Command(const cc_string* args, int argsCount);
 static void ResetReachDistance(struct LocalPlayer* player);

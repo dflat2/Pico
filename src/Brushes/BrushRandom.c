@@ -7,7 +7,7 @@
 #include "ClassiCube/src/String.h"
 
 #include "Parse.h"
-#include "Messaging.h"
+#include "Message.h"
 
 #define MAX_BLOCKS 10
 

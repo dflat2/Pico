@@ -7,7 +7,7 @@
 #include "ClassiCube/src/String.h"
 
 #include "MarkSelection.h"
-#include "Messaging.h"
+#include "Message.h"
 #include "Draw.h"
 
 #define MAX_MARKS 4

@@ -5,7 +5,7 @@
 #include "DataStructures/BlocksBuffer.h"
 #include "Draw.h"
 #include "MarkSelection.h"
-#include "Messaging.h"
+#include "Message.h"
 #include "VectorsExtension.h"
 
 static void CutSelectionHandler(IVec3* marks, int count);

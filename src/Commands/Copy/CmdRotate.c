@@ -6,7 +6,7 @@
 #include "DataStructures/BlocksBuffer.h"
 #include "MarkSelection.h"
 #include "Parse.h"
-#include "Messaging.h"
+#include "Message.h"
 
 static void Rotate_Command(const cc_string* args, int argsCount);
 

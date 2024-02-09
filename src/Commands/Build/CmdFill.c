@@ -6,7 +6,7 @@
 
 #include "Draw.h"
 #include "MarkSelection.h"
-#include "Messaging.h"
+#include "Message.h"
 #include "Parse.h"
 #include "DataStructures/Array.h"
 #include "DataStructures/List.h"

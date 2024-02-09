@@ -4,7 +4,7 @@
 
 #include "MarkSelection.h"
 #include "Parse.h"
-#include "Messaging.h"
+#include "Message.h"
 #include "Player.h"
 
 static void Mark_Command(const cc_string* args, int argsCount);

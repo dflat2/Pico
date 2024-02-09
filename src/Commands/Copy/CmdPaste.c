@@ -7,7 +7,7 @@
 #include "Parse.h"
 #include "DataStructures/BlocksBuffer.h"
 #include "MarkSelection.h"
-#include "Messaging.h"
+#include "Message.h"
 #include "VectorsExtension.h"
 #include "DataStructures/Array.h"
 
