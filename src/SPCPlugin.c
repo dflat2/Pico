@@ -64,6 +64,9 @@ static void SPC_OnNewMapLoaded(void) {
         Message_Player("You wont be able to &b/Undo&f.");
         return;
     }
+
+    // Abort selection in case there is currently a selection in progress.
+    MarkSelection_Abort();
 }
 
 static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
