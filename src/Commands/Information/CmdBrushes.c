@@ -1,5 +1,3 @@
-#include "ClassiCube/src/Chat.h"
-
 #include "Message.h"
 
 static void Brushes_Command(const cc_string* args, int argsCount);

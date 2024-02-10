@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "ClassiCube/src/String.h"
 #include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/Constants.h"

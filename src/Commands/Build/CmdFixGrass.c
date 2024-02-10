@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "ClassiCube/src/World.h"
 #include "ClassiCube/src/Lighting.h"
 

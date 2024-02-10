@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#include "ClassiCube/src/String.h"
+#include "ClassiCube/src/Core.h"
 
 #define ARRAY_CONTAINS_STRING(str, array) \ Array_ContainsString(str, array, sizeof(array) / sizeof(array[0]))
 

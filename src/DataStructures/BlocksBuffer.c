@@ -1,9 +1,9 @@
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "ClassiCube/src/World.h"
 
 #include "BlocksBuffer.h"
+#include "VectorsExtension.h"
 
 typedef enum S3_ { XYZ, XZY, ZYX, YXZ, ZXY, YZX } S3;
 

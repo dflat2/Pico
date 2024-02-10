@@ -1,8 +1,5 @@
 #include <stdio.h>
-#include <time.h>
 
-#include "ClassiCube/src/Block.h"
-#include "ClassiCube/src/String.h"
 #include "Format.h"
 
 void Format_HHMMSS(cc_string* destination, time_t time) {

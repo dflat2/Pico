@@ -1,7 +1,6 @@
 #include "ClassiCube/src/Vectors.h"
 
 #include <stdlib.h>
-#include <stdbool.h>
 
 typedef struct IVec3FastQueue_ {
     IVec3* allocated;

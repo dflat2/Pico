@@ -1,13 +1,3 @@
-#include <stdlib.h>
-#include <math.h>
-#include <stdio.h>
-
-#include "ClassiCube/src/Chat.h"
-#include "ClassiCube/src/Core.h"
-#include "ClassiCube/src/Game.h"
-#include "ClassiCube/src/Inventory.h"
-#include "ClassiCube/src/BlockID.h"
-
 #include "MarkSelection.h"
 #include "Message.h"
 #include "Parse.h"

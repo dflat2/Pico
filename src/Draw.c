@@ -1,8 +1,6 @@
 #include "ClassiCube/src/Game.h"
 #include "ClassiCube/src/World.h"
-#include "ClassiCube/src/Chat.h"
 
-#include "Message.h"
 #include "Brushes/Brush.h"
 #include "UndoTree.h"
 

@@ -1,12 +1,8 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <math.h>
 #include <time.h>
 
-#include "ClassiCube/src/BlockID.h"
-#include "ClassiCube/src/Constants.h"
-#include "ClassiCube/src/String.h"
-
+#include "Brushes/Brush.h"
 #include "Parse.h"
 #include "Message.h"
 

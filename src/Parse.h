@@ -5,7 +5,6 @@
 #include "ClassiCube/src/Vectors.h"
 
 #include "DataStructures/Axis.h"
-#include "Brushes/Brush.h"
 
 bool Parse_TryParseBlock(const cc_string* blockString, BlockID* block);
 bool Parse_LastArgumentIsRepeat(const cc_string* arguments, int* ref_count);

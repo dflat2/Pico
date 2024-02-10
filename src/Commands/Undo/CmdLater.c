@@ -1,10 +1,5 @@
-#include <stdio.h>
-
-#include "ClassiCube/src/Chat.h"
-
 #include "Message.h"
 #include "UndoTree.h"
-#include "Format.h"
 #include "Parse.h"
 
 static void Later_Command(const cc_string* args, int argsCount);

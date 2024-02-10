@@ -1,5 +1,3 @@
-#include "ClassiCube/src/Chat.h"
-
 #include "MarkSelection.h"
 #include "Message.h"
 

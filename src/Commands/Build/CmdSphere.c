@@ -1,14 +1,10 @@
-#include <stdlib.h>
-#include <math.h>
 #include <stdio.h>
 
-#include "ClassiCube/src/Chat.h"
-
+#include "Brushes/Brush.h"
 #include "MarkSelection.h"
 #include "Message.h"
 #include "VectorsExtension.h"
 #include "Parse.h"
-#include "DataStructures/Axis.h"
 #include "DataStructures/Array.h"
 #include "Draw.h"
 

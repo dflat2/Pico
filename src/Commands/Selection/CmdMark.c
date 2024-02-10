@@ -1,6 +1,4 @@
-#include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/World.h"
-#include "ClassiCube/src/Vectors.h"
 
 #include "MarkSelection.h"
 #include "Parse.h"

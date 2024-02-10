@@ -1,4 +1,3 @@
-#include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/World.h"
 
 #include "Message.h"

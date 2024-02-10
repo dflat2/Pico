@@ -1,6 +1,3 @@
-#include <stdio.h>
-
-#include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/World.h"
 
 #include "Draw.h"
@@ -8,8 +5,8 @@
 #include "DataStructures/BlocksBuffer.h"
 #include "MarkSelection.h"
 #include "Message.h"
-#include "VectorsExtension.h"
 #include "DataStructures/Array.h"
+#include "VectorsExtension.h"
 
 static void Paste_Command(const cc_string* args, int argsCount);
 static void PasteSelectionHandler(IVec3* marks, int count);

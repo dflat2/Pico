@@ -1,12 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "ClassiCube/src/World.h"
 #include "ClassiCube/src/Game.h"
-#include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/Event.h"
-#include "ClassiCube/src/Constants.h"
 
 #include "Message.h"
 #include "UndoTree.h"

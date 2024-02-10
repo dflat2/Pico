@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "ClassiCube/src/Chat.h"
-#include "ClassiCube/src/Inventory.h"
-
+#include "Brushes/Brush.h"
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Message.h"

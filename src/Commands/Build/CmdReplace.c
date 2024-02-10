@@ -1,13 +1,11 @@
-#include "ClassiCube/src/Chat.h"
-#include "ClassiCube/src/Inventory.h"
 #include "ClassiCube/src/World.h"
 
+#include "Brushes/Brush.h"
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Message.h"
 #include "VectorsExtension.h"
 #include "Parse.h"
-#include "DataStructures/Array.h"
 
 static void Replace_Command(const cc_string* args, int argsCount);
 static bool TryParseArguments(const cc_string* args, int argsCount);

@@ -1,7 +1,8 @@
 #ifndef UNDO_TREE_H
 #define UNDO_TREE_H
 
-#include <stdlib.h>
+#include "ClassiCube/src/Core.h"
+
 #include <stdbool.h>
 
 // DeltaBlockID is a difference between two BlockIDs. Only deltas are saved in each operation.

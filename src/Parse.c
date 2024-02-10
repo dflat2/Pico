@@ -1,9 +1,9 @@
 #include "ClassiCube/src/Block.h"
 
+#include "Brushes/Brush.h"
 #include "Message.h"
 #include "Parse.h"
 #include "Player.h"
-#include "DataStructures/Axis.h"
 
 typedef enum TimeUnit_ {
     UNIT_SECOND = 0x01,

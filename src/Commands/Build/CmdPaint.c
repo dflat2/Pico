@@ -1,7 +1,3 @@
-#include <stdio.h>
-
-#include "ClassiCube/src/Chat.h"
-
 #include "Brushes/Brush.h"
 #include "Draw.h"
 #include "MarkSelection.h"

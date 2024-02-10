@@ -1,8 +1,6 @@
-#include "ClassiCube/src/BlockID.h"
-#include "ClassiCube/src/Inventory.h"
-
 #include "Parse.h"
 #include "Message.h"
+#include "Brushes/Brush.h"
 
 static BlockID s_Block;
 

@@ -1,7 +1,6 @@
-#include "ClassiCube/src/Chat.h"
-#include "ClassiCube/src/Inventory.h"
 #include "ClassiCube/src/World.h"
 
+#include "Brushes/Brush.h"
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Message.h"

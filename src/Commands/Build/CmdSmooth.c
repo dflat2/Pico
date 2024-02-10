@@ -1,13 +1,8 @@
-#include <stdlib.h>
-
-#include "ClassiCube/src/Chat.h"
-#include "ClassiCube/src/Inventory.h"
 #include "ClassiCube/src/World.h"
 
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Message.h"
-#include "VectorsExtension.h"
 #include "Parse.h"
 #include "DataStructures/IVec3FastQueue.h"
 

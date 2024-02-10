@@ -1,3 +1,4 @@
+#include "Brushes/Brush.h"
 #include "Parse.h"
 #include "Message.h"
 

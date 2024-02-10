@@ -1,10 +1,8 @@
-#include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/Entity.h"
 #include "ClassiCube/src/Block.h"
 #include "ClassiCube/src/World.h"
 
 #include "Message.h"
-#include "Player.h"
 
 static void Ascend_Command(const cc_string* args, int argsCount);
 static void Descend_Command(const cc_string* args, int argsCount);

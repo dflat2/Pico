@@ -1,4 +1,5 @@
 #include "Array.h"
+#include "ClassiCube/src/String.h"
 
 int Array_IndexOfStringCaseless(const cc_string* element, const cc_string* list, int listCount) {
     for (int i = 0; i < listCount; i++) {

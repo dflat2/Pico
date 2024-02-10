@@ -1,14 +1,8 @@
-#include <stdio.h>
-
 #include "ClassiCube/src/Event.h"
 #include "ClassiCube/src/Game.h"
-#include "ClassiCube/src/Chat.h"
-#include "ClassiCube/src/Inventory.h"
-#include "ClassiCube/src/String.h"
 
 #include "MarkSelection.h"
 #include "Message.h"
-#include "Draw.h"
 
 #define MAX_MARKS 4
 

@@ -1,7 +1,5 @@
 #include <stdlib.h>
 
-#include "BinaryMap.h"
-
 typedef char byte;
 
 typedef struct BinaryMap_ {

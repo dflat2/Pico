@@ -1,16 +1,8 @@
 #include <stdlib.h>
-#include <math.h>
-#include <stdio.h>
-
-#include "ClassiCube/src/Chat.h"
-#include "ClassiCube/src/Core.h"
-#include "ClassiCube/src/Constants.h"
-#include "ClassiCube/src/Game.h"
 
 #include "MarkSelection.h"
 #include "VectorsExtension.h"
 #include "Message.h"
-#include "Parse.h"
 #include "Draw.h"
 
 typedef enum WriteDirection_ {

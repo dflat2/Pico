@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include "ClassiCube/src/Block.h"
-#include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/World.h"
 
 #include "Message.h"
