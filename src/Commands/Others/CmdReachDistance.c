@@ -12,8 +12,8 @@ struct ChatCommand ReachDistanceCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/ReachDistance [distance]",
-        "&fSets your reach distance to &bdistance&f.",
-        "&fResets to default (&b5.0&f) if no &bdistance &fis given.",
+        "Sets your reach distance to &bdistance&f.",
+        "Resets to default (&b5.0&f) if no &bdistance &fis given.",
         NULL,
         NULL
     },
@@ -39,7 +39,7 @@ static void ReachDistance_Command(const cc_string* args, int argsCount) {
 
     if (argsCount == 0) {
         ResetReachDistance(player);
-        Message_Player("&fYour reach distance has been reset to &b5.0&f.");
+        Message_Player("Your reach distance has been reset to &b5.0&f.");
         return;
     }
 
@@ -59,7 +59,7 @@ static void ReachDistance_Command(const cc_string* args, int argsCount) {
 
     if (distance < 0.0f)
     {
-        Message_Player("&fDistance must be positive or 0.");
+        Message_Player("Distance must be positive or 0.");
         return;
     }
 
@@ -67,6 +67,6 @@ static void ReachDistance_Command(const cc_string* args, int argsCount) {
 
     char msgBuffer[512];
     cc_string message = String_FromArray(msgBuffer);
-    String_Format1(&message, "&fYour reach distance has been set to &b%f2&f.", &distance);
+    String_Format1(&message, "Your reach distance has been set to &b%f2&f.", &distance);
     Chat_Add(&message);
 }

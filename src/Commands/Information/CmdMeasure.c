@@ -20,9 +20,9 @@ struct ChatCommand MeasureCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/Measure +",
-        "&fDisplay the dimensions between two points.",
+        "Display the dimensions between two points.",
         "&b/Measure <block> +",
-        "&fAdditionally, counts the number of &b<block>&fs.",
+        "Additionally, counts the number of &b<block>&fs.",
         NULL
     },
     NULL
@@ -73,7 +73,7 @@ static void MeasureSelectionHandler(IVec3* marks, int count) {
     }
 
     char message[64];
-    snprintf(&message[0], 64, "&fMeasuring from &b(%d, %d, %d)&f to &b(%d, %d, %d)&f.",
+    snprintf(&message[0], 64, "Measuring from &b(%d, %d, %d)&f to &b(%d, %d, %d)&f.",
             marks[0].X, marks[0].Y, marks[0].Z,
             marks[1].X, marks[1].Y, marks[1].Z);
     Message_Player(&message[0]);

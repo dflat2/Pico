@@ -30,7 +30,7 @@ static void ShowRotated(Axis axis, int degrees) {
 
     char buffer[64];
     cc_string message = String_FromArray(buffer);
-    String_Format2(&message, "&fRotated around the %r axis by %i degrees.", &charAxis, &degrees);
+    String_Format2(&message, "Rotated around the %r axis by %i degrees.", &charAxis, &degrees);
     Chat_Add(&message);
 }
 

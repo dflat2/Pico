@@ -78,7 +78,7 @@ static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
     if (String_CaselessStarts(msg, &clientCuboid) || String_CaselessStarts(msg, &cuboid)) {
         text = String_FromReadonly("&cWarning. &fYou are using the vanilla &b/Cuboid&f.");
         Chat_Add(&text);
-        text = String_FromReadonly("&fYou won't be able to &b/Undo&f, &b/Mark&f or &b/Abort&f. Use &b/Z &finstead.");
+        text = String_FromReadonly("You won't be able to &b/Undo&f, &b/Mark&f or &b/Abort&f. Use &b/Z &finstead.");
         Chat_Add(&text);
     }
 }

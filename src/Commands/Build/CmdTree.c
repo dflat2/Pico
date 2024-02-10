@@ -13,7 +13,7 @@ struct ChatCommand TreeCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/Tree +",
-        "&fGrows a tree.",
+        "Grows a tree.",
         NULL,
         NULL,
         NULL

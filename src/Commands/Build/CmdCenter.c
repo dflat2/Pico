@@ -18,7 +18,7 @@ struct ChatCommand CenterCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/Center [block/brush] +",
-        "&fPlaces blocks at the center of your selection.",
+        "Places blocks at the center of your selection.",
         NULL,
         NULL,
         NULL
@@ -69,7 +69,7 @@ static void CenterSelectionHandler(IVec3* marks, int count) {
         return;
     }
 
-    snprintf(message, sizeof(message), "&fDrew cuboid at center from &b(%d, %d, %d)&f to &b(%d, %d, %d)&f.",
+    snprintf(message, sizeof(message), "Drew cuboid at center from &b(%d, %d, %d)&f to &b(%d, %d, %d)&f.",
              centerCuboidMin.X, centerCuboidMin.Y, centerCuboidMin.Z,
              centerCuboidMax.X, centerCuboidMax.Y, centerCuboidMax.Z);
 
@@ -93,5 +93,5 @@ static void Center_Command(const cc_string* args, int argsCount) {
     }
 
     MarkSelection_Make(CenterSelectionHandler, 2, "Center");
-    Message_Player("&fPlace or break two blocks to determine the edges.");
+    Message_Player("Place or break two blocks to determine the edges.");
 }

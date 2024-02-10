@@ -27,14 +27,14 @@ void Message_BlocksAffected(int blocksAffected) {
 void Message_ShowUnknownMode(const cc_string* mode) {
     char message[STRING_SIZE];
     cc_string cc_message = { message, .length = 0, .capacity = sizeof(message) };
-    String_Format1(&cc_message, "&fUnkown mode: &b%s&f.", mode);
+    String_Format1(&cc_message, "Unkown mode: &b%s&f.", mode);
     Chat_Add(&cc_message);
 }
 
 void Message_ShowAvailableModes(const cc_string* modes, int modesCount) {
     char buffer[STRING_SIZE];
     cc_string message = { buffer, .length = 0, .capacity = sizeof(buffer) };
-    String_AppendConst(&message, "&fAvailable modes: &b");
+    String_AppendConst(&message, "Available modes: &b");
 
     for (int i = 0; i < modesCount - 1; i++) {
         String_AppendString(&message, &modes[i]);
@@ -49,14 +49,14 @@ void Message_ShowAvailableModes(const cc_string* modes, int modesCount) {
 void Message_ShowUnknownBlock(const cc_string* block) {
     char buffer[STRING_SIZE];
     cc_string message = { buffer, .length = 0, .capacity = sizeof(buffer) };
-    String_Format1(&message, "&fCould not find block specified: &b%s&f.", block);
+    String_Format1(&message, "Could not find block specified: &b%s&f.", block);
     Chat_Add(&message);
 }
 
 void Message_ShowInvalidAxis(const cc_string* axis) {
     char buffer[STRING_SIZE];
     cc_string message = String_FromArray(buffer);
-    String_Format1(&message, "&fCould not read axis: &b%s&f.", axis);
+    String_Format1(&message, "Could not read axis: &b%s&f.", axis);
     Chat_Add(&message);
     Message_Player("An axis parameter must be &bX&f, &bY&f or &bZ&f.");
 }
@@ -64,7 +64,7 @@ void Message_ShowInvalidAxis(const cc_string* axis) {
 void Message_ShowInvalidDegrees(const cc_string* string) {
     char buffer[STRING_SIZE];
     cc_string message = String_FromArray(buffer);
-    String_Format1(&message, "&fInvalid degrees: &b%s&f.", string);
+    String_Format1(&message, "Invalid degrees: &b%s&f.", string);
     Chat_Add(&message);
     Message_Player("Degrees must be integers, multiples of 90.");
 }

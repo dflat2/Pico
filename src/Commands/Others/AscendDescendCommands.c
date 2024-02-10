@@ -18,7 +18,7 @@ struct ChatCommand AscendCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/Ascend",
-        "&fTeleports you to the first free space above you.",
+        "Teleports you to the first free space above you.",
         NULL,
         NULL,
         NULL
@@ -32,7 +32,7 @@ struct ChatCommand DescendCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/Descend",
-        "&fTeleports you to the first free space below you.",
+        "Teleports you to the first free space below you.",
         NULL,
         NULL,
         NULL
@@ -55,7 +55,7 @@ static void Ascend_Command(const cc_string* args, int argsCount) {
     bool success = TryFindAbove(currentPosition, &ascendPosition);
 
     if (!success) {
-        Message_Player("&fThere are no blocks above to ascend to.");
+        Message_Player("There are no blocks above to ascend to.");
         return;
     }
 
@@ -64,7 +64,7 @@ static void Ascend_Command(const cc_string* args, int argsCount) {
     update.pos = ascendPosition;
 
     playerEntity.VTABLE->SetLocation(&playerEntity, &update);
-    Message_Player("&fTeleported you up.");
+    Message_Player("Teleported you up.");
 }
 
 static void Descend_Command(const cc_string* args, int argsCount) {
@@ -82,7 +82,7 @@ static void Descend_Command(const cc_string* args, int argsCount) {
     bool success = TryFindBelow(currentPosition, &descendPosition);
 
     if (!success) {
-        Message_Player("&fThere are no blocks below to descend to.");
+        Message_Player("There are no blocks below to descend to.");
         return;
     }
 
@@ -91,7 +91,7 @@ static void Descend_Command(const cc_string* args, int argsCount) {
     update.pos = descendPosition;
 
     playerEntity.VTABLE->SetLocation(&playerEntity, &update);
-    Message_Player("&fTeleported you down.");
+    Message_Player("Teleported you down.");
 }
 
 static bool TryFindAbove(Vec3 currentPosition, Vec3* ascendPosition) {

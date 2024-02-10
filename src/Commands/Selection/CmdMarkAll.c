@@ -11,7 +11,7 @@ struct ChatCommand MarkAllCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/MarkAll",
-        "&fPlaces markers in min and max corners of the map.",
+        "Places markers in min and max corners of the map.",
         NULL,
         NULL,
         NULL
@@ -26,11 +26,11 @@ static void MarkAll_Command(const cc_string* args, int argsCount) {
     }
 
     if (MarkSelection_RemainingMarks() == 0) {
-        Message_Player("&fCannot mark, no selection in progress.");
+        Message_Player("Cannot mark, no selection in progress.");
         return;
     }
     else if (MarkSelection_RemainingMarks() == 1) {
-        Message_Player("&fCannot &b/MarkAll &funless there are at least two remaining marks.");
+        Message_Player("Cannot &b/MarkAll &funless there are at least two remaining marks.");
         return;
     }
 

@@ -38,8 +38,8 @@ struct ChatCommand ZCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/Z [mode] [brush/block] +",
-        "&fDraws a cuboid between two points.",
-        "&fList of modes: &bsolid&f (default), &bhollow&f, &bwalls&f, &bwire&f, &bcorners&f.",
+        "Draws a cuboid between two points.",
+        "List of modes: &bsolid&f (default), &bhollow&f, &bwalls&f, &bwire&f, &bcorners&f.",
         NULL,
         NULL
     },
@@ -223,5 +223,5 @@ static void Z_Command(const cc_string* args, int argsCount) {
     }
 
     MarkSelection_Make(ZSelectionHandler, 2, "Z");
-    Message_Player("&fPlace or break two blocks to determine the edges.");
+    Message_Player("Place or break two blocks to determine the edges.");
 }

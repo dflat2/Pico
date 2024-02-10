@@ -121,5 +121,5 @@ static void Circle_Command(const cc_string* args, int argsCount) {
     }
 
     MarkSelection_Make(CircleSelectionHandler, 1, "Circle");
-    Message_Player("&fPlace or break a block to determine the center.");
+    Message_Player("Place or break a block to determine the center.");
 }

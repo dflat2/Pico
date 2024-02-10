@@ -27,8 +27,8 @@ struct ChatCommand SphereCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/Sphere <radius> [mode] [brush/block] +",
-        "&fDraws a sphere of radius &b<radius>&f.",
-        "&fList of modes: &bsolid&f (default), &bhollow&f.",
+        "Draws a sphere of radius &b<radius>&f.",
+        "List of modes: &bsolid&f (default), &bhollow&f.",
         NULL,
         NULL
     },
@@ -120,5 +120,5 @@ static void Sphere_Command(const cc_string* args, int argsCount) {
     }
 
     MarkSelection_Make(SphereSelectionHandler, 1, "Sphere");
-    Message_Player("&fPlace or break a block to determine the center.");
+    Message_Player("Place or break a block to determine the center.");
 }

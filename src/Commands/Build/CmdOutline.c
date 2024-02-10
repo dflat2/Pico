@@ -33,7 +33,7 @@ struct ChatCommand OutlineCommand = {
     {
         "&b/Outline <mode> <block> [brush/block] +",
         "Outlines &bblock&fs. Only air blocks can be affected.",
-        "&fList of modes: &b3d&f, &blayer&f, &bup&f, &bdown&f.",
+        "List of modes: &b3d&f, &blayer&f, &bup&f, &bdown&f.",
         NULL,
         NULL
     },
@@ -217,5 +217,5 @@ static void Outline_Command(const cc_string* args, int argsCount) {
     }
 
     MarkSelection_Make(OutlineSelectionHandler, 2, "Outline");
-    Message_Player("&fPlace or break two blocks to determine the edges.");
+    Message_Player("Place or break two blocks to determine the edges.");
 }

@@ -20,7 +20,7 @@ struct ChatCommand PasteCommand = {
     {
         "&b/Paste [mode] +",
         "Pastes the stored copy.",
-        "&fList of modes: &bnormal&f (default), &bair&f.",
+        "List of modes: &bnormal&f (default), &bair&f.",
         NULL,
         NULL,
     },
@@ -71,7 +71,7 @@ static void Paste_Command(const cc_string* args, int argsCount) {
     s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (BlocksBuffer_IsEmpty()) {
-        Message_Player("&fYou haven't copied anything yet.");
+        Message_Player("You haven't copied anything yet.");
         MarkSelection_Abort();
         return;
     }
@@ -108,5 +108,5 @@ static void Paste_Command(const cc_string* args, int argsCount) {
     }
 
     MarkSelection_Make(PasteSelectionHandler, 1, "Paste");
-    Message_Player("&fPlace a block in the corner of where you want to paste.");
+    Message_Player("Place a block in the corner of where you want to paste.");
 }
