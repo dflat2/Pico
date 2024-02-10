@@ -32,7 +32,7 @@ static void Later_Command(const cc_string* args, int argsCount) {
     }
 
     int commit;
-    if (!UndoTree_Later(duration_Second, &commit)) {
+    if (!UndoTree_Later_MALLOC(duration_Second, &commit)) {
         Message_Player("No operation to checkout");
         return;
     } 

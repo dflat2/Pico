@@ -1,6 +1,7 @@
 #include "Message.h"
 #include "UndoTree.h"
 #include "Parse.h"
+#include "Memory.h"
 
 static void Earlier_Command(const cc_string* args, int argsCount);
 
@@ -32,7 +33,15 @@ static void Earlier_Command(const cc_string* args, int argsCount) {
     }
 
     int commit;
-    if (!UndoTree_Earlier(duration_Second, &commit)) {
+    bool success = UndoTree_Earlier_MALLOC(duration_Second, &commit);
+
+    if (Memory_AllocationError()) {
+        Memory_HandleError();
+        Message_MemoryError("running &b/Earlier&f.");
+        return;
+    }
+
+    if (!success) {
         Message_Player("Already at the earliest moment.");
         return;
     } 

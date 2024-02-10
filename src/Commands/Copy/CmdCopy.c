@@ -3,6 +3,7 @@
 #include "DataStructures/BlocksBuffer.h"
 #include "MarkSelection.h"
 #include "Message.h"
+#include "Memory.h"
 
 static void Copy_Command(const cc_string* args, int argsCount);
 static void CopySelectionHandler(IVec3* marks, int count);
@@ -40,9 +41,11 @@ static void CopySelectionHandler(IVec3* marks, int count) {
     }
 
     int amountCopied = 0;
-
-    if (!BlocksBuffer_TryCopy(marks[0], marks[1], &amountCopied)) {
-        Message_Player("Error when copying.");
+    
+    BlocksBuffer_Copy_MALLOC(marks[0], marks[1], &amountCopied);
+    if (Memory_AllocationError()) {
+        Memory_HandleError();
+        Message_MemoryError("running &b/Copy");
         return;
     }
     

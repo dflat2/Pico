@@ -5,6 +5,7 @@
 #include "MarkSelection.h"
 #include "Message.h"
 #include "VectorsExtension.h"
+#include "Memory.h"
 
 static void CutSelectionHandler(IVec3* marks, int count);
 static void Cut_Command(const cc_string* args, int argsCount);
@@ -60,11 +61,14 @@ static void CutSelectionHandler(IVec3* marks, int count) {
     }
 
     int amountCopied = 0;
+    BlocksBuffer_Copy_MALLOC(marks[0], marks[1], &amountCopied);
 
-    if (!BlocksBuffer_TryCopy(marks[0], marks[1], &amountCopied)) {
-        Message_Player("Error when doing the cut.");
+    if (Memory_AllocationError()) {
+        Memory_HandleError();
+        Message_MemoryError("running &b/Copy");
         return;
     }
+
     DoCut(marks[0], marks[1]);
     ShowBlocksCut(amountCopied);
 }

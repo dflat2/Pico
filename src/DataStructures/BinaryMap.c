@@ -1,5 +1,7 @@
 #include <stdlib.h>
 
+#include "Memory.h"
+
 typedef char byte;
 
 typedef struct BinaryMap_ {
@@ -7,7 +9,7 @@ typedef struct BinaryMap_ {
     int width, height, length;
 } BinaryMap;
 
-BinaryMap* BinaryMap_CreateEmpty(int width, int height, int length) {
+BinaryMap* BinaryMap_CreateEmpty_MALLOC(int width, int height, int length) {
     int volume = width * height * length;
     int mapSize = width * height * length / 8;
 
@@ -15,15 +17,15 @@ BinaryMap* BinaryMap_CreateEmpty(int width, int height, int length) {
         mapSize += 1;
     }
 
-    byte* content = (byte*)calloc(mapSize, sizeof(byte));
+    byte* content = (byte*)Memory_AllocateZeros(mapSize, sizeof(byte));
 
-    if (content == NULL) {
+    if (Memory_AllocationError()) {
         return NULL;
     }
 
-    BinaryMap* map = malloc(sizeof(BinaryMap));
+    BinaryMap* map = Memory_Allocate(sizeof(BinaryMap));
 
-    if (map == NULL) {
+    if (Memory_AllocationError()) {
         free(content);
         return NULL;
     }

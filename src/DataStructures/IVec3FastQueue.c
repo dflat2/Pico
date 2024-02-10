@@ -1,4 +1,6 @@
 #include "ClassiCube/src/Vectors.h"
+#include "Message.h"
+#include "Memory.h"
 
 #include <stdlib.h>
 
@@ -12,8 +14,8 @@ typedef struct IVec3FastQueue_ {
 static bool TryAllocateMore(IVec3FastQueue* queue);
 static bool IsSaturated(IVec3FastQueue* queue);
 
-IVec3FastQueue* IVec3FastQueue_CreateEmpty(void) {
-    IVec3FastQueue* queue = (IVec3FastQueue*)calloc(1, sizeof(IVec3FastQueue));
+IVec3FastQueue* IVec3FastQueue_CreateEmpty_MALLOC(void) {
+    IVec3FastQueue* queue = (IVec3FastQueue*)Memory_AllocateZeros(1, sizeof(IVec3FastQueue));
     return queue;
 }
 
@@ -46,7 +48,7 @@ void IVec3FastQueue_Free(IVec3FastQueue* queue) {
 static bool TryAllocateMore(IVec3FastQueue* queue) {
     int newTotalAllocated = (queue->totalAllocated + 1) * 2;
 
-    IVec3* newAllocated = realloc(queue->allocated, newTotalAllocated * sizeof(IVec3));
+    IVec3* newAllocated = Memory_Reallocate(queue->allocated, newTotalAllocated * sizeof(IVec3));
 
     if (newAllocated == NULL) {
         return false;

@@ -1,5 +1,6 @@
 #include "Message.h"
 #include "UndoTree.h"
+#include "Memory.h"
 
 static void Undo_Command(const cc_string* args, int argsCount);
 
@@ -24,7 +25,13 @@ static void Undo_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    if (!UndoTree_Undo()) {
+    bool success = UndoTree_Undo_MALLOC();
+
+    if (Memory_AllocationError()) {
+        Memory_HandleError();
+        Message_MemoryError("undoing");
+        return;
+    } else if (!success) {
         Message_Player("There is nothing to undo.");
         return;
     }

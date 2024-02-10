@@ -1,6 +1,7 @@
 #include "DataStructures/BlocksBuffer.h"
 #include "Parse.h"
 #include "Message.h"
+#include "Memory.h"
 
 static void Rotate_Command(const cc_string* args, int argsCount);
 
@@ -62,8 +63,11 @@ static void Rotate_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    if (!BlocksBuffer_TryRotate(axis, degrees / 90)) {
-        Message_Player("Memory error");
+    BlocksBuffer_Rotate_MALLOC(axis, degrees / 90);
+
+    if (Memory_AllocationError()) {
+        Memory_HandleError();
+        Message_MemoryError("running &b/Rotate&f.");
         return;
     }
 

@@ -23,7 +23,7 @@ static void Redo_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    if (!UndoTree_Redo()) {
+    if (!UndoTree_Redo_MALLOC()) {
         Message_Player("You have nothing to redo.");
         return;
     }

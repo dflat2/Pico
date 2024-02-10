@@ -6,6 +6,7 @@
 #include "MarkSelection.h"
 #include "Message.h"
 #include "Parse.h"
+#include "Memory.h"
 #include "Brushes/Brush.h"
 #include "DataStructures/Array.h"
 #include "DataStructures/BinaryMap.h"
@@ -179,17 +180,47 @@ static void FillSelectionHandler(IVec3* marks, int count) {
     IVec3 fillOrigin = marks[0];
     s_SourceY = fillOrigin.Y;
     BlockID filledOverBlock = World_GetBlock(fillOrigin.X, fillOrigin.Y, fillOrigin.Z);
-    BinaryMap* binaryMap = BinaryMap_CreateEmpty(World.Width, World.Height, World.Length);
-    IVec3FastQueue* queue = IVec3FastQueue_CreateEmpty();
+    BinaryMap* binaryMap = BinaryMap_CreateEmpty_MALLOC(World.Width, World.Height, World.Length);
+
+    if (Memory_AllocationError()) {
+        Memory_HandleError();
+        Message_MemoryError("running &b/Fill");
+        return;
+    }
+
+    IVec3FastQueue* queue = IVec3FastQueue_CreateEmpty_MALLOC();
+
+    if (Memory_AllocationError()) {
+        Memory_HandleError();
+        Message_MemoryError("running &b/Fill");
+        BinaryMap_Free(binaryMap);
+        return;
+    }
 
     BinaryMap_Set(binaryMap, fillOrigin.X, fillOrigin.Y, fillOrigin.Z);
     IVec3FastQueue_TryEnqueue(queue, fillOrigin);
+
+    if (Memory_AllocationError()) {
+        Memory_HandleError();
+        Message_MemoryError("running &b/Fill");
+        IVec3FastQueue_Free(queue);
+        BinaryMap_Free(binaryMap);
+        return;
+    }
 
     IVec3 current;
 
     while (!IVec3FastQueue_IsEmpty(queue)) {
         current = IVec3FastQueue_Dequeue(queue);
         TryExpand(queue, current, filledOverBlock, binaryMap);
+
+        if (Memory_AllocationError()) {
+            Memory_HandleError();
+            Message_MemoryError("running &b/Fill");
+            IVec3FastQueue_Free(queue);
+            BinaryMap_Free(binaryMap);
+            return;
+        }
     }
 
     Draw_Start("Fill");

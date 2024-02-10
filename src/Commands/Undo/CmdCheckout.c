@@ -37,7 +37,7 @@ static void Checkout_Command(const cc_string* args, int argsCount) {
     int ascended;
     int descended;
 
-    if (!UndoTree_Checkout(operation, &ascended, &descended)) {
+    if (!UndoTree_Checkout_MALLOC(operation, &ascended, &descended)) {
         char operationNotFoundMsg[64];
         snprintf(operationNotFoundMsg, sizeof(operationNotFoundMsg), "Could not find operation &b%d&f.", operation);
         Message_Player(operationNotFoundMsg);

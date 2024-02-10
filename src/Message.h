@@ -13,5 +13,6 @@ void Message_ShowInvalidAxis(const cc_string* axis);
 void Message_ShowInvalidDegrees(const cc_string* string);
 void Message_UndoCheckedOut(int commit, int timestamp);
 void Message_CommandUsage(struct ChatCommand command);
+void Message_MemoryError(const char* action);
 
 #endif

@@ -87,3 +87,10 @@ void Message_CommandUsage(struct ChatCommand command) {
     snprintf(usageMessage, sizeof(usageMessage), "Usage: %s&f.", firstHelpLine);
     Message_Player(usageMessage);
 }
+
+void Message_MemoryError(const char* action) {
+    char messageBuffer[STRING_SIZE];
+    cc_string message = { messageBuffer, .length = 0, .capacity = sizeof(messageBuffer) };
+    String_Format1(&message, "A memory error has occured %c&f.", action);
+    Chat_Add(&message);
+}

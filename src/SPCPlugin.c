@@ -17,6 +17,7 @@
 
 #include "Commands/Commands.h"
 #include "UndoTree.h"
+#include "Message.h"
 #include "MarkSelection.h"
 
 static void OnChatSending(void* obj, const cc_string* msg, int msgType);
@@ -57,7 +58,12 @@ static void SPC_OnNewMapLoaded(void) {
 
     // Clears the undo tree when loading a new map.
     UndoTree_Disable();
-    UndoTree_Enable();
+
+    if (!UndoTree_Enable_MALLOC()) {
+        Message_MemoryError("setting up the block database");
+        Message_Player("You wont be able to &b/Undo&f.");
+        return;
+    }
 }
 
 static void OnChatSending(void* obj, const cc_string* msg, int msgType) {

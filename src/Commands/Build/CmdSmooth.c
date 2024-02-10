@@ -2,6 +2,7 @@
 
 #include "Draw.h"
 #include "MarkSelection.h"
+#include "Memory.h"
 #include "Message.h"
 #include "Parse.h"
 #include "DataStructures/IVec3FastQueue.h"
@@ -88,8 +89,23 @@ static void SmoothSelectionHandler(IVec3* marks, int count) {
     int maxY = marks[0].Y + BRUSH_SIZE;
     int maxZ = marks[0].Z + BRUSH_SIZE;
 
-    IVec3FastQueue* shouldAdd = IVec3FastQueue_CreateEmpty();
-    IVec3FastQueue* shouldRemove = IVec3FastQueue_CreateEmpty();
+    IVec3FastQueue* shouldAdd = IVec3FastQueue_CreateEmpty_MALLOC();
+
+    if (Memory_AllocationError()) {
+        Memory_HandleError();
+        Message_MemoryError("running &b/Smooth");
+        return;
+    }
+
+    IVec3FastQueue* shouldRemove = IVec3FastQueue_CreateEmpty_MALLOC();
+
+    if (Memory_AllocationError()) {
+        Memory_HandleError();
+        Message_MemoryError("running &b/Smooth");
+        IVec3FastQueue_Free(shouldAdd);
+        return;
+    }
+
     int blocksAround;
 
     for (int x = minX; x <= maxX; x++) {
@@ -97,13 +113,29 @@ static void SmoothSelectionHandler(IVec3* marks, int count) {
             // Optimization: (1) only count blocks in volume once per horizontal column.
             blocksAround = CountBlocksAround(x, y, minZ);
 
-            for (int z = minZ; z <= maxZ; z++) {                
+            for (int z = minZ; z <= maxZ; z++) {
                 if (World_GetBlock(x, y, z) == BLOCK_AIR && blocksAround > THRESHOLD) {
                     IVec3 vector = { x, y, z };
                     IVec3FastQueue_TryEnqueue(shouldAdd, vector);
+                    
+                    if (Memory_AllocationError()) {
+                        Memory_HandleError();
+                        Message_MemoryError("running &b/Smooth");
+                        IVec3FastQueue_Free(shouldAdd);
+                        IVec3FastQueue_Free(shouldRemove);
+                        return;
+                    }
                 } else if (World_GetBlock(x, y, z) == s_Block && blocksAround <= THRESHOLD)  {
                     IVec3 vector = { x, y, z };
                     IVec3FastQueue_TryEnqueue(shouldRemove, vector);
+
+                    if (Memory_AllocationError()) {
+                        Memory_HandleError();
+                        Message_MemoryError("running &b/Smooth");
+                        IVec3FastQueue_Free(shouldAdd);
+                        IVec3FastQueue_Free(shouldRemove);
+                        return;
+                    }
                 }
 
                 // (2) And guess the number of blocks in subsequent volumes by calculating the differences on opposite faces.

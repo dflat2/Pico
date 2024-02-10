@@ -6,6 +6,7 @@
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Message.h"
+#include "Memory.h"
 #include "Parse.h"
 #include "VectorsExtension.h"
 #include "DataStructures/Array.h"
@@ -150,7 +151,14 @@ static void OutlineSelectionHandler(IVec3* marks, int count) {
     IVec3 min = Min(marks[0], marks[1]);
     IVec3 max = Max(marks[0], marks[1]);
 
-    IVec3FastQueue* outline = IVec3FastQueue_CreateEmpty();
+    IVec3FastQueue* outline = IVec3FastQueue_CreateEmpty_MALLOC();
+
+    if (Memory_AllocationError()) {
+        Memory_HandleError();
+        Message_MemoryError("running &b/Outline");
+        return;
+    }
+
     IVec3 here;
 
     for (int x = min.X; x <= max.X; x++) {
@@ -163,6 +171,13 @@ static void OutlineSelectionHandler(IVec3* marks, int count) {
 
                     if (ShouldOutline(here, min, max)) {
                         IVec3FastQueue_TryEnqueue(outline, here);
+
+                        if (Memory_AllocationError()) {
+                            Memory_HandleError();
+                            Message_MemoryError("running &b/Outline");
+                            IVec3FastQueue_Free(outline);
+                            return;
+                        }
                     }
                 }
             }

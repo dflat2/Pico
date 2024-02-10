@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
+#include "Memory.h"
 
 typedef struct ListElement_ ListElement;
 
@@ -79,14 +80,23 @@ bool List_IsEmpty(List* list) {
     return list->firstElement == NULL;
 }
 
-List* List_CreateEmpty(void) {
-    List* list = (List*)malloc(sizeof(List));
-    list->firstElement = NULL;
+List* List_CreateEmpty_MALLOC(void) {
+    List* list = (List*)Memory_Allocate(sizeof(List));
+
+    if (list != NULL) {
+        list->firstElement = NULL;
+    }
+
     return list;
 }
 
-void List_Append(List* list, void* data) {
-    ListElement* newElement = (ListElement*)malloc(sizeof(ListElement));
+bool List_Append_MALLOC(List* list, void* data) {
+    ListElement* newElement = (ListElement*)Memory_Allocate(sizeof(ListElement));
+
+    if (newElement == NULL) {
+        return false;
+    }
+
     newElement->data = data;
     newElement->next = NULL;
     newElement->previous = NULL;
@@ -101,6 +111,8 @@ void List_Append(List* list, void* data) {
         current->next = newElement;
         newElement->previous = current;
     }
+
+    return true;
 }
 
 void List_Clear(List* list) {

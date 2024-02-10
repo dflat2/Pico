@@ -4,6 +4,7 @@
 
 #include "BlocksBuffer.h"
 #include "VectorsExtension.h"
+#include "Memory.h"
 
 typedef enum S3_ { XYZ, XZY, ZYX, YXZ, ZXY, YZX } S3;
 
@@ -19,7 +20,7 @@ static bool s_BufferIsEmpty = true;
 
 static IVec3 ApplyPermutation(S3 permutation, IVec3 vector);
 static IVec3 ApplyTransform(Transform transform, IVec3 coordinates, IVec3 previousDimensions);
-static bool TryTransformBuffer(Transform transform);
+static bool TransformBuffer_MALLOC(Transform transform);
 static int Pack(IVec3 vector);
 
 static const Transform RotateX90 = { XZY, .flipX = false, .flipY = false, .flipZ = true };
@@ -43,7 +44,7 @@ bool BlocksBuffer_IsEmpty(void) {
     return s_BufferIsEmpty;
 }
 
-bool BlocksBuffer_TryCopy(IVec3 mark1, IVec3 mark2, int* out_amountCopied) {
+bool BlocksBuffer_Copy_MALLOC(IVec3 mark1, IVec3 mark2, int* out_amountCopied) {
     IVec3 min = Min(mark1, mark2);
     IVec3 max = Max(mark1, mark2);
     IVec3 anchor = Substract(mark1, min);
@@ -52,9 +53,9 @@ bool BlocksBuffer_TryCopy(IVec3 mark1, IVec3 mark2, int* out_amountCopied) {
     int height = max.Y - min.Y + 1;
     int length = max.Z - min.Z + 1;
 
-    BlockID* blocks = calloc(width * height * length, sizeof(BlockID));
+    BlockID* blocks = Memory_AllocateZeros(width * height * length, sizeof(BlockID));
 
-    if (blocks == NULL) {
+    if (Memory_AllocationError()) {
         return false;
     }
 
@@ -84,7 +85,7 @@ bool BlocksBuffer_TryCopy(IVec3 mark1, IVec3 mark2, int* out_amountCopied) {
     return true;
 }
 
-bool BlocksBuffer_TryRotate(Axis axis, int count) {
+bool BlocksBuffer_Rotate_MALLOC(Axis axis, int count) {
     count = count % 4;
 
     if (count == 0) {
@@ -119,25 +120,25 @@ bool BlocksBuffer_TryRotate(Axis axis, int count) {
         }
     }
 
-    return TryTransformBuffer(transform);
+    return TransformBuffer_MALLOC(transform);
 }
 
-bool BlocksBuffer_TryFlip(Axis axis) {
+bool BlocksBuffer_Flip_MALLOC(Axis axis) {
     if (axis == AXIS_X) {
-        return TryTransformBuffer(FlipX);
+        return TransformBuffer_MALLOC(FlipX);
     } else if (axis == AXIS_Y) {
-        return TryTransformBuffer(FlipY);
+        return TransformBuffer_MALLOC(FlipY);
     } else if (axis == AXIS_Z) {
-        return TryTransformBuffer(FlipZ);
+        return TransformBuffer_MALLOC(FlipZ);
     }
 
     return false;
 }
 
-static bool TryTransformBuffer(Transform transform) {
-    BlockID* newContent = malloc(sizeof(BlockID) * s_Buffer.dimensions.X * s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
+static bool TransformBuffer_MALLOC(Transform transform) {
+    BlockID* newContent = Memory_Allocate(sizeof(BlockID) * s_Buffer.dimensions.X * s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
 
-    if (newContent == NULL) {
+    if (Memory_AllocationError()) {
         return false;
     }
 

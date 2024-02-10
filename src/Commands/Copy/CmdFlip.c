@@ -1,6 +1,7 @@
 #include "DataStructures/BlocksBuffer.h"
 #include "Parse.h"
 #include "Message.h"
+#include "Memory.h"
 
 static void Flip_Command(const cc_string* args, int argsCount);
 
@@ -35,8 +36,11 @@ static void Flip_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    if (!BlocksBuffer_TryFlip(axis)) {
-        Message_Player("Memory error");
+    BlocksBuffer_Flip_MALLOC(axis);
+
+    if (Memory_AllocationError()) {
+        Memory_HandleError();
+        Message_MemoryError("running &b/Flip&f.");
         return;
     }
 

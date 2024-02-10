@@ -10,18 +10,18 @@
 typedef int DeltaBlockID;
 
 // Initialisation
-bool UndoTree_Enable(void);
+bool UndoTree_Enable_MALLOC(void);
 void UndoTree_Disable(void);
 
 // Undo tree navigation.
-bool UndoTree_Undo(void);
-bool UndoTree_Earlier(int deltaTime_Second, int* out_commit); 
-bool UndoTree_Later(int deltaTime_S, int* commit);
-bool UndoTree_Checkout(int commit, int* out_ascended, int* out_descended);
-bool UndoTree_Redo(void);
+bool UndoTree_Undo_MALLOC(void);
+bool UndoTree_Earlier_MALLOC(int deltaTime_Second, int* out_commit); 
+bool UndoTree_Later_MALLOC(int deltaTime_S, int* commit);
+bool UndoTree_Checkout_MALLOC(int commit, int* out_ascended, int* out_descended);
+bool UndoTree_Redo_MALLOC(void);
 
 // Attaching a new node.
-bool UndoTree_TryPrepareNewNode(char* description);
+bool UndoTree_PrepareNewNode_MALLOC(char* description);
 void UndoTree_AddBlockChangeEntry(int x, int y, int z, DeltaBlockID delta);
 void UndoTree_Commit(void);
 
