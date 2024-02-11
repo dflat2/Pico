@@ -142,10 +142,6 @@ static CuboidOperation GetFunction(char mode) {
 }
 
 static void ZSelectionHandler(IVec3* marks, int count) {
-    if (count != 2) {
-        return;
-    }
-
     CuboidOperation Operation = GetFunction(s_Mode);
     Operation(VectorUtils_IVec3_Min(marks[0], marks[1]), VectorsUtils_IVec3_Max(marks[0], marks[1]));
 

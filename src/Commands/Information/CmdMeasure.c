@@ -66,10 +66,6 @@ static void CountBlocks(int x1, int y1, int z1, int x2, int y2, int z2) {
 }
 
 static void MeasureSelectionHandler(IVec3* marks, int count) {
-    if (count != 2) {
-        return;
-    }
-
     char message[STRING_SIZE];
     snprintf(&message[0], 64, "Measuring from &b(%d, %d, %d)&f to &b(%d, %d, %d)&f.",
             marks[0].X, marks[0].Y, marks[0].Z,

@@ -46,10 +46,6 @@ static bool ShouldDraw(int x, int y, int z) {
 }
 
 static void SphereSelectionHandler(IVec3* marks, int count) {
-    if (count != 1) {
-        return;
-    }
-
     s_Center = marks[0];
     Draw_Start("Sphere");
 

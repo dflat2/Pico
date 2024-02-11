@@ -36,10 +36,6 @@ struct ChatCommand CircleCommand = {
 };
 
 static void CircleSelectionHandler(IVec3* marks, int count) {
-    if (count != 1) {
-        return;
-    }
-
     Draw_Start("Circle");
 
     IVec3 current;

@@ -39,10 +39,6 @@ static void DoCut(IVec3 mark1, IVec3 mark2) {
 }
 
 static void CutSelectionHandler(IVec3* marks, int count) {
-    if (count != 2) {
-        return;
-    }
-
     int amountCopied = 0;
     BlocksBuffer_Copy(marks[0], marks[1], &amountCopied);
 

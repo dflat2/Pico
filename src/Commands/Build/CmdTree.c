@@ -68,10 +68,6 @@ static void DrawLeavesLayer4(int x, int y, int z) {
 }
 
 static void TreeSelectionHandler(IVec3* marks, int count) {
-    if (count != 1) {
-        return;
-    }
-
     int x = marks[0].X;
     int y = marks[0].Y;
     int z = marks[0].Z;

@@ -5,10 +5,6 @@
 #include "Parse.h"
 
 static void PaintSelectionHandler(IVec3* marks, int count) {
-    if (count != 1) {
-        return;
-    }
-
     Draw_Start("Paint");
     Draw_Brush(marks[0].X, marks[0].Y, marks[0].Z);
     Draw_End();

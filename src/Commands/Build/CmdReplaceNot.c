@@ -43,10 +43,6 @@ static void DoReplaceNot(IVec3 min, IVec3 max) {
 }
 
 static void ReplaceSelectionHandler(IVec3* marks, int count) {
-    if (count != 2) {
-        return;
-    }
-
     DoReplaceNot(VectorUtils_IVec3_Min(marks[0], marks[1]), VectorsUtils_IVec3_Max(marks[0], marks[1]));
 }
 

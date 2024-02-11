@@ -20,10 +20,6 @@ static void ShowBlocksCopied(int amount) {
 }
 
 static void CopySelectionHandler(IVec3* marks, int count) {
-    if (count != 2) {
-        return;
-    }
-
     int amountCopied = 0;
     
     BlocksBuffer_Copy(marks[0], marks[1], &amountCopied);

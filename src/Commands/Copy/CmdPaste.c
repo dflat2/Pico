@@ -34,10 +34,6 @@ typedef enum PasteMode_ {
 static PasteMode s_Mode;
 
 static void PasteSelectionHandler(IVec3* marks, int count) {
-    if (count != 1 || BlocksBuffer_IsEmpty()) {
-        return;
-    }
-
     Draw_Start("Paste");
     BlocksBuffer buffer = BlocksBuffer_GetCopied();
     IVec3 origin = VectorUtils_IVec3_Substract(marks[0], buffer.anchor);
