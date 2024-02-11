@@ -155,34 +155,25 @@ static void Expand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlock,
 static void FillSelectionHandler(IVec3* marks, int count) {
     IVec3 fillOrigin = marks[0];
     s_SourceY = fillOrigin.Y;
+
     BlockID filledOverBlock = World_GetBlock(fillOrigin.X, fillOrigin.Y, fillOrigin.Z);
-    BinaryMap* binaryMap = BinaryMap_CreateEmpty(World.Width, World.Height, World.Length);
+
+    BinaryMap* binaryVisitedMap = BinaryMap_CreateEmpty(World.Width, World.Height, World.Length);
+    BinaryMap_Set(binaryVisitedMap, fillOrigin.X, fillOrigin.Y, fillOrigin.Z);
 
     IVec3FastQueue* queue = IVec3FastQueue_CreateEmpty();
-
-    BinaryMap_Set(binaryMap, fillOrigin.X, fillOrigin.Y, fillOrigin.Z);
     IVec3FastQueue_Enqueue(queue, fillOrigin);
 
+    Draw_Start("Fill");
     IVec3 current;
 
     while (!IVec3FastQueue_IsEmpty(queue)) {
         current = IVec3FastQueue_Dequeue(queue);
-        Expand(queue, current, filledOverBlock, binaryMap);
+        Draw_Brush(current.X, current.Y, current.Z);
+        Expand(queue, current, filledOverBlock, binaryVisitedMap);
     }
 
-    Draw_Start("Fill");
-
-    for (int x = 0; x < World.Width; x++) {
-        for (int y = 0; y < World.Height; y++) {
-            for (int z = 0; z < World.Length; z++) {
-                if (BinaryMap_Get(binaryMap, x, y, z)) {
-                    Draw_Brush(x, y, z);
-                }
-            }
-        }
-    }
-
-    BinaryMap_Free(binaryMap);
+    BinaryMap_Free(binaryVisitedMap);
     IVec3FastQueue_Free(queue);
 
     int blocksAffected = Draw_End();
