@@ -70,12 +70,7 @@ static void SPC_OnNewMapLoaded(void) {
 
     // Clears the undo tree when loading a new map.
     UndoTree_Disable();
-
-    if (!UndoTree_Enable()) {
-        Message_MemoryError("setting up the block database");
-        Message_Player("You wont be able to &b/Undo&f.");
-        return;
-    }
+    UndoTree_Enable();
 
     // Abort selection in case there is currently a selection in progress.
     MarkSelection_Abort();
