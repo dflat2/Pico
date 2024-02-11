@@ -41,6 +41,7 @@ static void CircleSelectionHandler(IVec3* marks, int count) {
     }
 
     Draw_Start("Circle");
+
     IVec3 current;
     IVec2 current2D;
     double distance;

@@ -11,11 +11,11 @@ typedef struct BlocksBuffer_ {
     IVec3 anchor;
 } BlocksBuffer;
 
-bool BlocksBuffer_Rotate_MALLOC(Axis axis, int count);
-bool BlocksBuffer_Flip_MALLOC(Axis axis);
+bool BlocksBuffer_Rotate(Axis axis, int count);
+bool BlocksBuffer_Flip(Axis axis);
 
 BlocksBuffer BlocksBuffer_GetCopied(void);
 bool BlocksBuffer_IsEmpty(void);
-bool BlocksBuffer_Copy_MALLOC(IVec3 mark1, IVec3 mark2, int* out_amountCopied);
+bool BlocksBuffer_Copy(IVec3 mark1, IVec3 mark2, int* out_amountCopied);
 
 #endif

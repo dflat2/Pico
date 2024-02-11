@@ -65,13 +65,6 @@ static void Rotate_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    BlocksBuffer_Rotate_MALLOC(axis, degrees / 90);
-
-    if (Memory_AllocationError()) {
-        Memory_HandleError();
-        Message_MemoryError("running &b/Rotate&f.");
-        return;
-    }
-
+    BlocksBuffer_Rotate(axis, degrees / 90);
     ShowRotated(axis, degrees);
 }

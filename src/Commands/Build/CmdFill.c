@@ -75,7 +75,7 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
     }
 }
 
-static bool TryExpand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlock, BinaryMap* binaryMap) {
+static void Expand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlock, BinaryMap* binaryMap) {
     IVec3 neighbors[MAX_NEIGHBORS];
     short count = 0;
 
@@ -147,61 +147,27 @@ static bool TryExpand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlo
             continue;
         }
 
-        if (!IVec3FastQueue_TryEnqueue(queue, neighbor)) {
-            return false;
-        }
-
+        IVec3FastQueue_Enqueue(queue, neighbor);
         BinaryMap_Set(binaryMap, neighbor.X, neighbor.Y, neighbor.Z);
     }
-
-    return true;
 }
 
 static void FillSelectionHandler(IVec3* marks, int count) {
     IVec3 fillOrigin = marks[0];
     s_SourceY = fillOrigin.Y;
     BlockID filledOverBlock = World_GetBlock(fillOrigin.X, fillOrigin.Y, fillOrigin.Z);
-    BinaryMap* binaryMap = BinaryMap_CreateEmpty_MALLOC(World.Width, World.Height, World.Length);
+    BinaryMap* binaryMap = BinaryMap_CreateEmpty(World.Width, World.Height, World.Length);
 
-    if (Memory_AllocationError()) {
-        Memory_HandleError();
-        Message_MemoryError("running &b/Fill");
-        return;
-    }
-
-    IVec3FastQueue* queue = IVec3FastQueue_CreateEmpty_MALLOC();
-
-    if (Memory_AllocationError()) {
-        Memory_HandleError();
-        Message_MemoryError("running &b/Fill");
-        BinaryMap_Free(binaryMap);
-        return;
-    }
+    IVec3FastQueue* queue = IVec3FastQueue_CreateEmpty();
 
     BinaryMap_Set(binaryMap, fillOrigin.X, fillOrigin.Y, fillOrigin.Z);
-    IVec3FastQueue_TryEnqueue(queue, fillOrigin);
-
-    if (Memory_AllocationError()) {
-        Memory_HandleError();
-        Message_MemoryError("running &b/Fill");
-        IVec3FastQueue_Free(queue);
-        BinaryMap_Free(binaryMap);
-        return;
-    }
+    IVec3FastQueue_Enqueue(queue, fillOrigin);
 
     IVec3 current;
 
     while (!IVec3FastQueue_IsEmpty(queue)) {
         current = IVec3FastQueue_Dequeue(queue);
-        TryExpand(queue, current, filledOverBlock, binaryMap);
-
-        if (Memory_AllocationError()) {
-            Memory_HandleError();
-            Message_MemoryError("running &b/Fill");
-            IVec3FastQueue_Free(queue);
-            BinaryMap_Free(binaryMap);
-            return;
-        }
+        Expand(queue, current, filledOverBlock, binaryMap);
     }
 
     Draw_Start("Fill");

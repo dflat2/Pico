@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "Brushes/Brush.h"
+#include "Memory.h"
 #include "ClassiCube/src/Constants.h"
 #include "Draw.h"
 #include "MarkSelection.h"
@@ -53,6 +54,7 @@ static void CenterSelectionHandler(IVec3* marks, int count) {
     };
 
     Draw_Start("Center");
+
     for (int i = centerCuboidMin.X; i <= centerCuboidMax.X; i++) {
         for (int j = centerCuboidMin.Y; j <= centerCuboidMax.Y; j++) {
             for (int k = centerCuboidMin.Z; k <= centerCuboidMax.Z; k++) {

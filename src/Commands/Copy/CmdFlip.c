@@ -36,13 +36,7 @@ static void Flip_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    BlocksBuffer_Flip_MALLOC(axis);
-
-    if (Memory_AllocationError()) {
-        Memory_HandleError();
-        Message_MemoryError("running &b/Flip&f.");
-        return;
-    }
+    BlocksBuffer_Flip(axis);
 
     switch (axis) {
         case AXIS_X:

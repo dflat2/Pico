@@ -51,23 +51,19 @@ static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID bl
     }
 
     if (block == BLOCK_AIR) {
-        UndoTree_PrepareNewNode_MALLOC("Destroy");
+        UndoTree_PrepareNewNode("Destroy");
     } else {
-        UndoTree_PrepareNewNode_MALLOC("Place");
+        UndoTree_PrepareNewNode("Place");
     }
  
     UndoTree_AddBlockChangeEntry(coords.X, coords.Y, coords.Z, block - oldBlock);
     UndoTree_Commit();
 }
 
-static void AddNode_MALLOC(UndoNode node) {
+static void AddNode(UndoNode node) {
     if (s_NodesCount >= s_NodesCapacity) {
         size_t newCapacity = (s_NodesCapacity + 1) * 2;
         UndoNode* newNodes = Memory_Reallocate(s_Nodes, newCapacity * sizeof(UndoNode));
-
-        if (Memory_AllocationError()) {
-            return;
-        }
 
         s_NodesCapacity = newCapacity;
         s_Nodes = newNodes;
@@ -78,7 +74,7 @@ static void AddNode_MALLOC(UndoNode node) {
     return;
 }
 
-bool UndoTree_Enable_MALLOC(void) {
+bool UndoTree_Enable(void) {
     if (s_Enabled) {
         return false;
     }
@@ -96,11 +92,7 @@ bool UndoTree_Enable_MALLOC(void) {
     root.childrenCount = 0;
     root.childrenCapacity = 0;
 
-    AddNode_MALLOC(root);
-
-    if (Memory_AllocationError()) {
-        return false;
-    }
+    AddNode(root);
 
     Event_Register((struct Event_Void*) &UserEvents.BlockChanged, NULL, (Event_Void_Callback)OnBlockChanged);
     s_Enabled = true;
@@ -166,28 +158,19 @@ static void Ascend(void) {
     s_CurrentNodeIndex = s_Nodes[s_CurrentNodeIndex].parentIndex;
 }
 
-static bool Checkout_MALLOC(int target, int* ascended, int* descended) {
+static bool Checkout(int target, int* ascended, int* descended) {
     if (ascended != NULL && descended != NULL) {
         *ascended = 0;
         *descended = 0;
     }
 
     // Calculate the ancestors of the target.
-    List* targetAncestors = List_CreateEmpty_MALLOC();
-
-    if (Memory_AllocationError()) {
-        return false;
-    }
+    List* targetAncestors = List_CreateEmpty();
 
     UndoNode* ancestor = &s_Nodes[target];
 
     while (true) {
-        List_Append_MALLOC(targetAncestors, ancestor);
-
-        if (Memory_AllocationError()) {
-            List_Free(targetAncestors);
-            return false;
-        }
+        List_Append(targetAncestors, ancestor);
 
         if (ancestor->commit == 0) {
             break;
@@ -223,14 +206,10 @@ static bool Checkout_MALLOC(int target, int* ascended, int* descended) {
     return true;
 }
 
-static void StackRedo_MALLOC(int commit) {
+static void StackRedo(int commit) {
     if (s_RedoStackCount >= s_RedoStackCapacity) {
         size_t newCapacity = (s_RedoStackCapacity + 1) * 2;
         int* newRedoStack = Memory_Reallocate(s_RedoStack, newCapacity * sizeof(int));
-
-        if (Memory_AllocationError()) {
-            return;
-        }
 
         s_RedoStackCapacity = newCapacity;
         s_RedoStack = newRedoStack;
@@ -240,7 +219,7 @@ static void StackRedo_MALLOC(int commit) {
     s_RedoStackCount++;
 }
 
-bool UndoTree_Earlier_MALLOC(int deltaTimeSeconds, int* out_commit) {
+bool UndoTree_Earlier(int deltaTimeSeconds, int* out_commit) {
     if (!s_Enabled) {
         return false;
     }
@@ -262,23 +241,14 @@ bool UndoTree_Earlier_MALLOC(int deltaTimeSeconds, int* out_commit) {
         return false;
     }
 
-    StackRedo_MALLOC(s_CurrentNodeIndex);
-
-    if (Memory_AllocationError()) {
-        return false;
-    }
-
-    Checkout_MALLOC(newIndex, NULL, NULL);
-
-    if (Memory_AllocationError()) {
-        return false;
-    }
+    StackRedo(s_CurrentNodeIndex);
+    Checkout(newIndex, NULL, NULL);
 
     *out_commit = s_CurrentNodeIndex;
     return true;
 }
 
-bool UndoTree_Later_MALLOC(int deltaTimeSeconds, int* commit) {
+bool UndoTree_Later(int deltaTimeSeconds, int* commit) {
     if (!s_Enabled) {
         return false;
     }
@@ -300,38 +270,25 @@ bool UndoTree_Later_MALLOC(int deltaTimeSeconds, int* commit) {
         return false;
     }
 
-    StackRedo_MALLOC(s_CurrentNodeIndex);
-
-    if (Memory_AllocationError()) {
-        return false;
-    }
-
-    Checkout_MALLOC(newIndex, NULL, NULL);
-
-    if (Memory_AllocationError()) {
-        return false;
-    }
+    StackRedo(s_CurrentNodeIndex);
+    Checkout(newIndex, NULL, NULL);
         
     *commit = s_CurrentNodeIndex;
     return true;
 }
 
-bool UndoTree_Undo_MALLOC(void) {
+bool UndoTree_Undo(void) {
     if (!s_Enabled || s_CurrentNodeIndex == 0) {
         return false;
     }
 
-    StackRedo_MALLOC(s_CurrentNodeIndex);
-
-    if (Memory_AllocationError()) {
-        return false;
-    }
+    StackRedo(s_CurrentNodeIndex);
 
     Ascend();
     return true;
 }
 
-bool UndoTree_Checkout_MALLOC(int commit, int* ascended, int* descended) {
+bool UndoTree_Checkout(int commit, int* ascended, int* descended) {
     if (!s_Enabled) {
         return false;
     }
@@ -340,37 +297,29 @@ bool UndoTree_Checkout_MALLOC(int commit, int* ascended, int* descended) {
         return false;
     }
 
-    StackRedo_MALLOC(s_CurrentNodeIndex);
+    StackRedo(s_CurrentNodeIndex);
 
-    if (Memory_AllocationError()) {
-        return false;
-    }
-
-    Checkout_MALLOC(commit, ascended, descended);
+    Checkout(commit, ascended, descended);
     return true;
 }
 
-bool UndoTree_Redo_MALLOC(void) {
+bool UndoTree_Redo(void) {
     if (!s_Enabled || s_RedoStackCount == 0) {
         return false;
     }
 
     int nodeIndexTarget = s_RedoStack[s_RedoStackCount - 1];
     s_RedoStackCount--;
-    Checkout_MALLOC(nodeIndexTarget, NULL, NULL);
+    Checkout(nodeIndexTarget, NULL, NULL);
     return true;
 }
 
-static void AddChildren_MALLOC(void) {
+static void AddChildren(void) {
     UndoNode* here = &s_Nodes[s_CurrentNodeIndex];
 
     if (here->childrenCount >= here->childrenCapacity) {
         size_t newCapacity = (here->childrenCapacity + 1) * 2;
         int* newChildren = Memory_Reallocate(here->children, newCapacity * sizeof(int));
-
-        if (Memory_AllocationError()) {
-            return;
-        }
 
         here->childrenCapacity = newCapacity;
         here->children = newChildren;
@@ -380,7 +329,7 @@ static void AddChildren_MALLOC(void) {
     here->childrenCount++;
 }
 
-bool UndoTree_PrepareNewNode_MALLOC(char* description) {
+bool UndoTree_PrepareNewNode(char* description) {
     if (!s_Enabled) {
         return false;
     }
@@ -398,18 +347,8 @@ bool UndoTree_PrepareNewNode_MALLOC(char* description) {
     newNode.childrenCapacity = 0;
     newNode.timestamp = time(NULL);
 
-    AddNode_MALLOC(newNode);
-
-    if (Memory_AllocationError()) {
-        return false;
-    }
-
-    AddChildren_MALLOC();
-
-    if (Memory_AllocationError()) {
-        s_NodesCount--;
-        return false;
-    }
+    AddNode(newNode);
+    AddChildren();
 
     s_CurrentNodeIndex = newNode.commit;
     return true;
@@ -433,12 +372,6 @@ void UndoTree_AddBlockChangeEntry(int x, int y, int z, DeltaBlockID delta) {
         s_Nodes[s_CurrentNodeIndex].blockDeltasCapacity = (s_Nodes[s_CurrentNodeIndex].blockDeltasCapacity + 1) * 2;
 
         BlockChangeEntry* newEntries = Memory_Reallocate(s_Nodes[s_CurrentNodeIndex].blockDeltas, s_Nodes[s_CurrentNodeIndex].blockDeltasCapacity * sizeof(BlockChangeEntry));
-
-        if (newEntries == NULL) {
-            // TODO: Don't do that
-            exit(1);
-        }
-
         s_Nodes[s_CurrentNodeIndex].blockDeltas = newEntries;
     }
 

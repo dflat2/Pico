@@ -39,7 +39,7 @@ bool BlocksBuffer_IsEmpty(void) {
     return s_BufferIsEmpty;
 }
 
-bool BlocksBuffer_Copy_MALLOC(IVec3 mark1, IVec3 mark2, int* out_amountCopied) {
+bool BlocksBuffer_Copy(IVec3 mark1, IVec3 mark2, int* out_amountCopied) {
     IVec3 min = VectorUtils_IVec3_Min(mark1, mark2);
     IVec3 max = VectorsUtils_IVec3_Max(mark1, mark2);
     IVec3 anchor = VectorUtils_IVec3_Substract(mark1, min);
@@ -49,10 +49,6 @@ bool BlocksBuffer_Copy_MALLOC(IVec3 mark1, IVec3 mark2, int* out_amountCopied) {
     int length = max.Z - min.Z + 1;
 
     BlockID* blocks = Memory_AllocateZeros(width * height * length, sizeof(BlockID));
-
-    if (Memory_AllocationError()) {
-        return false;
-    }
 
     int index = 0;
 
@@ -136,12 +132,8 @@ static int Pack(IVec3 vector) {
     return vector.Z + (vector.Y * s_Buffer.dimensions.Z) + vector.X * (s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
 }
 
-static bool TransformBuffer_MALLOC(Transform transform) {
+static bool TransformBuffer(Transform transform) {
     BlockID* newContent = Memory_Allocate(sizeof(BlockID) * s_Buffer.dimensions.X * s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
-
-    if (Memory_AllocationError()) {
-        return false;
-    }
 
     IVec3 previousDimensions = s_Buffer.dimensions;
     s_Buffer.dimensions = ApplyPermutation(transform.permutation, s_Buffer.dimensions);
@@ -166,7 +158,7 @@ static bool TransformBuffer_MALLOC(Transform transform) {
     return true;
 }
 
-bool BlocksBuffer_Rotate_MALLOC(Axis axis, int count) {
+bool BlocksBuffer_Rotate(Axis axis, int count) {
     count = count % 4;
 
     if (count == 0) {
@@ -201,16 +193,16 @@ bool BlocksBuffer_Rotate_MALLOC(Axis axis, int count) {
         }
     }
 
-    return TransformBuffer_MALLOC(transform);
+    return TransformBuffer(transform);
 }
 
-bool BlocksBuffer_Flip_MALLOC(Axis axis) {
+bool BlocksBuffer_Flip(Axis axis) {
     if (axis == AXIS_X) {
-        return TransformBuffer_MALLOC(FlipX);
+        return TransformBuffer(FlipX);
     } else if (axis == AXIS_Y) {
-        return TransformBuffer_MALLOC(FlipY);
+        return TransformBuffer(FlipY);
     } else if (axis == AXIS_Z) {
-        return TransformBuffer_MALLOC(FlipZ);
+        return TransformBuffer(FlipZ);
     }
 
     return false;

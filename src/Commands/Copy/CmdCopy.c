@@ -26,13 +26,7 @@ static void CopySelectionHandler(IVec3* marks, int count) {
 
     int amountCopied = 0;
     
-    BlocksBuffer_Copy_MALLOC(marks[0], marks[1], &amountCopied);
-    if (Memory_AllocationError()) {
-        Memory_HandleError();
-        Message_MemoryError("running &b/Copy");
-        return;
-    }
-    
+    BlocksBuffer_Copy(marks[0], marks[1], &amountCopied);
     ShowBlocksCopied(amountCopied);
 }
 

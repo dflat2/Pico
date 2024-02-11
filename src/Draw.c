@@ -8,7 +8,7 @@ static int s_blocksAffected;
 
 void Draw_Start(char* description) {
     s_blocksAffected = 0;
-    UndoTree_PrepareNewNode_MALLOC(description);
+    UndoTree_PrepareNewNode(description);
 }
 
 void Draw_Block(int x, int y, int z, BlockID block) {

@@ -25,13 +25,9 @@ static void Undo_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    bool success = UndoTree_Undo_MALLOC();
+    bool success = UndoTree_Undo();
 
-    if (Memory_AllocationError()) {
-        Memory_HandleError();
-        Message_MemoryError("undoing");
-        return;
-    } else if (!success) {
+    if (!success) {
         Message_Player("There is nothing to undo.");
         return;
     }

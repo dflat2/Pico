@@ -150,13 +150,7 @@ static void OutlineSelectionHandler(IVec3* marks, int count) {
     IVec3 min = VectorUtils_IVec3_Min(marks[0], marks[1]);
     IVec3 max = VectorsUtils_IVec3_Max(marks[0], marks[1]);
 
-    IVec3FastQueue* outline = IVec3FastQueue_CreateEmpty_MALLOC();
-
-    if (Memory_AllocationError()) {
-        Memory_HandleError();
-        Message_MemoryError("running &b/Outline");
-        return;
-    }
+    IVec3FastQueue* outline = IVec3FastQueue_CreateEmpty();
 
     IVec3 here;
 
@@ -169,14 +163,7 @@ static void OutlineSelectionHandler(IVec3* marks, int count) {
                     here.Z = z;
 
                     if (ShouldOutline(here, min, max)) {
-                        IVec3FastQueue_TryEnqueue(outline, here);
-
-                        if (Memory_AllocationError()) {
-                            Memory_HandleError();
-                            Message_MemoryError("running &b/Outline");
-                            IVec3FastQueue_Free(outline);
-                            return;
-                        }
+                        IVec3FastQueue_Enqueue(outline, here);
                     }
                 }
             }

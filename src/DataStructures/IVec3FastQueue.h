@@ -7,10 +7,10 @@
 
 typedef struct IVec3FastQueue_ IVec3FastQueue;
 
-IVec3FastQueue* IVec3FastQueue_CreateEmpty_MALLOC(void);
+IVec3FastQueue* IVec3FastQueue_CreateEmpty(void);
 IVec3 IVec3FastQueue_Dequeue(IVec3FastQueue* queue);
 bool IVec3FastQueue_IsEmpty(IVec3FastQueue* queue);
-bool IVec3FastQueue_TryEnqueue(IVec3FastQueue* queue, IVec3 vector);
+void IVec3FastQueue_Enqueue(IVec3FastQueue* queue, IVec3 vector);
 void IVec3FastQueue_Free(IVec3FastQueue* queue);
 
 #endif

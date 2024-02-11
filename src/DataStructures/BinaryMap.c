@@ -9,7 +9,7 @@ typedef struct BinaryMap_ {
     int width, height, length;
 } BinaryMap;
 
-BinaryMap* BinaryMap_CreateEmpty_MALLOC(int width, int height, int length) {
+BinaryMap* BinaryMap_CreateEmpty(int width, int height, int length) {
     int volume = width * height * length;
     int mapSize = width * height * length / 8;
 
@@ -18,17 +18,7 @@ BinaryMap* BinaryMap_CreateEmpty_MALLOC(int width, int height, int length) {
     }
 
     byte* content = (byte*)Memory_AllocateZeros(mapSize, sizeof(byte));
-
-    if (Memory_AllocationError()) {
-        return NULL;
-    }
-
     BinaryMap* map = Memory_Allocate(sizeof(BinaryMap));
-
-    if (Memory_AllocationError()) {
-        free(content);
-        return NULL;
-    }
 
     map->width = width;
     map->height = height;
