@@ -30,10 +30,10 @@ struct ChatCommand OutlineCommand = {
     Outline_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Outline <mode> <block> [brush/block] +",
-        "Outlines &bblock&fs. Only air blocks can be affected.",
-        "List of modes: &b3d&f, &blayer&f, &bup&f, &bdown&f.",
-        NULL,
+        "&b/Outline <mode> <block> @ +",
+        "Outlines &bblock&f. Only air blocks can be affected.",
+        "\x07 &bmode&f: &b3d&f, &blayer&f, &bup&f or &bdown&f.",
+        "\x07 &bblock&f: block name or identifier.",
         NULL
     },
     NULL

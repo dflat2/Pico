@@ -11,8 +11,8 @@ struct ChatCommand EarlierCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/Earlier <duration>",
-        "Navigates the &bUndoTree &fin the past.",
-        NULL,
+        "Navigates the undo tree in the past.",
+        "\x07 &bduration&f: duration string (for example &b1h30m10s&f).",
         NULL,
         NULL
     },

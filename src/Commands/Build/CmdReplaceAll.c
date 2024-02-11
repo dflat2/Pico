@@ -15,9 +15,9 @@ struct ChatCommand ReplaceAllCommand = {
     ReplaceAll_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/ReplaceAll <oldblock> [block/brush]",
-        "Replaces &b<oldblock> &fwith &b[block] &facross the whole map.",
-        NULL,
+        "&b/ReplaceAll <block> @",
+        "Replaces &bblock &fwith the block you're holding across all map.",
+        "\x07 &bblock&f: block name or identifier.",
         NULL,
         NULL,
     },

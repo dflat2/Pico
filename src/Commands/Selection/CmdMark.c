@@ -12,10 +12,10 @@ struct ChatCommand MarkCommand = {
     Mark_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Mark [x y z]",
-        "Places a marker for selections, e.g. &b/Z&f.",
-        "You may use parenthesis to indicate relative position.",
+        "&b/Mark [coordinates]",
+        "Places a mark. Parenthesis indicate a relative position.",
         "For example, &b/Mark (0) (2) (0) &fwill mark above you.",
+        "\x07 &bcoordinates&f: three space-separated integers.",
         NULL
     },
     NULL

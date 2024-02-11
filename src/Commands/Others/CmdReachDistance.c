@@ -12,7 +12,7 @@ struct ChatCommand ReachDistanceCommand = {
     {
         "&b/ReachDistance [distance]",
         "Sets your reach distance to &bdistance&f.",
-        "Resets to default (&b5.0&f) if no &bdistance &fis given.",
+        "\x07 &bdistance&f: positive non-zero decimal (default &b5.0&f).",
         NULL,
         NULL
     },

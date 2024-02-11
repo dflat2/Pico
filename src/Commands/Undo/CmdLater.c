@@ -10,8 +10,8 @@ struct ChatCommand LaterCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/Later <duration>",
-        "Navigates the &bUndoTree &fin the future.",
-        NULL,
+        "Navigates the undo tree in the future.",
+        "\x07 &bduration&f: duration string (for example &b1h30m10s&f).",
         NULL,
         NULL
     },

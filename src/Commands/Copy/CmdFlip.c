@@ -10,9 +10,9 @@ struct ChatCommand FlipCommand = {
     Flip_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Flip X/Y/Z",
+        "&b/Flip <axis>",
         "Flips the copied cuboid around the given axis.",
-        NULL,
+        "\x07 &baxis&f: &bX&f, &bY&f or &bZ&f.",
         NULL,
         NULL
     },

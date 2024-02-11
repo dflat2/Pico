@@ -7,7 +7,7 @@ struct ChatCommand BrushesCommand = {
     Brushes_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY, {
         "&b/Brushes",
-        "Lists available brushes",
+        "Lists available brushes.",
         NULL,
         NULL,
         NULL

@@ -13,9 +13,9 @@ struct ChatCommand CheckoutCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/Checkout <operation>",
-        "Navigates the &bUndoTree &fby providing a specific operation ID.",
-        "Use &b/UndoList &fto list terminal node IDs.",
-        NULL,
+        "Navigates the undo tree by providing a specific operation.",
+        "Do &b/UndoList &fto list the latest terminal operations identifiers.",
+        "\x07 &boperation&f: positive integer.",
         NULL,
     },
     NULL

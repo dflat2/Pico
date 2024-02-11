@@ -23,8 +23,8 @@ struct ChatCommand SmoothCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/Smooth <block> +",
-        "Smooths structures made of &bblock &faround clicked block.",
-        NULL,
+        "Smooths structures made of &bblock &faround marked coordinates.",
+        "\x07 &bblock&f: block name or identifier.",
         NULL,
         NULL
     },

@@ -16,9 +16,9 @@ struct ChatCommand ReplaceNotCommand = {
     ReplaceNot_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/ReplaceNot <block> [newblock]",
-        "Replaces all blocks but &b<block>&fwith &b[newblock]&f.",
-        NULL,
+        "&b/ReplaceNot <block> @",
+        "Replaces all blocks but &bblock&f.",
+        "\x07 &bblock&f: block name or identifier.",
         NULL,
         NULL
     },

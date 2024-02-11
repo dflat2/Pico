@@ -17,10 +17,10 @@ struct ChatCommand MeasureCommand = {
     Measure_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Measure +",
-        "Display the dimensions between two points.",
-        "&b/Measure <block> +",
-        "Additionally, counts the number of &b<block>&fs.",
+        "&b/Measure [block] +",
+        "Display the dimensions between two points. Counts &bblock &fif given.",
+        "\x07 &bblock&f: block name or identifier.",
+        NULL,
         NULL
     },
     NULL

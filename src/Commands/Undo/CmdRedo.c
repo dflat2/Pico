@@ -9,7 +9,7 @@ struct ChatCommand RedoCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/Redo",
-        "Reverts last &b/Undo&f.",
+        "Reverts last &b/Undo&f, &b/Earlier&f, &b/Later&f or &b/Checkout&f.",
         NULL,
         NULL,
         NULL

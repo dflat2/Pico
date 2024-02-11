@@ -26,11 +26,11 @@ struct ChatCommand CircleCommand = {
     Circle_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Circle <radius> <axis> [mode] [brush/block] +",
-        "Draws a circle of radius &b<radius>&f.",
-        "&b<axis> &fmust be &bX&f, &bY&f or &bZ&f.",
-        "List of modes: &bsolid&f (default) or &bhollow&f.",
-        NULL,
+        "&b/Circle <radius> <axis> [mode] @ +",
+        "Draws a circle.",
+        "\x07 &bradius&f: positive non-zero integer.",
+        "\x07 &baxis&f: &bX&f, &bY&f or &bZ&f.",
+        "\x07 &bmode&f: &bsolid&f (default) or &bhollow&f.",
     },
     NULL
 };

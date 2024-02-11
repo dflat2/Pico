@@ -18,7 +18,7 @@ struct ChatCommand CenterCommand = {
     Center_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Center [block/brush] +",
+        "&b/Center @ +",
         "Places blocks at the center of your selection.",
         NULL,
         NULL,

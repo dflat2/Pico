@@ -9,7 +9,7 @@ struct ChatCommand BrushHelpCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY, {
         "&b/BrushHelp <brush>",
         "Displays help for using &bbrush&f.",
-        "Do &b/Brushes &ffor a list of all brushes.",
+        "\x07 &bbrush&f: any brush in &b/Brushes&f.",
         NULL,
         NULL
     },

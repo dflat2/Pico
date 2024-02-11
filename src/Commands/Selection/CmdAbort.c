@@ -28,5 +28,5 @@ static void Abort_Command(const cc_string* args, int argsCount) {
     }
 
     MarkSelection_Abort();
-    Message_Player("&fCurrent selection was aborted.");
+    Message_Player("Current selection was aborted.");
 }

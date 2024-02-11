@@ -11,7 +11,7 @@ struct ChatCommand MarkAllCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/MarkAll",
-        "Places markers in min and max corners of the map.",
+        "Places marks in min and max corners of the map.",
         NULL,
         NULL,
         NULL

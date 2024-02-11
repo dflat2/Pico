@@ -40,8 +40,8 @@ struct ChatCommand CopyCommand = {
     Copy_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Copy &f- Copies the blocks in an area.",
-        NULL,
+        "&b/Copy",
+        "Copies the blocks in an area.",
         NULL,
         NULL,
         NULL

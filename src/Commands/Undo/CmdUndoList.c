@@ -11,7 +11,7 @@ struct ChatCommand UndoListCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
         "&b/UndoList",
-        "Lists the five most recent leaves in the undo tree.",
+        "Lists the five most recent terminal operations in the undo tree.",
         NULL,
         NULL,
         NULL

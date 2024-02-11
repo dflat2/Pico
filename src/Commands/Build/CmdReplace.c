@@ -16,9 +16,9 @@ struct ChatCommand ReplaceCommand = {
     Replace_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Replace <oldblock> [block/brush]",
-        "Replaces &b<oldblock> &fwith &b[block]&f between two points.",
-        NULL,
+        "&b/Replace <block> @",
+        "Replaces &bblock &fwith the block you're holding, or given brush.",
+        "\x07 &bblock&f: block name or identifier.",
         NULL,
         NULL
     },

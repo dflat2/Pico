@@ -60,8 +60,8 @@ struct ChatCommand CutCommand = {
     Cut_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Cut &f- Copies and cut the blocks in an area.",
-        NULL,
+        "&b/Cut",
+        "Copies and cut the blocks in an area.",
         NULL,
         NULL,
         NULL

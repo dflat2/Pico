@@ -14,8 +14,8 @@ struct ChatCommand RotateCommand = {
     {
         "&b/Rotate [axis] [degrees]",
         "Rotates the copied cuboid.",
-        "&b[axis] &fmust be &bX&f, &bY&f (default) or &bZ&f.",
-        "&b[degrees] &fmust be a multiple of 90 (default 90).",
+        "\x07 &baxis&f: &bX&f, &bY&f (default) or &bZ&f.",
+        "\x07 &bdegrees&f: multiple of &b90 &f(default &b90&f).",
         NULL
     },
     NULL

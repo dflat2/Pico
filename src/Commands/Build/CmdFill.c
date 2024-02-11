@@ -217,9 +217,9 @@ struct ChatCommand FillCommand = {
     Fill_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Fill [mode] [brush/block] +",
+        "&b/Fill [mode] @ +",
         "Fills the specified area.",
-        "List of modes: &b3d&f (default), &b2d-x&f, &blayer&f, &b2d-z&f, &bdown&f, &bup&f.",
+        "\x07 &bmode&f: &b3d&f (default), &b2d-x&f, &blayer&f, &b2d-z&f, &bdown&f, &bup&f.",
         NULL,
         NULL
     },

@@ -28,9 +28,9 @@ struct ChatCommand ZCommand = {
     Z_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Z [mode] [brush/block] +",
+        "&b/Z [mode] @ +",
         "Draws a cuboid between two points.",
-        "List of modes: &bsolid&f (default), &bhollow&f, &bwalls&f, &bwire&f, &bcorners&f.",
+        "\x07 &bmode&f: &bsolid&f (default), &bhollow&f, &bwalls&f, &bwire&f, &bcorners&f.",
         NULL,
         NULL
     },

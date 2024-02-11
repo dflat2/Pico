@@ -34,7 +34,7 @@ struct ChatCommand PaintCommand = {
     Paint_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Paint [block/brush]",
+        "&b/Paint @",
         "Paints blocks.",
         NULL,
         NULL,

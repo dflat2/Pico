@@ -19,7 +19,7 @@ struct ChatCommand PasteCommand = {
     {
         "&b/Paste [mode] +",
         "Pastes the stored copy.",
-        "List of modes: &bnormal&f (default), &bair&f.",
+        "\x07 mode&f: &bnormal&f (default) or &bair&f.",
         NULL,
         NULL,
     },

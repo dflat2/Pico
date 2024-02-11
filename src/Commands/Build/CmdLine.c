@@ -239,9 +239,9 @@ struct ChatCommand LineCommand = {
     Line_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Line [mode] [brush/block] +",
+        "&b/Line [mode] @ +",
         "Draws a line between two points.",
-        "List of modes: &bnormal&f (default), &bwall&f, &bbezier&f.",
+        "\x07 &bmode&f: &bnormal&f (default), &bwall&f, &bbezier&f.",
         NULL,
         NULL
     },
