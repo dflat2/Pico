@@ -3,4 +3,4 @@ doc
 *.dylib
 .vscode/
 *.dylib.dSYM
-classicube-path.txt
+quicktest
