@@ -11,17 +11,23 @@ void Message_Player(const char* message) {
 }
 
 void Message_BlocksAffected(int blocksAffected) {
-    char message[STRING_SIZE];
+    char messageBuffer[STRING_SIZE];
+    cc_string message = String_FromArray(messageBuffer);
+
+    char countBuffer[STRING_SIZE];
+    cc_string count = String_FromArray(countBuffer);
+
+    Format_Int32(&count, blocksAffected);
 
     if (blocksAffected == 0) {
-        snprintf(message, sizeof(message), "No blocks affected.");
+        String_AppendConst(&message, "No blocks affected.");
     } else if (blocksAffected == 1) {
-        snprintf(message, sizeof(message), "&b%d&f block affected.", blocksAffected);
+        String_Format1(&message, "&b%s&f block affected.", &count);
     } else {
-        snprintf(message, sizeof(message), "&b%d&f blocks affected.", blocksAffected);
+        String_Format1(&message, "&b%s&f blocks affected.", &count);
     }
 
-    Message_Player(message);
+    Chat_Add(&message);
 }
 
 void Message_ShowUnknownMode(const cc_string* mode) {
