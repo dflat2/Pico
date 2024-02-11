@@ -6,7 +6,7 @@
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Message.h"
-#include "VectorsExtension.h"
+#include "VectorUtils.h"
 #include "Parse.h"
 #include "DataStructures/Array.h"
 
@@ -109,13 +109,13 @@ static void DoWall(IVec3 from, IVec3 to) {
 
 static FVec3 Bezier(FVec3 from, FVec3 controlPoint, FVec3 to, float t) {
     // linear1 = (1 - t) * from + (t) * controlPoint
-    FVec3 linear1 = FVec3_Add(FVec3_ScalarMultiply(from, 1 - t), FVec3_ScalarMultiply(controlPoint, t));
+    FVec3 linear1 = VectorUtils_FVec3_Add(VectorUtils_FVec3_ScalarMultiply(from, 1 - t), VectorUtils_FVec3_ScalarMultiply(controlPoint, t));
 
     // linear2 = (1 - t) * controlPoint + (t) * to
-    FVec3 linear2 = FVec3_Add(FVec3_ScalarMultiply(controlPoint, 1 - t), FVec3_ScalarMultiply(to, t));
+    FVec3 linear2 = VectorUtils_FVec3_Add(VectorUtils_FVec3_ScalarMultiply(controlPoint, 1 - t), VectorUtils_FVec3_ScalarMultiply(to, t));
 
     // result = (1 - t) * linear1 + (t) * linear2
-    FVec3 result = FVec3_Add(FVec3_ScalarMultiply(linear1, 1 - t), FVec3_ScalarMultiply(linear2, t));
+    FVec3 result = VectorUtils_FVec3_Add(VectorUtils_FVec3_ScalarMultiply(linear1, 1 - t), VectorUtils_FVec3_ScalarMultiply(linear2, t));
 
     return result;
 }
@@ -124,15 +124,15 @@ static void DoBezier(IVec3 from, IVec3 controlPoint, IVec3 to) {
     Draw_Start("Line");
     const int subDivisions = 64;
 
-    FVec3 floatFrom = IVec3_ConvertFVec3(from);
-    FVec3 floatControlPoint = IVec3_ConvertFVec3(controlPoint);
-    FVec3 floatTo = IVec3_ConvertFVec3(to);
+    FVec3 floatFrom = VectorUtils_IVec3_ConvertFVec3(from);
+    FVec3 floatControlPoint = VectorUtils_IVec3_ConvertFVec3(controlPoint);
+    FVec3 floatTo = VectorUtils_IVec3_ConvertFVec3(to);
 
     IVec3 lineStart = from;
     IVec3 lineEnd;
 
     for (int i = 1; i <= subDivisions; i++) {
-        lineEnd = FVec3_ConvertIVec3(
+        lineEnd = VectorUtils_FVec3_ConvertIVec3(
             Bezier(floatFrom, floatControlPoint, floatTo, i / (float)subDivisions)
         );
 

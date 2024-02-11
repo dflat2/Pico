@@ -4,7 +4,7 @@
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Message.h"
-#include "VectorsExtension.h"
+#include "VectorUtils.h"
 #include "Parse.h"
 
 static void ReplaceNot_Command(const cc_string* args, int argsCount);
@@ -47,7 +47,7 @@ static void ReplaceSelectionHandler(IVec3* marks, int count) {
         return;
     }
 
-    DoReplaceNot(Min(marks[0], marks[1]), Max(marks[0], marks[1]));
+    DoReplaceNot(VectorUtils_IVec3_Min(marks[0], marks[1]), VectorsUtils_IVec3_Max(marks[0], marks[1]));
 }
 
 static bool TryParseArguments(const cc_string* args, int argsCount) {

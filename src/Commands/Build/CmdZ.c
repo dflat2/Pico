@@ -4,7 +4,7 @@
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Message.h"
-#include "VectorsExtension.h"
+#include "VectorUtils.h"
 #include "Parse.h"
 #include "DataStructures/Array.h"
 
@@ -147,7 +147,7 @@ static void ZSelectionHandler(IVec3* marks, int count) {
     }
 
     CuboidOperation Operation = GetFunction(s_Mode);
-    Operation(Min(marks[0], marks[1]), Max(marks[0], marks[1]));
+    Operation(VectorUtils_IVec3_Min(marks[0], marks[1]), VectorsUtils_IVec3_Max(marks[0], marks[1]));
 
     if (s_Repeat) {
         MarkSelection_Make(ZSelectionHandler, 2, "Z");

@@ -3,7 +3,7 @@
 #include "Brushes/Brush.h"
 #include "MarkSelection.h"
 #include "Message.h"
-#include "VectorsExtension.h"
+#include "VectorUtils.h"
 #include "Parse.h"
 #include "DataStructures/Array.h"
 #include "Draw.h"
@@ -36,7 +36,7 @@ struct ChatCommand SphereCommand = {
 
 static bool ShouldDraw(int x, int y, int z) {
     IVec3 vector = { x, y, z };
-    double distance = Distance(vector, s_Center);
+    double distance = VectorUtils_IVec3_Distance(vector, s_Center);
 
     if (s_Mode == MODE_SOLID) {
         return distance <= s_Radius;

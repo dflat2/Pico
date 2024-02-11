@@ -1,8 +1,8 @@
 #include <math.h>
 
-#include "VectorsExtension.h"
+#include "VectorUtils.h"
 
-IVec3 Min(IVec3 a, IVec3 b) {
+IVec3 VectorUtils_IVec3_Min(IVec3 a, IVec3 b) {
     IVec3 result;
 
     result.X = (a.X <= b.X) ? a.X : b.X;
@@ -12,7 +12,7 @@ IVec3 Min(IVec3 a, IVec3 b) {
     return result;
 }
 
-IVec3 Max(IVec3 a, IVec3 b) {
+IVec3 VectorsUtils_IVec3_Max(IVec3 a, IVec3 b) {
     IVec3 result;
 
     result.X = (a.X >= b.X) ? a.X : b.X;
@@ -22,7 +22,7 @@ IVec3 Max(IVec3 a, IVec3 b) {
     return result;
 }
 
-IVec3 Transform2DTo3D(IVec2 vector, Axis axis) {
+IVec3 VectorUtils_2DTo3D(IVec2 vector, Axis axis) {
     IVec3 result;
     switch (axis) {
         case AXIS_X:
@@ -44,7 +44,7 @@ IVec3 Transform2DTo3D(IVec2 vector, Axis axis) {
     }
 }
 
-IVec3 Add(const IVec3 a, const IVec3 b) {
+IVec3 VectorsUtils_IVec3_Add(const IVec3 a, const IVec3 b) {
     IVec3 result;
     result.X = a.X + b.X;
     result.Y = a.Y + b.Y;
@@ -52,7 +52,7 @@ IVec3 Add(const IVec3 a, const IVec3 b) {
     return result;
 }
 
-IVec3 Substract(const IVec3 a, const IVec3 b) {
+IVec3 VectorUtils_IVec3_Substract(const IVec3 a, const IVec3 b) {
     IVec3 result;
     result.X = a.X - b.X;
     result.Y = a.Y - b.Y;
@@ -60,24 +60,20 @@ IVec3 Substract(const IVec3 a, const IVec3 b) {
     return result;
 }
 
-int Dot(const IVec3 a, const IVec3 b) {
+int VectorUtils_IVec3_DotProduct(const IVec3 a, const IVec3 b) {
     return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
 }
 
-int IVec2_Dot(const IVec2 a, const IVec2 b) {
+int VectorUtils_IVec2_DotProduct(const IVec2 a, const IVec2 b) {
     return a.X * b.X + a.Y * b.Y;
 }
 
-double Distance(IVec3 a, IVec3 b) {
-    IVec3 difference = Substract(a, b);
-    return sqrt(Dot(difference, difference));
+double VectorUtils_IVec3_Distance(IVec3 a, IVec3 b) {
+    IVec3 difference = VectorUtils_IVec3_Substract(a, b);
+    return sqrt(VectorUtils_IVec3_DotProduct(difference, difference));
 }
 
-double IVec2_Distance(IVec2 a, IVec2 b) {
-    return sqrt(IVec2_Dot(a, b));
-}
-
-IVec2 IVec2_Substract(const IVec2 a, const IVec2 b) {
+IVec2 VectorUtils_IVec2_Substract(const IVec2 a, const IVec2 b) {
     IVec2 result = {
         .X = a.X - b.X,
         .Y = a.Y - b.Y,
@@ -86,7 +82,7 @@ IVec2 IVec2_Substract(const IVec2 a, const IVec2 b) {
     return result;
 }
 
-FVec3 FVec3_ScalarMultiply(const FVec3 vector, float t) {
+FVec3 VectorUtils_FVec3_ScalarMultiply(const FVec3 vector, float t) {
     FVec3 result = {
         .X = vector.X * t,
         .Y = vector.Y * t,
@@ -96,7 +92,7 @@ FVec3 FVec3_ScalarMultiply(const FVec3 vector, float t) {
     return result;
 }
 
-FVec3 FVec3_Add(const FVec3 a, const FVec3 b) {
+FVec3 VectorUtils_FVec3_Add(const FVec3 a, const FVec3 b) {
     FVec3 result = {
         .X = a.X + b.X,
         .Y = a.Y + b.Y,
@@ -106,7 +102,7 @@ FVec3 FVec3_Add(const FVec3 a, const FVec3 b) {
     return result;
 }
 
-FVec3 FVec3_Substract(const FVec3 a, const FVec3 b) {
+FVec3 VectorUtils_FVec3_Substract(const FVec3 a, const FVec3 b) {
     FVec3 result = {
         .X = a.X - b.X,
         .Y = a.Y - b.Y,
@@ -116,7 +112,7 @@ FVec3 FVec3_Substract(const FVec3 a, const FVec3 b) {
     return result;
 }
 
-FVec3 IVec3_ConvertFVec3(const IVec3 a) {
+FVec3 VectorUtils_IVec3_ConvertFVec3(const IVec3 a) {
     FVec3 result = {
         (float)a.X,
         (float)a.Y,
@@ -126,7 +122,7 @@ FVec3 IVec3_ConvertFVec3(const IVec3 a) {
     return result;
 }
 
-IVec3 FVec3_ConvertIVec3(const FVec3 a) {
+IVec3 VectorUtils_FVec3_ConvertIVec3(const FVec3 a) {
     IVec3 result = {
         round(a.X),
         round(a.Y),

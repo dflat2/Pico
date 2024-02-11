@@ -6,7 +6,7 @@
 #include "MarkSelection.h"
 #include "Message.h"
 #include "DataStructures/Array.h"
-#include "VectorsExtension.h"
+#include "VectorUtils.h"
 
 static void Paste_Command(const cc_string* args, int argsCount);
 
@@ -40,7 +40,7 @@ static void PasteSelectionHandler(IVec3* marks, int count) {
 
     Draw_Start("Paste");
     BlocksBuffer buffer = BlocksBuffer_GetCopied();
-    IVec3 origin = Substract(marks[0], buffer.anchor);
+    IVec3 origin = VectorUtils_IVec3_Substract(marks[0], buffer.anchor);
     int index = -1;
 
     for (int x = origin.X; x < origin.X + buffer.dimensions.X; x++) {

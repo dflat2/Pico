@@ -4,7 +4,7 @@
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Message.h"
-#include "VectorsExtension.h"
+#include "VectorUtils.h"
 #include "Parse.h"
 
 static bool s_Repeat = false;
@@ -30,8 +30,8 @@ static void CenterSelectionHandler(IVec3* marks, int count) {
         return;
     }
 
-    IVec3 min = Min(marks[0], marks[1]);
-    IVec3 max = Max(marks[0], marks[1]);
+    IVec3 min = VectorUtils_IVec3_Min(marks[0], marks[1]);
+    IVec3 max = VectorsUtils_IVec3_Max(marks[0], marks[1]);
 
     IVec3 delta = {
         .X = max.X - min.X,

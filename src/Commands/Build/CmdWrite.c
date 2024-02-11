@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #include "MarkSelection.h"
-#include "VectorsExtension.h"
+#include "VectorUtils.h"
 #include "Message.h"
 #include "Draw.h"
 

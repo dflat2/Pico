@@ -3,7 +3,7 @@
 #include "ClassiCube/src/World.h"
 
 #include "BlocksBuffer.h"
-#include "VectorsExtension.h"
+#include "VectorUtils.h"
 #include "Memory.h"
 
 typedef enum S3_ { XYZ, XZY, ZYX, YXZ, ZXY, YZX } S3;
@@ -40,9 +40,9 @@ bool BlocksBuffer_IsEmpty(void) {
 }
 
 bool BlocksBuffer_Copy_MALLOC(IVec3 mark1, IVec3 mark2, int* out_amountCopied) {
-    IVec3 min = Min(mark1, mark2);
-    IVec3 max = Max(mark1, mark2);
-    IVec3 anchor = Substract(mark1, min);
+    IVec3 min = VectorUtils_IVec3_Min(mark1, mark2);
+    IVec3 max = VectorsUtils_IVec3_Max(mark1, mark2);
+    IVec3 anchor = VectorUtils_IVec3_Substract(mark1, min);
 
     int width = max.X - min.X + 1;
     int height = max.Y - min.Y + 1;

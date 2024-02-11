@@ -4,7 +4,7 @@
 #include "Brushes/Brush.h"
 #include "MarkSelection.h"
 #include "Message.h"
-#include "VectorsExtension.h"
+#include "VectorUtils.h"
 #include "Parse.h"
 #include "DataStructures/Array.h"
 #include "Draw.h"
@@ -50,10 +50,10 @@ static void CircleSelectionHandler(IVec3* marks, int count) {
             current2D.X = i;
             current2D.Y = j;
 
-            distance = sqrt(IVec2_Dot(current2D, current2D));
+            distance = sqrt(VectorUtils_IVec2_DotProduct(current2D, current2D));
 
             if ((s_Mode == MODE_SOLID && distance <= s_Radius) || (s_Radius - 1 <= distance && distance <= s_Radius)) {
-                current = Add(marks[0], Transform2DTo3D(current2D, s_Axis));
+                current = VectorsUtils_IVec3_Add(marks[0], VectorUtils_2DTo3D(current2D, s_Axis));
                 Draw_Brush(current.X, current.Y, current.Z);
             }
         }

@@ -8,7 +8,7 @@
 #include "Message.h"
 #include "Memory.h"
 #include "Parse.h"
-#include "VectorsExtension.h"
+#include "VectorUtils.h"
 #include "DataStructures/Array.h"
 #include "DataStructures/IVec3FastQueue.h"
 
@@ -147,8 +147,8 @@ static bool ShouldOutline(IVec3 coordinates, IVec3 min, IVec3 max) {
 }
 
 static void OutlineSelectionHandler(IVec3* marks, int count) {
-    IVec3 min = Min(marks[0], marks[1]);
-    IVec3 max = Max(marks[0], marks[1]);
+    IVec3 min = VectorUtils_IVec3_Min(marks[0], marks[1]);
+    IVec3 max = VectorsUtils_IVec3_Max(marks[0], marks[1]);
 
     IVec3FastQueue* outline = IVec3FastQueue_CreateEmpty_MALLOC();
 

@@ -6,7 +6,7 @@
 
 #include "Message.h"
 #include "MarkSelection.h"
-#include "VectorsExtension.h"
+#include "VectorUtils.h"
 #include "Parse.h"
 
 static void Measure_Command(const cc_string* args, int argsCount);
@@ -83,8 +83,8 @@ static void MeasureSelectionHandler(IVec3* marks, int count) {
     snprintf(&message[0], 64, "&b%d &fwide, &b%d &fhigh, &b%d &flong, &b%d &fblocks.", width, height, length, volume);
     Message_Player(&message[0]);
 
-    IVec3 min = Min(marks[0], marks[1]);
-    IVec3 max = Max(marks[0], marks[1]);
+    IVec3 min = VectorUtils_IVec3_Min(marks[0], marks[1]);
+    IVec3 max = VectorsUtils_IVec3_Max(marks[0], marks[1]);
     
     CountBlocks(min.X, min.Y, min.Z, max.X, max.Y, max.Z);
 
