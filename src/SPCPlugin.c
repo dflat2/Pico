@@ -20,7 +20,19 @@
 #include "Message.h"
 #include "MarkSelection.h"
 
-static void OnChatSending(void* obj, const cc_string* msg, int msgType);
+static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
+    const cc_string clientCuboid = String_FromReadonly("/client cuboid");
+    const cc_string cuboid = String_FromReadonly("/cuboid");
+
+    cc_string text;
+
+    if (String_CaselessStarts(msg, &clientCuboid) || String_CaselessStarts(msg, &cuboid)) {
+        text = String_FromReadonly("&cWarning. &fYou are using the vanilla &b/Cuboid&f.");
+        Chat_Add(&text);
+        text = String_FromReadonly("You won't be able to &b/Undo&f, &b/Mark&f or &b/Abort&f. Use &b/Z &finstead.");
+        Chat_Add(&text);
+    }
+}
 
 static void SPC_Init(void) {
     if (!Server.IsSinglePlayer) {
@@ -67,20 +79,6 @@ static void SPC_OnNewMapLoaded(void) {
 
     // Abort selection in case there is currently a selection in progress.
     MarkSelection_Abort();
-}
-
-static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
-    const cc_string clientCuboid = String_FromReadonly("/client cuboid");
-    const cc_string cuboid = String_FromReadonly("/cuboid");
-
-    cc_string text;
-
-    if (String_CaselessStarts(msg, &clientCuboid) || String_CaselessStarts(msg, &cuboid)) {
-        text = String_FromReadonly("&cWarning. &fYou are using the vanilla &b/Cuboid&f.");
-        Chat_Add(&text);
-        text = String_FromReadonly("You won't be able to &b/Undo&f, &b/Mark&f or &b/Abort&f. Use &b/Z &finstead.");
-        Chat_Add(&text);
-    }
 }
 
 EXPORT int Plugin_ApiVersion = 1;

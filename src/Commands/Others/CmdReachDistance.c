@@ -3,8 +3,6 @@
 #include "Message.h"
 
 static void ReachDistance_Command(const cc_string* args, int argsCount);
-static void ResetReachDistance(struct LocalPlayer* player);
-static void SetReachDistance(struct LocalPlayer* player, float reachDistance);
 
 struct ChatCommand ReachDistanceCommand = {
     "ReachDistance",

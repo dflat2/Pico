@@ -11,9 +11,6 @@ typedef struct IVec3FastQueue_ {
     int length;
 }IVec3FastQueue;
 
-static bool TryAllocateMore(IVec3FastQueue* queue);
-static bool IsSaturated(IVec3FastQueue* queue);
-
 IVec3FastQueue* IVec3FastQueue_CreateEmpty_MALLOC(void) {
     IVec3FastQueue* queue = (IVec3FastQueue*)Memory_AllocateZeros(1, sizeof(IVec3FastQueue));
     return queue;
@@ -30,19 +27,8 @@ bool IVec3FastQueue_IsEmpty(IVec3FastQueue* queue) {
     return queue->length == 0;
 }
 
-bool IVec3FastQueue_TryEnqueue(IVec3FastQueue* queue, IVec3 vector) {
-    if (IsSaturated(queue) && !TryAllocateMore(queue)) {
-        return false;
-    }
-
-    queue->allocated[queue->cursorFirstElement + queue->length] = vector;
-    queue->length++;
-    return true;
-}
-
-void IVec3FastQueue_Free(IVec3FastQueue* queue) {
-    free(queue->allocated);
-    free(queue);
+static bool IsSaturated(IVec3FastQueue* queue) {
+    return queue->cursorFirstElement + queue->length >= queue->totalAllocated;
 }
 
 static bool TryAllocateMore(IVec3FastQueue* queue) {
@@ -60,6 +46,17 @@ static bool TryAllocateMore(IVec3FastQueue* queue) {
     return true;
 }
 
-static bool IsSaturated(IVec3FastQueue* queue) {
-    return queue->cursorFirstElement + queue->length >= queue->totalAllocated;
+bool IVec3FastQueue_TryEnqueue(IVec3FastQueue* queue, IVec3 vector) {
+    if (IsSaturated(queue) && !TryAllocateMore(queue)) {
+        return false;
+    }
+
+    queue->allocated[queue->cursorFirstElement + queue->length] = vector;
+    queue->length++;
+    return true;
+}
+
+void IVec3FastQueue_Free(IVec3FastQueue* queue) {
+    free(queue->allocated);
+    free(queue);
 }

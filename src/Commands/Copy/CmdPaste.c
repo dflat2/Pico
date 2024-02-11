@@ -9,7 +9,6 @@
 #include "VectorsExtension.h"
 
 static void Paste_Command(const cc_string* args, int argsCount);
-static void PasteSelectionHandler(IVec3* marks, int count);
 
 static bool s_Repeat = false;
 

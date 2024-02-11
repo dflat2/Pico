@@ -5,24 +5,6 @@
 #include "Message.h"
 #include "Memory.h"
 
-static void Copy_Command(const cc_string* args, int argsCount);
-static void CopySelectionHandler(IVec3* marks, int count);
-static void ShowBlocksCopied(int amount);
-
-struct ChatCommand CopyCommand = {
-    "Copy",
-    Copy_Command,
-    COMMAND_FLAG_SINGLEPLAYER_ONLY,
-    {
-        "&b/Copy &f- Copies the blocks in an area.",
-        NULL,
-        NULL,
-        NULL,
-        NULL
-    },
-    NULL
-};
-
 static void ShowBlocksCopied(int amount) {
     char message[128];
 
@@ -56,3 +38,17 @@ static void Copy_Command(const cc_string* args, int argsCount) {
     MarkSelection_Make(CopySelectionHandler, 2, "Copy");
     Message_Player("Place or break two blocks to determine the edges.");
 }
+
+struct ChatCommand CopyCommand = {
+    "Copy",
+    Copy_Command,
+    COMMAND_FLAG_SINGLEPLAYER_ONLY,
+    {
+        "&b/Copy &f- Copies the blocks in an area.",
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    NULL
+};

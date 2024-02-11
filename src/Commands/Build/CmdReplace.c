@@ -8,9 +8,6 @@
 #include "Parse.h"
 
 static void Replace_Command(const cc_string* args, int argsCount);
-static bool TryParseArguments(const cc_string* args, int argsCount);
-static void ReplaceSelectionHandler(IVec3* marks, int count);
-static void DoReplace(IVec3 min, IVec3 max);
 
 static BlockID s_ReplacedBlock;
 

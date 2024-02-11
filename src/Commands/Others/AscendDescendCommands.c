@@ -6,11 +6,6 @@
 
 static void Ascend_Command(const cc_string* args, int argsCount);
 static void Descend_Command(const cc_string* args, int argsCount);
-static bool TryFindAbove(Vec3 currentPosition, Vec3* ascendPosition);
-static bool TryFindBelow(Vec3 currentPosition, Vec3* descendPosition);
-static bool CanStandOnBlock(int x, int y, int z);
-static bool IsSolidBlock(BlockID id);
-static bool CanPassThrough(BlockID id);
 
 struct ChatCommand AscendCommand = {
     "Ascend",
@@ -39,6 +34,68 @@ struct ChatCommand DescendCommand = {
     },
     NULL
 };
+
+static bool CanPassThrough(BlockID id) {
+    enum CollideType collision = Blocks.Collide[id];
+    return (collision == COLLIDE_NONE) ||
+           (collision == COLLIDE_LIQUID) ||
+           (collision == COLLIDE_WATER) ||
+           (collision == COLLIDE_LAVA) ||
+           (collision == COLLIDE_CLIMB);
+}
+
+static bool IsSolidBlock(BlockID id) {
+    return !CanPassThrough(id);
+}
+
+static bool CanStandOnBlock(int x, int y, int z) {
+    BlockID below = World_Contains(x, y - 1, z) ? World_GetBlock(x, y - 1, z) : BLOCK_AIR;
+    BlockID feet = World_Contains(x, y, z) ? World_GetBlock(x, y, z) : BLOCK_AIR;
+    BlockID head = World_Contains(x, y + 1, z) ? World_GetBlock(x, y + 1, z) : BLOCK_AIR;
+
+    // y == 0 is always solid because it's bedrock, though outside of the world boundaries.
+    if (y == 0) {
+        return CanPassThrough(feet) && CanPassThrough(head);
+    }
+
+    return IsSolidBlock(below) && CanPassThrough(feet) && CanPassThrough(head);
+}
+
+static bool TryFindAbove(Vec3 currentPosition, Vec3* ascendPosition) {
+    int x = (int) currentPosition.X;
+    int y = (int) currentPosition.Y;
+    int z = (int) currentPosition.Z;
+
+    ascendPosition->X = currentPosition.X;
+    ascendPosition->Z = currentPosition.Z;
+
+    for (int yCandidate = y + 1; yCandidate <= World.Height; yCandidate++) {
+        if (CanStandOnBlock(x, yCandidate, z)) {
+            ascendPosition->Y = (float)yCandidate;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+static bool TryFindBelow(Vec3 currentPosition, Vec3* descendPosition) {
+    int x = (int) currentPosition.X;
+    int y = (int) currentPosition.Y;
+    int z = (int) currentPosition.Z;
+
+    descendPosition->X = currentPosition.X;
+    descendPosition->Z = currentPosition.Z;
+
+    for (int yCandidate = y - 1; yCandidate >= 0; yCandidate--) {
+        if (CanStandOnBlock(x, yCandidate, z)) {
+            descendPosition->Y = (float)yCandidate;
+            return true;
+        }
+    }
+
+    return false;
+}
 
 static void Ascend_Command(const cc_string* args, int argsCount) {
     if (argsCount >= 1) {
@@ -92,66 +149,4 @@ static void Descend_Command(const cc_string* args, int argsCount) {
 
     playerEntity.VTABLE->SetLocation(&playerEntity, &update);
     Message_Player("Teleported you down.");
-}
-
-static bool TryFindAbove(Vec3 currentPosition, Vec3* ascendPosition) {
-    int x = (int) currentPosition.X;
-    int y = (int) currentPosition.Y;
-    int z = (int) currentPosition.Z;
-
-    ascendPosition->X = currentPosition.X;
-    ascendPosition->Z = currentPosition.Z;
-
-    for (int yCandidate = y + 1; yCandidate <= World.Height; yCandidate++) {
-        if (CanStandOnBlock(x, yCandidate, z)) {
-            ascendPosition->Y = (float)yCandidate;
-            return true;
-        }
-    }
-
-    return false;
-}
-
-static bool TryFindBelow(Vec3 currentPosition, Vec3* descendPosition) {
-    int x = (int) currentPosition.X;
-    int y = (int) currentPosition.Y;
-    int z = (int) currentPosition.Z;
-
-    descendPosition->X = currentPosition.X;
-    descendPosition->Z = currentPosition.Z;
-
-    for (int yCandidate = y - 1; yCandidate >= 0; yCandidate--) {
-        if (CanStandOnBlock(x, yCandidate, z)) {
-            descendPosition->Y = (float)yCandidate;
-            return true;
-        }
-    }
-
-    return false;
-}
-
-static bool CanPassThrough(BlockID id) {
-    enum CollideType collision = Blocks.Collide[id];
-    return (collision == COLLIDE_NONE) ||
-           (collision == COLLIDE_LIQUID) ||
-           (collision == COLLIDE_WATER) ||
-           (collision == COLLIDE_LAVA) ||
-           (collision == COLLIDE_CLIMB);
-}
-
-static bool IsSolidBlock(BlockID id) {
-    return !CanPassThrough(id);
-}
-
-static bool CanStandOnBlock(int x, int y, int z) {
-    BlockID below = World_Contains(x, y - 1, z) ? World_GetBlock(x, y - 1, z) : BLOCK_AIR;
-    BlockID feet = World_Contains(x, y, z) ? World_GetBlock(x, y, z) : BLOCK_AIR;
-    BlockID head = World_Contains(x, y + 1, z) ? World_GetBlock(x, y + 1, z) : BLOCK_AIR;
-
-    // y == 0 is always solid because it's bedrock, though outside of the world boundaries.
-    if (y == 0) {
-        return CanPassThrough(feet) && CanPassThrough(head);
-    }
-
-    return IsSolidBlock(below) && CanPassThrough(feet) && CanPassThrough(head);
 }

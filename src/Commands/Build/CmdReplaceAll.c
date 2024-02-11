@@ -7,8 +7,6 @@
 #include "Parse.h"
 
 static void ReplaceAll_Command(const cc_string* args, int argsCount);
-static bool TryParseArguments(const cc_string* args, int argsCount);
-static void DoReplaceAll(void);
 
 static BlockID s_ReplacedBlock;
 

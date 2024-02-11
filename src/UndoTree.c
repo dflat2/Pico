@@ -34,16 +34,6 @@ typedef struct UndoNode_ {
     size_t childrenCapacity;
 } UndoNode;
 
-static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID block);
-static bool Checkout_MALLOC(int target, int* ascended, int* descended);
-static void Descend(UndoNode* child);
-static void Ascend(void);
-static void FreeUndoNode(UndoNode* node);
-static void FormatNode(cc_string* destination, UndoNode* node);
-static void AddNode_MALLOC(UndoNode node);
-static void StackRedo_MALLOC(int commit);
-static void AddChildren_MALLOC(void);
-
 static bool s_Enabled = false;
 static int s_CurrentNodeIndex = 0;
 
@@ -54,6 +44,39 @@ static size_t s_NodesCapacity = 0;
 static int* s_RedoStack = NULL;
 static size_t s_RedoStackCapacity = 0;
 static size_t s_RedoStackCount = 0;
+
+static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID block) {
+    if (MarkSelection_RemainingMarks() > 0) {
+        return;
+    }
+
+    if (block == BLOCK_AIR) {
+        UndoTree_PrepareNewNode_MALLOC("Destroy");
+    } else {
+        UndoTree_PrepareNewNode_MALLOC("Place");
+    }
+ 
+    UndoTree_AddBlockChangeEntry(coords.X, coords.Y, coords.Z, block - oldBlock);
+    UndoTree_Commit();
+}
+
+static void AddNode_MALLOC(UndoNode node) {
+    if (s_NodesCount >= s_NodesCapacity) {
+        size_t newCapacity = (s_NodesCapacity + 1) * 2;
+        UndoNode* newNodes = Memory_Reallocate(s_Nodes, newCapacity * sizeof(UndoNode));
+
+        if (Memory_AllocationError()) {
+            return;
+        }
+
+        s_NodesCapacity = newCapacity;
+        s_Nodes = newNodes;
+    }
+
+    s_Nodes[s_NodesCount] = node;
+    s_NodesCount += 1;
+    return;
+}
 
 bool UndoTree_Enable_MALLOC(void) {
     if (s_Enabled) {
@@ -85,6 +108,11 @@ bool UndoTree_Enable_MALLOC(void) {
     return true;
 }
 
+static void FreeUndoNode(UndoNode* node) {
+    free(node->blockDeltas);
+    free(node->children);
+}
+
 void UndoTree_Disable(void) {
     if (!s_Enabled) {
         return;
@@ -108,6 +136,108 @@ void UndoTree_Disable(void) {
 
     Event_Unregister((struct Event_Void*) &UserEvents.BlockChanged, NULL, (Event_Void_Callback)OnBlockChanged);
     s_Enabled = false;
+}
+
+static void Descend(UndoNode* child) {
+    // Note: `child` must be a direct child of `s_CurrentNodeIndex`, otherwise the behaviour is undefined.
+    s_CurrentNodeIndex = child->commit;
+    BlockChangeEntry* entries = s_Nodes[s_CurrentNodeIndex].blockDeltas;
+    BlockID currentBlock; 
+
+    for (int i = 0; i < s_Nodes[s_CurrentNodeIndex].blockDeltasCount; i++) {
+        currentBlock = World_GetBlock(entries[i].x, entries[i].y, entries[i].z);
+        Game_UpdateBlock(entries[i].x, entries[i].y, entries[i].z, currentBlock + entries[i].delta);
+    }
+}
+
+static void Ascend(void) {
+    if (s_CurrentNodeIndex == 0) {
+        return;
+    }
+
+    BlockChangeEntry* entries = s_Nodes[s_CurrentNodeIndex].blockDeltas;
+    BlockID currentBlock; 
+
+    for (int i = 0; i < s_Nodes[s_CurrentNodeIndex].blockDeltasCount; i++) {
+        currentBlock = World_GetBlock(entries[i].x, entries[i].y, entries[i].z);
+        Game_UpdateBlock(entries[i].x, entries[i].y, entries[i].z, currentBlock - entries[i].delta);
+    }
+
+    s_CurrentNodeIndex = s_Nodes[s_CurrentNodeIndex].parentIndex;
+}
+
+static bool Checkout_MALLOC(int target, int* ascended, int* descended) {
+    if (ascended != NULL && descended != NULL) {
+        *ascended = 0;
+        *descended = 0;
+    }
+
+    // Calculate the ancestors of the target.
+    List* targetAncestors = List_CreateEmpty_MALLOC();
+
+    if (Memory_AllocationError()) {
+        return false;
+    }
+
+    UndoNode* ancestor = &s_Nodes[target];
+
+    while (true) {
+        List_Append_MALLOC(targetAncestors, ancestor);
+
+        if (Memory_AllocationError()) {
+            List_Free(targetAncestors);
+            return false;
+        }
+
+        if (ancestor->commit == 0) {
+            break;
+        }
+
+        ancestor = &s_Nodes[ancestor->parentIndex];
+    }
+
+    // Ascend while the current node is not an ancestor of the target.
+    while (!List_Contains(targetAncestors, &s_Nodes[s_CurrentNodeIndex])) {
+        Ascend();
+        
+        if (ascended != NULL) {
+            (*ascended)++;
+        }
+    }
+
+    // Remove all ancestors above `s_CurrentNodeIndex` until last element of `targetAncestors` is a child of `s_CurrentNodeIndex`.
+    do {
+        ancestor = (UndoNode*) List_Pop(targetAncestors);
+    } while (ancestor->commit != s_CurrentNodeIndex);
+
+    // Then, descend to the target.
+    while (s_CurrentNodeIndex != target) {
+        Descend((UndoNode*) List_Pop(targetAncestors));
+        
+        if (descended != NULL) {
+            (*descended)++;
+        }
+    }
+
+    List_Free(targetAncestors);
+    return true;
+}
+
+static void StackRedo_MALLOC(int commit) {
+    if (s_RedoStackCount >= s_RedoStackCapacity) {
+        size_t newCapacity = (s_RedoStackCapacity + 1) * 2;
+        int* newRedoStack = Memory_Reallocate(s_RedoStack, newCapacity * sizeof(int));
+
+        if (Memory_AllocationError()) {
+            return;
+        }
+
+        s_RedoStackCapacity = newCapacity;
+        s_RedoStack = newRedoStack;
+    }
+
+    s_RedoStack[s_RedoStackCount] = commit;
+    s_RedoStackCount++;
 }
 
 bool UndoTree_Earlier_MALLOC(int deltaTimeSeconds, int* out_commit) {
@@ -231,6 +361,25 @@ bool UndoTree_Redo_MALLOC(void) {
     return true;
 }
 
+static void AddChildren_MALLOC(void) {
+    UndoNode* here = &s_Nodes[s_CurrentNodeIndex];
+
+    if (here->childrenCount >= here->childrenCapacity) {
+        size_t newCapacity = (here->childrenCapacity + 1) * 2;
+        int* newChildren = Memory_Reallocate(here->children, newCapacity * sizeof(int));
+
+        if (Memory_AllocationError()) {
+            return;
+        }
+
+        here->childrenCapacity = newCapacity;
+        here->children = newChildren;
+    }
+
+    here->children[here->childrenCount] = s_NodesCount;
+    here->childrenCount++;
+}
+
 bool UndoTree_PrepareNewNode_MALLOC(char* description) {
     if (!s_Enabled) {
         return false;
@@ -313,6 +462,35 @@ void UndoTree_Commit(void) {
     s_RedoStackCapacity = 0;
 }
 
+static void FormatNode(cc_string* destination, UndoNode* node) {
+    char buffer_result[STRING_SIZE];
+    cc_string result = String_FromArray(buffer_result);
+
+    char buffer_currentNodePrefix[] = { '&', 'b', 0x10, ' ', '&', 'f', '\0' };
+    cc_string currentNodePrefix = { buffer_currentNodePrefix, .length = 6, .capacity = 6 };
+
+    char buffer_formattedTime[STRING_SIZE];
+    cc_string formattedTime = String_FromArray(buffer_formattedTime);
+
+    char buffer_formattedBlocks[STRING_SIZE];
+    cc_string formattedBlocks = String_FromArray(buffer_formattedBlocks);
+
+    char buffer_formattedCommit[STRING_SIZE];
+    cc_string formattedCommit = String_FromArray(buffer_formattedCommit);
+
+    Format_HHMMSS(&formattedTime, node->timestamp);
+    Format_Int32(&formattedBlocks, node->blockDeltasCount);
+    Format_Int32(&formattedCommit, node->commit);
+
+    String_Format4(&result, "[&b%s&f] %c @ %s (%s)", &formattedCommit, node->description, &formattedTime, &formattedBlocks);
+
+    if (node->commit == s_CurrentNodeIndex) {
+        String_AppendString(destination, &currentNodePrefix);
+    }
+
+    String_AppendString(destination, &result);
+}
+
 void UndoTree_UndoList(cc_string* descriptions, int* count) {
     const int max = 5;
 
@@ -345,192 +523,4 @@ long UndoTree_CurrentTimestamp(void) {
 void UndoTree_FormatCurrentNode(cc_string* destination) {
     UndoNode* currentNode = &s_Nodes[s_CurrentNodeIndex];
     FormatNode(destination, currentNode);
-}
-
-static void FormatNode(cc_string* destination, UndoNode* node) {
-    char buffer_result[STRING_SIZE];
-    cc_string result = String_FromArray(buffer_result);
-
-    char buffer_currentNodePrefix[] = { '&', 'b', 0x10, ' ', '&', 'f', '\0' };
-    cc_string currentNodePrefix = { buffer_currentNodePrefix, .length = 6, .capacity = 6 };
-
-    char buffer_formattedTime[STRING_SIZE];
-    cc_string formattedTime = String_FromArray(buffer_formattedTime);
-
-    char buffer_formattedBlocks[STRING_SIZE];
-    cc_string formattedBlocks = String_FromArray(buffer_formattedBlocks);
-
-    char buffer_formattedCommit[STRING_SIZE];
-    cc_string formattedCommit = String_FromArray(buffer_formattedCommit);
-
-    Format_HHMMSS(&formattedTime, node->timestamp);
-    Format_Int32(&formattedBlocks, node->blockDeltasCount);
-    Format_Int32(&formattedCommit, node->commit);
-
-    String_Format4(&result, "[&b%s&f] %c @ %s (%s)", &formattedCommit, node->description, &formattedTime, &formattedBlocks);
-
-    if (node->commit == s_CurrentNodeIndex) {
-        String_AppendString(destination, &currentNodePrefix);
-    }
-
-    String_AppendString(destination, &result);
-}
-
-static void FreeUndoNode(UndoNode* node) {
-    free(node->blockDeltas);
-    free(node->children);
-}
-
-static void Ascend(void) {
-    if (s_CurrentNodeIndex == 0) {
-        return;
-    }
-
-    BlockChangeEntry* entries = s_Nodes[s_CurrentNodeIndex].blockDeltas;
-    BlockID currentBlock; 
-
-    for (int i = 0; i < s_Nodes[s_CurrentNodeIndex].blockDeltasCount; i++) {
-        currentBlock = World_GetBlock(entries[i].x, entries[i].y, entries[i].z);
-        Game_UpdateBlock(entries[i].x, entries[i].y, entries[i].z, currentBlock - entries[i].delta);
-    }
-
-    s_CurrentNodeIndex = s_Nodes[s_CurrentNodeIndex].parentIndex;
-}
-
-static void Descend(UndoNode* child) {
-    // Note: `child` must be a direct child of `s_CurrentNodeIndex`, otherwise the behaviour is undefined.
-    s_CurrentNodeIndex = child->commit;
-    BlockChangeEntry* entries = s_Nodes[s_CurrentNodeIndex].blockDeltas;
-    BlockID currentBlock; 
-
-    for (int i = 0; i < s_Nodes[s_CurrentNodeIndex].blockDeltasCount; i++) {
-        currentBlock = World_GetBlock(entries[i].x, entries[i].y, entries[i].z);
-        Game_UpdateBlock(entries[i].x, entries[i].y, entries[i].z, currentBlock + entries[i].delta);
-    }
-}
-
-static bool Checkout_MALLOC(int target, int* ascended, int* descended) {
-    if (ascended != NULL && descended != NULL) {
-        *ascended = 0;
-        *descended = 0;
-    }
-
-    // Calculate the ancestors of the target.
-    List* targetAncestors = List_CreateEmpty_MALLOC();
-
-    if (Memory_AllocationError()) {
-        return false;
-    }
-
-    UndoNode* ancestor = &s_Nodes[target];
-
-    while (true) {
-        List_Append_MALLOC(targetAncestors, ancestor);
-
-        if (Memory_AllocationError()) {
-            List_Free(targetAncestors);
-            return false;
-        }
-
-        if (ancestor->commit == 0) {
-            break;
-        }
-
-        ancestor = &s_Nodes[ancestor->parentIndex];
-    }
-
-    // Ascend while the current node is not an ancestor of the target.
-    while (!List_Contains(targetAncestors, &s_Nodes[s_CurrentNodeIndex])) {
-        Ascend();
-        
-        if (ascended != NULL) {
-            (*ascended)++;
-        }
-    }
-
-    // Remove all ancestors above `s_CurrentNodeIndex` until last element of `targetAncestors` is a child of `s_CurrentNodeIndex`.
-    do {
-        ancestor = (UndoNode*) List_Pop(targetAncestors);
-    } while (ancestor->commit != s_CurrentNodeIndex);
-
-    // Then, descend to the target.
-    while (s_CurrentNodeIndex != target) {
-        Descend((UndoNode*) List_Pop(targetAncestors));
-        
-        if (descended != NULL) {
-            (*descended)++;
-        }
-    }
-
-    List_Free(targetAncestors);
-    return true;
-}
-
-static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID block) {
-    if (MarkSelection_RemainingMarks() > 0) {
-        return;
-    }
-
-    if (block == BLOCK_AIR) {
-        UndoTree_PrepareNewNode_MALLOC("Destroy");
-    } else {
-        UndoTree_PrepareNewNode_MALLOC("Place");
-    }
- 
-    UndoTree_AddBlockChangeEntry(coords.X, coords.Y, coords.Z, block - oldBlock);
-    UndoTree_Commit();
-}
-
-static void AddNode_MALLOC(UndoNode node) {
-    if (s_NodesCount >= s_NodesCapacity) {
-        size_t newCapacity = (s_NodesCapacity + 1) * 2;
-        UndoNode* newNodes = Memory_Reallocate(s_Nodes, newCapacity * sizeof(UndoNode));
-
-        if (Memory_AllocationError()) {
-            return;
-        }
-
-        s_NodesCapacity = newCapacity;
-        s_Nodes = newNodes;
-    }
-
-    s_Nodes[s_NodesCount] = node;
-    s_NodesCount += 1;
-    return;
-}
-
-static void StackRedo_MALLOC(int commit) {
-    if (s_RedoStackCount >= s_RedoStackCapacity) {
-        size_t newCapacity = (s_RedoStackCapacity + 1) * 2;
-        int* newRedoStack = Memory_Reallocate(s_RedoStack, newCapacity * sizeof(int));
-
-        if (Memory_AllocationError()) {
-            return;
-        }
-
-        s_RedoStackCapacity = newCapacity;
-        s_RedoStack = newRedoStack;
-    }
-
-    s_RedoStack[s_RedoStackCount] = commit;
-    s_RedoStackCount++;
-}
-
-static void AddChildren_MALLOC(void) {
-    UndoNode* here = &s_Nodes[s_CurrentNodeIndex];
-
-    if (here->childrenCount >= here->childrenCapacity) {
-        size_t newCapacity = (here->childrenCapacity + 1) * 2;
-        int* newChildren = Memory_Reallocate(here->children, newCapacity * sizeof(int));
-
-        if (Memory_AllocationError()) {
-            return;
-        }
-
-        here->childrenCapacity = newCapacity;
-        here->children = newChildren;
-    }
-
-    here->children[here->childrenCount] = s_NodesCount;
-    here->childrenCount++;
 }

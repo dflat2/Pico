@@ -16,8 +16,6 @@ static const int SIZE = 2;
 static const int BRUSH_SIZE = 7;
 
 static void Smooth_Command(const cc_string* args, int argsCount);
-static void SmoothSelectionHandler(IVec3* marks, int count);
-static int CountBlocksAround(int x, int y, int z);
 
 struct ChatCommand SmoothCommand = {
     "Smooth",

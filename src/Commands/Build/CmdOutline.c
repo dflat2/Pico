@@ -24,7 +24,6 @@ static bool s_Repeat;
 static OutlineMode s_Mode;
 
 static void Outline_Command(const cc_string* args, int argsCount);
-static bool TryParseArguments(const cc_string* args, int argsCount);
 
 struct ChatCommand OutlineCommand = {
     "Outline",

@@ -14,56 +14,23 @@ static cc_string s_Operation = String_FromArray(s_OperationBuffer);
 static IVec3 s_Marks[MAX_MARKS] = { 0 };
 static SelectionHandler s_Handler = NULL;
 
-static void ValidateSelection(void);
-static void ResetSelectionState(void);
-static void ShowMarksLeft(void);
-static void UnregisterBlockChanged(void);
-static void RegisterBlockChanged(void);
-static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock);
-
-void MarkSelection_DoMark(IVec3 coords) {
-    if (!s_InProgress) {
-        Message_Player("Cannot mark, no selection in progress.");
-        return;
-    }
-
-    s_Marks[s_CurrentMark] = coords;
-    s_CurrentMark++;
-    ShowMarksLeft();
-
-    if (s_CurrentMark == s_TotalMarks) {
-        ValidateSelection();
-    }
+static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock) {
+    Game_UpdateBlock(coords.X, coords.Y, coords.Z, oldBlock);
+    MarkSelection_DoMark(coords);
 }
 
-void MarkSelection_Abort(void) {
-    ResetSelectionState();
+static void RegisterBlockChanged(void) {
+    Event_Register((struct Event_Void*) &UserEvents.BlockChanged, NULL, (Event_Void_Callback)BlockChangedCallback);
+}
+
+static void UnregisterBlockChanged(void) {
+    Event_Unregister((struct Event_Void*) &UserEvents.BlockChanged, NULL, (Event_Void_Callback)BlockChangedCallback);
+}
+
+static void ValidateSelection(void) {
     UnregisterBlockChanged();
-    ShowMarksLeft();
-}
-
-int MarkSelection_RemainingMarks(void) {
-    if (!s_InProgress) {
-        return 0;
-    }
-
-    return s_TotalMarks - s_CurrentMark;
-}
-
-void MarkSelection_Make(SelectionHandler handler, int count, const char* operation) {
-    if (s_InProgress) {
-        MarkSelection_Abort();
-    }
-
-    cc_string cc_operation = String_FromReadonly(operation);
-    String_Copy(&s_Operation, &cc_operation);
-
-    s_InProgress = true;
-    s_CurrentMark = 0;
-    s_TotalMarks = count;
-    s_Handler = handler;
-    ShowMarksLeft();
-    RegisterBlockChanged();
+    s_InProgress = false;
+    s_Handler(s_Marks, s_TotalMarks);
 }
 
 static void ShowMarksLeft(void) {
@@ -100,17 +67,19 @@ static void ShowMarksLeft(void) {
     Chat_AddOf(&message, MSG_TYPE_BOTTOMRIGHT_1);
 }
 
-static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock) {
-    Game_UpdateBlock(coords.X, coords.Y, coords.Z, oldBlock);
-    MarkSelection_DoMark(coords);
-}
+void MarkSelection_DoMark(IVec3 coords) {
+    if (!s_InProgress) {
+        Message_Player("Cannot mark, no selection in progress.");
+        return;
+    }
 
-static void RegisterBlockChanged(void) {
-    Event_Register((struct Event_Void*) &UserEvents.BlockChanged, NULL, (Event_Void_Callback)BlockChangedCallback);
-}
+    s_Marks[s_CurrentMark] = coords;
+    s_CurrentMark++;
+    ShowMarksLeft();
 
-static void UnregisterBlockChanged(void) {
-    Event_Unregister((struct Event_Void*) &UserEvents.BlockChanged, NULL, (Event_Void_Callback)BlockChangedCallback);
+    if (s_CurrentMark == s_TotalMarks) {
+        ValidateSelection();
+    }
 }
 
 static void ResetSelectionState(void) {
@@ -120,8 +89,32 @@ static void ResetSelectionState(void) {
     s_Handler = NULL;
 }
 
-static void ValidateSelection(void) {
+void MarkSelection_Abort(void) {
+    ResetSelectionState();
     UnregisterBlockChanged();
-    s_InProgress = false;
-    s_Handler(s_Marks, s_TotalMarks);
+    ShowMarksLeft();
+}
+
+int MarkSelection_RemainingMarks(void) {
+    if (!s_InProgress) {
+        return 0;
+    }
+
+    return s_TotalMarks - s_CurrentMark;
+}
+
+void MarkSelection_Make(SelectionHandler handler, int count, const char* operation) {
+    if (s_InProgress) {
+        MarkSelection_Abort();
+    }
+
+    cc_string cc_operation = String_FromReadonly(operation);
+    String_Copy(&s_Operation, &cc_operation);
+
+    s_InProgress = true;
+    s_CurrentMark = 0;
+    s_TotalMarks = count;
+    s_Handler = handler;
+    ShowMarksLeft();
+    RegisterBlockChanged();
 }

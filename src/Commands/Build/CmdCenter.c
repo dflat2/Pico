@@ -10,7 +10,6 @@
 static bool s_Repeat = false;
 
 static void Center_Command(const cc_string* args, int argsCount);
-static void CenterSelectionHandler(IVec3* marks, int count);
 
 struct ChatCommand CenterCommand = {
     "Center",

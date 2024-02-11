@@ -18,11 +18,6 @@ typedef struct Transform_ {
 static BlocksBuffer s_Buffer = { 0 };
 static bool s_BufferIsEmpty = true;
 
-static IVec3 ApplyPermutation(S3 permutation, IVec3 vector);
-static IVec3 ApplyTransform(Transform transform, IVec3 coordinates, IVec3 previousDimensions);
-static bool TransformBuffer_MALLOC(Transform transform);
-static int Pack(IVec3 vector);
-
 static const Transform RotateX90 = { XZY, .flipX = false, .flipY = false, .flipZ = true };
 static const Transform RotateX180 = { XYZ, .flipX = false, .flipY = true, .flipZ = true };
 static const Transform RotateX270 = { XZY, .flipX = false, .flipY = true, .flipZ = false };
@@ -85,6 +80,92 @@ bool BlocksBuffer_Copy_MALLOC(IVec3 mark1, IVec3 mark2, int* out_amountCopied) {
     return true;
 }
 
+static IVec3 ApplyPermutation(S3 permutation, IVec3 vector) {
+    IVec3 result = { .X = vector.X, .Y = vector.Y, .Z = vector.Z };
+
+    switch (permutation) {
+        case XYZ:
+            break;
+        case XZY:
+            result.Y = vector.Z;
+            result.Z = vector.Y;
+            break;
+        case YXZ:
+            result.X = vector.Y;
+            result.Y = vector.X;
+            break;
+        case ZYX:
+            result.X = vector.Z;
+            result.Z = vector.X;
+            break;
+        case ZXY:
+            result.X = vector.Z;
+            result.Y = vector.X;
+            result.Z = vector.Y;
+            break;
+        case YZX:
+            result.X = vector.Y;
+            result.Y = vector.Z;
+            result.Z = vector.X;
+            break;
+        default:
+            break;
+    }
+
+    return result;
+}
+
+static IVec3 ApplyTransform(Transform transform, IVec3 coordinates, IVec3 previousDimensions) {
+    if (transform.flipX) {
+        coordinates.X = previousDimensions.X - 1 - coordinates.X;
+    }
+
+    if (transform.flipY) {
+        coordinates.Y = previousDimensions.Y - 1 - coordinates.Y;
+    }
+
+    if (transform.flipZ) {
+        coordinates.Z = previousDimensions.Z - 1 - coordinates.Z;
+    }
+
+    coordinates = ApplyPermutation(transform.permutation, coordinates);
+    return coordinates;
+}
+
+static int Pack(IVec3 vector) {
+    return vector.Z + (vector.Y * s_Buffer.dimensions.Z) + vector.X * (s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
+}
+
+static bool TransformBuffer_MALLOC(Transform transform) {
+    BlockID* newContent = Memory_Allocate(sizeof(BlockID) * s_Buffer.dimensions.X * s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
+
+    if (Memory_AllocationError()) {
+        return false;
+    }
+
+    IVec3 previousDimensions = s_Buffer.dimensions;
+    s_Buffer.dimensions = ApplyPermutation(transform.permutation, s_Buffer.dimensions);
+
+    IVec3 coordinates;
+    IVec3 transformed;
+    int index = 0;
+
+    for (coordinates.X = 0; coordinates.X < previousDimensions.X; coordinates.X++) {
+        for (coordinates.Y = 0; coordinates.Y < previousDimensions.Y; coordinates.Y++) {
+            for (coordinates.Z = 0; coordinates.Z < previousDimensions.Z; coordinates.Z++) {
+                transformed = ApplyTransform(transform, coordinates, previousDimensions);
+                newContent[Pack(transformed)] = s_Buffer.content[index];
+                index++;
+            }
+        }
+    }
+
+    free(s_Buffer.content);
+    s_Buffer.content = newContent;
+    s_Buffer.anchor = ApplyTransform(transform, s_Buffer.anchor, previousDimensions);
+    return true;
+}
+
 bool BlocksBuffer_Rotate_MALLOC(Axis axis, int count) {
     count = count % 4;
 
@@ -133,90 +214,4 @@ bool BlocksBuffer_Flip_MALLOC(Axis axis) {
     }
 
     return false;
-}
-
-static bool TransformBuffer_MALLOC(Transform transform) {
-    BlockID* newContent = Memory_Allocate(sizeof(BlockID) * s_Buffer.dimensions.X * s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
-
-    if (Memory_AllocationError()) {
-        return false;
-    }
-
-    IVec3 previousDimensions = s_Buffer.dimensions;
-    s_Buffer.dimensions = ApplyPermutation(transform.permutation, s_Buffer.dimensions);
-
-    IVec3 coordinates;
-    IVec3 transformed;
-    int index = 0;
-
-    for (coordinates.X = 0; coordinates.X < previousDimensions.X; coordinates.X++) {
-        for (coordinates.Y = 0; coordinates.Y < previousDimensions.Y; coordinates.Y++) {
-            for (coordinates.Z = 0; coordinates.Z < previousDimensions.Z; coordinates.Z++) {
-                transformed = ApplyTransform(transform, coordinates, previousDimensions);
-                newContent[Pack(transformed)] = s_Buffer.content[index];
-                index++;
-            }
-        }
-    }
-
-    free(s_Buffer.content);
-    s_Buffer.content = newContent;
-    s_Buffer.anchor = ApplyTransform(transform, s_Buffer.anchor, previousDimensions);
-    return true;
-}
-
-static IVec3 ApplyTransform(Transform transform, IVec3 coordinates, IVec3 previousDimensions) {
-    if (transform.flipX) {
-        coordinates.X = previousDimensions.X - 1 - coordinates.X;
-    }
-
-    if (transform.flipY) {
-        coordinates.Y = previousDimensions.Y - 1 - coordinates.Y;
-    }
-
-    if (transform.flipZ) {
-        coordinates.Z = previousDimensions.Z - 1 - coordinates.Z;
-    }
-
-    coordinates = ApplyPermutation(transform.permutation, coordinates);
-    return coordinates;
-}
-
-static IVec3 ApplyPermutation(S3 permutation, IVec3 vector) {
-    IVec3 result = { .X = vector.X, .Y = vector.Y, .Z = vector.Z };
-
-    switch (permutation) {
-        case XYZ:
-            break;
-        case XZY:
-            result.Y = vector.Z;
-            result.Z = vector.Y;
-            break;
-        case YXZ:
-            result.X = vector.Y;
-            result.Y = vector.X;
-            break;
-        case ZYX:
-            result.X = vector.Z;
-            result.Z = vector.X;
-            break;
-        case ZXY:
-            result.X = vector.Z;
-            result.Y = vector.X;
-            result.Z = vector.Y;
-            break;
-        case YZX:
-            result.X = vector.Y;
-            result.Y = vector.Z;
-            result.Z = vector.X;
-            break;
-        default:
-            break;
-    }
-
-    return result;
-}
-
-static int Pack(IVec3 vector) {
-    return vector.Z + (vector.Y * s_Buffer.dimensions.Z) + vector.X * (s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
 }

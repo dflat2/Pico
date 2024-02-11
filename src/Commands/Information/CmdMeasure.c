@@ -10,9 +10,6 @@
 #include "Parse.h"
 
 static void Measure_Command(const cc_string* args, int argsCount);
-static void MeasureSelectionHandler(IVec3* marks, int count);
-static void CountBlocks(int x1, int y1, int z1, int x2, int y2, int z2);
-static void ShowCountedBlocks(int* counts);
 
 struct ChatCommand MeasureCommand = {
     "Measure",

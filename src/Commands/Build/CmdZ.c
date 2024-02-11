@@ -22,15 +22,6 @@ static ZMode s_Mode;
 typedef void (*CuboidOperation)(IVec3 min, IVec3 max);
 
 static void Z_Command(const cc_string* args, int argsCount);
-static bool TryParseArguments(const cc_string* args, int argsCount);
-static void ZSelectionHandler(IVec3* marks, int count);
-static CuboidOperation GetFunction(char mode);
-static void DoCuboidCorners(IVec3 min, IVec3 max);
-static void DoCuboidWire(IVec3 min, IVec3 max);
-static void DoCuboidWalls(IVec3 min, IVec3 max);
-static void DoCuboidHollow(IVec3 min, IVec3 max);
-static void DoCuboidSolid(IVec3 min, IVec3 max);
-static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zmax);
 
 struct ChatCommand ZCommand = {
     "Z",

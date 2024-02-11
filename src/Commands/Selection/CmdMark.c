@@ -6,7 +6,6 @@
 #include "Player.h"
 
 static void Mark_Command(const cc_string* args, int argsCount);
-IVec3 SnapToWorldBoundaries(IVec3 coords);
 
 struct ChatCommand MarkCommand = {
     "Mark",
@@ -21,26 +20,6 @@ struct ChatCommand MarkCommand = {
     },
     NULL
 };
-
-static void Mark_Command(const cc_string* args, int argsCount) {
-    if (argsCount == 0) {
-        MarkSelection_DoMark(SnapToWorldBoundaries(Player_GetPosition()));
-        return;
-    }
-
-    if (argsCount != 3) {
-        Message_CommandUsage(MarkCommand);
-        return;
-    }
-
-    IVec3 target;
-    
-    if (!Parse_TryParseCoordinates(args, &target)) {
-        return;
-    }
-    
-    MarkSelection_DoMark(SnapToWorldBoundaries(target));
-}
 
 IVec3 SnapToWorldBoundaries(IVec3 coords) {
     if (coords.X < 0) {
@@ -62,4 +41,24 @@ IVec3 SnapToWorldBoundaries(IVec3 coords) {
     }
 
     return coords;
+}
+
+static void Mark_Command(const cc_string* args, int argsCount) {
+    if (argsCount == 0) {
+        MarkSelection_DoMark(SnapToWorldBoundaries(Player_GetPosition()));
+        return;
+    }
+
+    if (argsCount != 3) {
+        Message_CommandUsage(MarkCommand);
+        return;
+    }
+
+    IVec3 target;
+    
+    if (!Parse_TryParseCoordinates(args, &target)) {
+        return;
+    }
+    
+    MarkSelection_DoMark(SnapToWorldBoundaries(target));
 }

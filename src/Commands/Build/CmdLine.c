@@ -19,33 +19,6 @@ typedef enum LineMode_ {
 static LineMode s_Mode;
 static bool s_Repeat;
 
-static void Line_Command(const cc_string *args, int argsCount);
-static void MakeSelection(void);
-static bool TryParseArguments(const cc_string* args, int argsCount);
-static void LineSelectionHandler(IVec3* marks, int count);
-static void DoLine(IVec3 from, IVec3 to);
-static void DoWall(IVec3 from, IVec3 to);
-static void DoBezier(IVec3 from, IVec3 direction, IVec3 to);
-static int GreatestInteger2(int a, int b);
-static int GreatestInteger3(int a, int b, int c);
-static FVec3 Bezier(FVec3 from, FVec3 controlPoint, FVec3 to, float t);
-static void Line(IVec3 from, IVec3 to);
-static void MakeSelection(void);
-
-struct ChatCommand LineCommand = {
-    "Line",
-    Line_Command,
-    COMMAND_FLAG_SINGLEPLAYER_ONLY,
-    {
-        "&b/Line [mode] [brush/block] +",
-        "Draws a line between two points.",
-        "List of modes: &bnormal&f (default), &bwall&f, &bbezier&f.",
-        NULL,
-        NULL
-    },
-    NULL
-};
-
 static int GreatestInteger2(int a, int b) {
     if (a > b) {
         return a;
@@ -180,7 +153,11 @@ static void LineSelectionHandler(IVec3* marks, int count) {
     int blocksAffected = Draw_End();
 
     if (s_Repeat) {
-        MakeSelection();
+        if (s_Mode != MODE_BEZIER) {
+            MarkSelection_Make(LineSelectionHandler, 2, "Line");
+        } else {
+            MarkSelection_Make(LineSelectionHandler, 3, "Line (bezier)");
+        }
         return;
     }
 
@@ -249,14 +226,24 @@ static void Line_Command(const cc_string* args, int argsCount) {
         Message_Player("Place or break three blocks.");
     }
 
-    MakeSelection();
+    if (s_Mode != MODE_BEZIER) {
+            MarkSelection_Make(LineSelectionHandler, 2, "Line");
+        } else {
+            MarkSelection_Make(LineSelectionHandler, 3, "Line (bezier)");
+        }
+    return;
 }
 
-static void MakeSelection(void) {
-    if (s_Mode != MODE_BEZIER) {
-        MarkSelection_Make(LineSelectionHandler, 2, "Line");
-        
-    } else {
-        MarkSelection_Make(LineSelectionHandler, 3, "Line (bezier)");
-    }
-}
+struct ChatCommand LineCommand = {
+    "Line",
+    Line_Command,
+    COMMAND_FLAG_SINGLEPLAYER_ONLY,
+    {
+        "&b/Line [mode] [brush/block] +",
+        "Draws a line between two points.",
+        "List of modes: &bnormal&f (default), &bwall&f, &bbezier&f.",
+        NULL,
+        NULL
+    },
+    NULL
+};

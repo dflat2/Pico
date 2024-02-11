@@ -27,25 +27,6 @@ static bool s_Repeat;
 static FillMode s_Mode;
 static int s_SourceY;
 
-static bool TryExpand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlock, BinaryMap* map);
-static void Fill_Command(const cc_string* args, int argsCount);
-static bool TryParseArguments(const cc_string* args, int argsCount);
-static void FillSelectionHandler(IVec3* marks, int count);
-
-struct ChatCommand FillCommand = {
-    "Fill",
-    Fill_Command,
-    COMMAND_FLAG_SINGLEPLAYER_ONLY,
-    {
-        "&b/Fill [mode] [brush/block] +",
-        "Fills the specified area.",
-        "List of modes: &b3d&f (default), &b2d-x&f, &blayer&f, &b2d-z&f, &bdown&f, &bup&f.",
-        NULL,
-        NULL
-    },
-    NULL
-};
-
 static bool TryParseArguments(const cc_string* args, int argsCount) {
     cc_string modesString[] = {
         String_FromConst("3d"),
@@ -264,3 +245,17 @@ static void Fill_Command(const cc_string* args, int argsCount) {
     MarkSelection_Make(FillSelectionHandler, 1, "Fill");
     Message_Player("Place or break a block.");
 }
+
+struct ChatCommand FillCommand = {
+    "Fill",
+    Fill_Command,
+    COMMAND_FLAG_SINGLEPLAYER_ONLY,
+    {
+        "&b/Fill [mode] [brush/block] +",
+        "Fills the specified area.",
+        "List of modes: &b3d&f (default), &b2d-x&f, &blayer&f, &b2d-z&f, &bdown&f, &bup&f.",
+        NULL,
+        NULL
+    },
+    NULL
+};

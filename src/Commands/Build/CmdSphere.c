@@ -19,7 +19,6 @@ static int s_Radius;
 static IVec3 s_Center;
 
 static void Sphere_Command(const cc_string* args, int argsCount);
-static bool ShouldDraw(int x, int y, int z);
 
 struct ChatCommand SphereCommand = {
     "Sphere",
