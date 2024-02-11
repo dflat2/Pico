@@ -9,6 +9,7 @@
 
 static void ReplaceNot_Command(const cc_string* args, int argsCount);
 
+static bool s_Repeat = false;
 static BlockID s_ReplacedNotBlock;
 
 struct ChatCommand ReplaceNotCommand = {
@@ -16,7 +17,7 @@ struct ChatCommand ReplaceNotCommand = {
     ReplaceNot_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/ReplaceNot <block> @",
+        "&b/ReplaceNot <block> @ +",
         "Replaces all blocks but &bblock&f.",
         "\x07 &bblock&f: block name or identifier.",
         NULL,
@@ -24,6 +25,8 @@ struct ChatCommand ReplaceNotCommand = {
     },
     NULL
 };
+
+static void ReplaceSelectionHandler(IVec3* marks, int count);
 
 static void DoReplaceNot(IVec3 min, IVec3 max) {
     Draw_Start("ReplaceNot");
@@ -39,6 +42,12 @@ static void DoReplaceNot(IVec3 min, IVec3 max) {
     }
 
     int blocksAffected = Draw_End();
+
+    if (s_Repeat) {
+        MarkSelection_Make(ReplaceSelectionHandler, 2, "ReplaceNot");
+        return;
+    }
+
     Message_BlocksAffected(blocksAffected);
 }
 
@@ -70,11 +79,15 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
     return true;
 }
 
-static void ReplaceNot_Command(const cc_string* args, int argsCount) {	
-    MarkSelection_Abort();
+static void ReplaceNot_Command(const cc_string* args, int argsCount) {
+    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (!TryParseArguments(args, argsCount)) {
         return;
+    }
+
+    if (s_Repeat) {
+        Message_Player("Now repeating &bReplaceNot&f.");
     }
 
     MarkSelection_Make(ReplaceSelectionHandler, 2, "ReplaceNot");

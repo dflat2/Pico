@@ -7,8 +7,10 @@
 #include "VectorUtils.h"
 #include "Parse.h"
 
+
 static void Replace_Command(const cc_string* args, int argsCount);
 
+static bool s_Repeat = false;
 static BlockID s_ReplacedBlock;
 
 struct ChatCommand ReplaceCommand = {
@@ -16,7 +18,7 @@ struct ChatCommand ReplaceCommand = {
     Replace_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Replace <block> @",
+        "&b/Replace <block> @ +",
         "Replaces &bblock &fwith the block you're holding, or given brush.",
         "\x07 &bblock&f: block name or identifier.",
         NULL,
@@ -24,6 +26,8 @@ struct ChatCommand ReplaceCommand = {
     },
     NULL
 };
+
+static void ReplaceSelectionHandler(IVec3* marks, int count);
 
 static void DoReplace(IVec3 min, IVec3 max) {
     Draw_Start("Replace");
@@ -42,6 +46,12 @@ static void DoReplace(IVec3 min, IVec3 max) {
     }
 
     int blocksAffected = Draw_End();
+
+    if (s_Repeat) {
+        MarkSelection_Make(ReplaceSelectionHandler, 2, "Replace");
+        return;
+    }
+
     Message_BlocksAffected(blocksAffected);
 }
 
@@ -74,8 +84,14 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 }
 
 static void Replace_Command(const cc_string* args, int argsCount) {	
+    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+
     if (!TryParseArguments(args, argsCount)) {
         return;
+    }
+
+    if (s_Repeat) {
+        Message_Player("Now repeating &bReplace&f.");
     }
 
     MarkSelection_Make(ReplaceSelectionHandler, 2, "Replace");
