@@ -1,4 +1,5 @@
 #include "ClassiCube/src/Block.h"
+#include "ClassiCube/src/Constants.h"
 
 #include "Brushes/Brush.h"
 #include "Message.h"
@@ -180,7 +181,7 @@ bool Parse_TryParseNumber(const cc_string* string, int* out_number) {
     }
 
     if (!TryParsePositiveNumber(string, &start, out_number)) {
-        char invalidNumberMessageBuffer[64];
+        char invalidNumberMessageBuffer[STRING_SIZE];
         cc_string invalidNumberMessage = String_FromArray(invalidNumberMessageBuffer);
         String_Format1(&invalidNumberMessage, "Invalid integer: &b%s&f.", string);
         Chat_Add(&invalidNumberMessage);
@@ -294,8 +295,8 @@ static bool TryParseSingleCoordinate(const cc_string* coordinateString, int* out
 }
 
 static void CoordinateError(const cc_string* coordinate) {
-    char error[64];
-    cc_string cc_error = { error, 0, 64 };
+    char error[STRING_SIZE];
+    cc_string cc_error = { error, 0, STRING_SIZE };
     String_Format1(&cc_error, "Could not parse coordinate &b%s&f.", coordinate);
     Chat_Add(&cc_error);
 }

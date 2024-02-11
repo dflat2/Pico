@@ -1,5 +1,6 @@
 #include "ClassiCube/src/Event.h"
 #include "ClassiCube/src/Game.h"
+#include "ClassiCube/src/Constants.h"
 
 #include "MarkSelection.h"
 #include "Message.h"
@@ -9,7 +10,7 @@
 static bool s_InProgress = false;
 static int s_CurrentMark = 0;
 static int s_TotalMarks = 0;
-static char s_OperationBuffer[64];
+static char s_OperationBuffer[STRING_SIZE];
 static cc_string s_Operation = String_FromArray(s_OperationBuffer);
 static IVec3 s_Marks[MAX_MARKS] = { 0 };
 static SelectionHandler s_Handler = NULL;
@@ -46,7 +47,7 @@ static void ShowMarksLeft(void) {
     cc_string aquaCode = String_FromConst("&b");
     cc_string whiteCode = String_FromConst("&f");
 
-    char buffer[64];
+    char buffer[STRING_SIZE];
     cc_string message = String_FromArray(buffer);
     String_AppendString(&message, &aquaCode);
     String_AppendString(&message, &s_Operation);

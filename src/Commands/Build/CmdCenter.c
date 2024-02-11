@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "Brushes/Brush.h"
+#include "ClassiCube/src/Constants.h"
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Message.h"
@@ -61,14 +62,14 @@ static void CenterSelectionHandler(IVec3* marks, int count) {
     }
     int blocksAffected = Draw_End();
 
-    char message[128];
+    char message[STRING_SIZE];
 
     if (s_Repeat) {
         MarkSelection_Make(CenterSelectionHandler, 2, "Center");
         return;
     }
 
-    snprintf(message, sizeof(message), "Drew cuboid at center from &b(%d, %d, %d)&f to &b(%d, %d, %d)&f.",
+    snprintf(message, sizeof(message), "Drew cuboid from &b(%d, %d, %d)&f to &b(%d, %d, %d)&f.",
              centerCuboidMin.X, centerCuboidMin.Y, centerCuboidMin.Z,
              centerCuboidMax.X, centerCuboidMax.Y, centerCuboidMax.Z);
 

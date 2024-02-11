@@ -1,3 +1,5 @@
+#include "ClassiCube/src/Constants.h"
+
 #include "DataStructures/BlocksBuffer.h"
 #include "Parse.h"
 #include "Message.h"
@@ -28,7 +30,7 @@ static void ShowRotated(Axis axis, int degrees) {
         charAxis = 'Z';
     }
 
-    char buffer[64];
+    char buffer[STRING_SIZE];
     cc_string message = String_FromArray(buffer);
     String_Format2(&message, "Rotated around the %r axis by %i degrees.", &charAxis, &degrees);
     Chat_Add(&message);

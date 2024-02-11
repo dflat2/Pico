@@ -1,12 +1,14 @@
 #include <stdio.h>
 
+#include "ClassiCube/src/Constants.h"
+
 #include "DataStructures/BlocksBuffer.h"
 #include "MarkSelection.h"
 #include "Message.h"
 #include "Memory.h"
 
 static void ShowBlocksCopied(int amount) {
-    char message[128];
+    char message[STRING_SIZE];
 
     if (amount == 1) {
         snprintf(message, sizeof(message), "&b%d &fblock were copied.", amount);

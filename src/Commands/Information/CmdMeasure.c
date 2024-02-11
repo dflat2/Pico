@@ -3,6 +3,7 @@
 
 #include "ClassiCube/src/Block.h"
 #include "ClassiCube/src/World.h"
+#include "ClassiCube/src/Constants.h"
 
 #include "Message.h"
 #include "MarkSelection.h"
@@ -31,8 +32,8 @@ static bool s_Repeat;
 
 static void ShowCountedBlocks(int* counts) {
     cc_string currentBlockName;
-    char buffer[128];
-    cc_string currentMessage = { buffer, 0, 128 };
+    char buffer[STRING_SIZE];
+    cc_string currentMessage = { buffer, 0, STRING_SIZE };
 
     for (int i = 0; i < s_Count; i++) {
         currentBlockName = Block_UNSAFE_GetName(s_Blocks[i]);
@@ -69,7 +70,7 @@ static void MeasureSelectionHandler(IVec3* marks, int count) {
         return;
     }
 
-    char message[64];
+    char message[STRING_SIZE];
     snprintf(&message[0], 64, "Measuring from &b(%d, %d, %d)&f to &b(%d, %d, %d)&f.",
             marks[0].X, marks[0].Y, marks[0].Z,
             marks[1].X, marks[1].Y, marks[1].Z);

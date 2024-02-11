@@ -1,4 +1,5 @@
 #include "ClassiCube/src/Entity.h"
+#include "ClassiCube/src/Constants.h"
 
 #include "Message.h"
 
@@ -63,7 +64,7 @@ static void ReachDistance_Command(const cc_string* args, int argsCount) {
 
     SetReachDistance(player, distance);
 
-    char msgBuffer[512];
+    char msgBuffer[STRING_SIZE];
     cc_string message = String_FromArray(msgBuffer);
     String_Format1(&message, "Your reach distance has been set to &b%f2&f.", &distance);
     Chat_Add(&message);
