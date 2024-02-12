@@ -150,7 +150,7 @@ static void Ascend(void) {
     BlockChangeEntry* entries = s_Nodes[s_CurrentNodeIndex].blockDeltas;
     BlockID currentBlock; 
 
-    for (int i = 0; i < s_Nodes[s_CurrentNodeIndex].blockDeltasCount; i++) {
+    for (int i = s_Nodes[s_CurrentNodeIndex].blockDeltasCount - 1; i >= 0; i--) {
         currentBlock = World_GetBlock(entries[i].x, entries[i].y, entries[i].z);
         Game_UpdateBlock(entries[i].x, entries[i].y, entries[i].z, currentBlock - entries[i].delta);
     }
