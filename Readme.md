@@ -1,6 +1,13 @@
 # Single Player Commands for ClassiCube
 
-This project is still _work in progress_ and is not fully documented yet (but most `/help <command>` messages are pretty self-explanatory). _Single Player Commands_ aims to support most building features found on server softwares such as MCGalaxy or LegendCraft.
+This project is still _work in progress_ and is not fully documented yet (but most `/help <command>` messages are pretty self-explanatory). _Single Player Commands_ aims to support most building features found on server softwares such as MCGalaxy or LegendCraft. This includes:
+
++ Undoing
++ Copy/pasting
++ Repeating commands
++ Brushes
++ All basic drawing commands: `/Fill`, `/Outline`, `/Tree`, etc.
++ Many convenient commands: `/Ascend`, `/ReachDistance`, `/Mark`, etc.
 
 ## Compiling
 
