@@ -36,7 +36,6 @@ gcc `find src/ -name '*.c'` -I. -I./src -o SPCPlugin.dylib -shared -undefined dy
 I did not test compiling on Windows yet. But you may follow the instructions documented in the ClassiCube repository: [Using mingw-w64](https://github.com/UnknownShadow200/ClassiCube/blob/master/doc/plugin-dev.md#using-mingw-w64). Then for the _compiling_ part:
 
 ```bash
-gcc TestPlugin.c -o TestPlugin.dll -s -shared -L . -lClassiCube
 gcc `find src/ -name '*.c'` -I. -I./src -o SPCPlugin.dll -shared -L . -lClassiCube
 ```
 
