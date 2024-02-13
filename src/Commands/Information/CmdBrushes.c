@@ -5,7 +5,8 @@ static void Brushes_Command(const cc_string* args, int argsCount);
 struct ChatCommand BrushesCommand = {
     "Brushes",
     Brushes_Command,
-    COMMAND_FLAG_SINGLEPLAYER_ONLY, {
+    COMMAND_FLAG_SINGLEPLAYER_ONLY,
+    {
         "&b/Brushes",
         "Lists available brushes.",
         NULL,
