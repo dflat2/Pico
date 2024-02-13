@@ -34,7 +34,7 @@ static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
     }
 }
 
-static void SPC_Init(void) {
+static void Pico_Init(void) {
     if (!Server.IsSinglePlayer) {
         return;
     }
@@ -48,7 +48,7 @@ static void SPC_Init(void) {
     Physics.Enabled = false;
 }
 
-static void SPC_Free(void) {
+static void Pico_Free(void) {
     if (!Server.IsSinglePlayer) {
         return;
     }
@@ -63,7 +63,7 @@ static void SPC_Free(void) {
     UndoTree_Disable();
 }
 
-static void SPC_OnNewMapLoaded(void) {
+static void Pico_OnNewMapLoaded(void) {
     if (!Server.IsSinglePlayer) {
         return;
     }
@@ -78,9 +78,9 @@ static void SPC_OnNewMapLoaded(void) {
 
 EXPORT int Plugin_ApiVersion = 1;
 EXPORT struct IGameComponent Plugin_Component = {
-    .Init = SPC_Init,
-    .Free = SPC_Free,
+    .Init = Pico_Init,
+    .Free = Pico_Free,
     .Reset = NULL,
     .OnNewMap = NULL,
-    .OnNewMapLoaded = SPC_OnNewMapLoaded,
+    .OnNewMapLoaded = Pico_OnNewMapLoaded,
 };
