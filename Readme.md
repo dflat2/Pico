@@ -32,7 +32,7 @@ You may need to add `-lm` after `find src/ -name`, as some object files require 
 
 ### Mac
 
-Run thie command from the root directory of the repository.
+Run this command from the root directory of the repository.
 
 ```bash
 gcc `find src/ -name '*.c'` -I. -I./src -o pico.dylib -shared -undefined dynamic_lookup
