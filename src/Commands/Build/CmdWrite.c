@@ -14,6 +14,7 @@ typedef enum WriteDirection_ {
     DIRECTION_INVALID
 } WriteDirection;
 
+static BlockID s_CurrentBlock = BLOCK_WHITE;
 static char s_TextBuffer[STRING_SIZE];
 static cc_string s_Text = { .buffer = s_TextBuffer, .capacity = STRING_SIZE, .length = 0 };
 
@@ -286,7 +287,7 @@ struct ChatCommand WriteCommand = {
     COMMAND_FLAG_SINGLEPLAYER_ONLY | COMMAND_FLAG_UNSPLIT_ARGS,
     {
         "&b/Write <text>",
-        "Writes &btext &fusing white wool.",
+        "Writes &btext &fusing blocks. Color codes are supported.",
         NULL,
         NULL,
         NULL
@@ -342,7 +343,7 @@ static void WriteLetter(char letter, int textOriginX3D, int textOriginZ3D, int l
                 local2DCoordinates.X = *offset + j;
                 local2DCoordinates.Y = 7 - i;
                 global3DCoordinates = From2DTo3D(local2DCoordinates, textOriginX3D, textOriginZ3D, lineBaseY, direction);
-                Draw_Block(global3DCoordinates.X, global3DCoordinates.Y, global3DCoordinates.Z, BLOCK_WHITE);
+                Draw_Block(global3DCoordinates.X, global3DCoordinates.Y, global3DCoordinates.Z, s_CurrentBlock);
 
                 if (j + 1 > letterWidth) {
                     letterWidth = j + 1;
@@ -376,6 +377,47 @@ static WriteDirection GuessTextDirection(IVec3 mark1, IVec3 mark2) {
     return DIRECTION_INVALID;
 }
 
+static bool IsColorCode(char character) {
+    return ('0' <= character && character <= '9') || ('a' <= character && character <= 'f');
+}
+
+static BlockID GetColoredBlockFromCode(char colorCode) {
+    switch (colorCode) {
+        case '0':
+            return BLOCK_OBSIDIAN;
+        case '1':
+            return BLOCK_DEEP_BLUE;
+        case '2':
+            return BLOCK_FOREST_GREEN;
+        case '3':
+            return BLOCK_TURQUOISE;
+        case '4':
+            return BLOCK_BROWN;
+        case '5':
+            return BLOCK_VIOLET;
+        case '6':
+            return BLOCK_SPONGE;
+        case '7':
+            return BLOCK_GRAY;
+        case '8':
+            return BLOCK_BLACK;
+        case '9':
+            return BLOCK_CYAN;
+        case 'a':
+            return BLOCK_GREEN;
+        case 'b':
+            return BLOCK_AQUA;
+        case 'c':
+            return BLOCK_RED;
+        case 'd':
+            return BLOCK_MAGENTA;
+        case 'e':
+            return BLOCK_YELLOW;
+        default:
+            return BLOCK_WHITE;
+    }
+}
+
 static void WriteSelectionHandler(IVec3* marks, int count) {
     int textOriginX = marks[0].X;
     int textOriginZ = marks[0].Z;
@@ -390,14 +432,21 @@ static void WriteSelectionHandler(IVec3* marks, int count) {
     }
 
     int offset = 0;
+    s_CurrentBlock = BLOCK_WHITE;
+    char character;
     Draw_Start("Write");
 
     for (int characterIndex = 0; characterIndex < s_Text.length; characterIndex++) {
-        if (s_Text.buffer[characterIndex] == ' ') {
+        character = s_Text.buffer[characterIndex];
+
+        if (character == ' ') {
             #define SPACE_WIDTH 3
             offset += SPACE_WIDTH;
+        } else if ((character == '%' || character == '&') && characterIndex != s_Text.length - 1 && IsColorCode(s_Text.buffer[characterIndex + 1])) {
+            characterIndex += 1;
+            s_CurrentBlock = GetColoredBlockFromCode(s_Text.buffer[characterIndex]);
         } else {
-            WriteLetter(s_Text.buffer[characterIndex], textOriginX, textOriginZ, lineBase, direction, &offset);
+            WriteLetter(character, textOriginX, textOriginZ, lineBase, direction, &offset);
         }
     }
 
