@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #include "ClassiCube/src/Event.h"
 #include "ClassiCube/src/Game.h"
 #include "ClassiCube/src/Constants.h"

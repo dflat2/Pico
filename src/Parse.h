@@ -1,6 +1,8 @@
 #ifndef PARSING_UTILS_H
 #define PARSING_UTILS_H
 
+#include <stdbool.h>
+
 #include "ClassiCube/src/String.h"
 #include "ClassiCube/src/Vectors.h"
 

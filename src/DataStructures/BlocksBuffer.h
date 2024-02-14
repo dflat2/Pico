@@ -1,6 +1,8 @@
 #ifndef BLOCKS_BUFFER_H
 #define BLOCKS_BUFFER_H
 
+#include <stdbool.h>
+
 #include "ClassiCube/src/Vectors.h"
 
 #include "Axis.h"

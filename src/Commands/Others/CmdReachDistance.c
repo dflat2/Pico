@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #include "ClassiCube/src/Entity.h"
 #include "ClassiCube/src/Constants.h"
 

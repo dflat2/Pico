@@ -22,23 +22,23 @@ cd pico
 
 ### Linux
 
-I did not have the chance to test compiling on Linux yet, but the following command should work.
+You must have a C compiler installed (for example [gcc](https://gcc.gnu.org/install/), which can be installed with `apt install build-essential` on Ubuntu). Then, run this command from the root directory of the repository:
 
 ```bash
-cc `find src/ -name '*.c'` -lm -I. -I./src -o pico.so -shared -fPIC
+gcc `find src/ -name '*.c'` -I. -I./src -o pico.so -shared -fPIC
 ```
 
+You may need to add `-lm` after `find src/ -name`, as some object files require `<math.h>`.
+
 ### Mac
+
+Run thie command from the root directory of the repository.
 
 ```bash
 gcc `find src/ -name '*.c'` -I. -I./src -o pico.dylib -shared -undefined dynamic_lookup
 ```
 
-If your Mac supports `arm` and if you downloaded ClassiCube from <https://classicube.net>, you will probably need to append `-arch x86_64` (otherwise it will compile for `arm`):
-
-```bash
-gcc `find src/ -name '*.c'` -I. -I./src -o pico.dylib -shared -undefined dynamic_lookup -arch x86_64
-```
+**Note.** If your Mac supports `arm` *and* if you downloaded ClassiCube from <https://classicube.net>, you will probably need to append `-arch x86_64` (otherwise it will compile for `arm` and not work as the client is on `x86_64`).
 
 ### Windows
 
