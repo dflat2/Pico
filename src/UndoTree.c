@@ -257,10 +257,13 @@ bool UndoTree_Later(int deltaTimeSeconds, int* commit) {
         return false;
     }
 
-    int newIndex = s_NodesCount - 1;
+    time_t targetTimestamp = s_Nodes[s_CurrentNodeIndex].timestamp + (long)deltaTimeSeconds;
 
-    for (size_t i = s_CurrentNodeIndex; i < s_NodesCount - 1; i++) {
-        if (s_Nodes[i].timestamp - s_Nodes[s_CurrentNodeIndex].timestamp > deltaTimeSeconds) {
+    int lastNodeIndex = s_NodesCount - 1;
+    int newIndex = s_CurrentNodeIndex;
+
+    for (int i = lastNodeIndex; i > s_CurrentNodeIndex; i--) {
+        if ((s_Nodes[i].timestamp < targetTimestamp)) {
             newIndex = (int)i;
             break;
         }
