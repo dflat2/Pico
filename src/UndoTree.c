@@ -13,9 +13,9 @@
 #include "DataStructures/List.h"
 
 typedef struct BlockChangeEntry_ {
-    int x;
-    int y;
-    int z;
+    unsigned short x;
+    unsigned short y;
+    unsigned short z;
     DeltaBlockID delta;
 } BlockChangeEntry;
 
