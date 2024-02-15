@@ -31,6 +31,7 @@ extern struct ChatCommand RotateCommand;
 extern struct ChatCommand SmoothCommand;
 extern struct ChatCommand SphereCommand;
 extern struct ChatCommand TreeCommand;
+extern struct ChatCommand TriangleCommand;
 extern struct ChatCommand UndoListCommand;
 extern struct ChatCommand UndoCommand;
 extern struct ChatCommand WriteCommand;
@@ -68,6 +69,7 @@ void Commands_RegisterAll(void) {
     Commands_Register(&SmoothCommand);
     Commands_Register(&SphereCommand);
     Commands_Register(&TreeCommand);
+    Commands_Register(&TriangleCommand);
     Commands_Register(&UndoListCommand);
     Commands_Register(&UndoCommand);
     Commands_Register(&WriteCommand);

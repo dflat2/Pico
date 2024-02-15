@@ -28,7 +28,9 @@ int VectorUtils_IVec2_DotProduct(const IVec2 a, const IVec2 b);
 FVec3 VectorUtils_FVec3_ScalarMultiply(const FVec3 vector, float t);
 FVec3 VectorUtils_FVec3_Add(const FVec3 a, const FVec3 b);
 FVec3 VectorUtils_FVec3_Substract(const FVec3 a, const FVec3 b);
+float VectorUtils_FVec3_DotProduct(const FVec3 a, const FVec3 b);
 FVec3 VectorUtils_IVec3_ConvertFVec3(const IVec3 a);
 IVec3 VectorUtils_FVec3_ConvertIVec3(const FVec3 a);
+float VectorUtils_FVec3_Distance(const FVec3 a, const FVec3 b);
 
 #endif

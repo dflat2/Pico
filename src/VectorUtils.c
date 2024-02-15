@@ -131,3 +131,12 @@ IVec3 VectorUtils_FVec3_ConvertIVec3(const FVec3 a) {
 
     return result;
 }
+
+float VectorUtils_FVec3_DotProduct(const FVec3 a, const FVec3 b) {
+    return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+}
+
+float VectorUtils_FVec3_Distance(const FVec3 a, const FVec3 b) {
+    FVec3 difference = VectorUtils_FVec3_Substract(a, b);
+    return sqrt(VectorUtils_FVec3_DotProduct(difference, difference));
+}
