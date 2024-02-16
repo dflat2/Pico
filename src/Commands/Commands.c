@@ -2,8 +2,7 @@
 
 extern struct ChatCommand AbortCommand;
 extern struct ChatCommand AscendCommand;
-extern struct ChatCommand BrushesCommand;
-extern struct ChatCommand BrushHelpCommand;
+extern struct ChatCommand HelpBrushCommand;
 extern struct ChatCommand CenterCommand;
 extern struct ChatCommand CheckoutCommand;
 extern struct ChatCommand CircleCommand;
@@ -40,8 +39,7 @@ extern struct ChatCommand ZCommand;
 void Commands_RegisterAll(void) {
     Commands_Register(&AbortCommand);
     Commands_Register(&AscendCommand);
-    Commands_Register(&BrushesCommand);
-    Commands_Register(&BrushHelpCommand);
+    Commands_Register(&HelpBrushCommand);
     Commands_Register(&CenterCommand);
     Commands_Register(&CheckoutCommand);
     Commands_Register(&CircleCommand);
