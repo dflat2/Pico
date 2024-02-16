@@ -105,9 +105,8 @@ static void UpdateTotal(void) {
 
 static void BrushRandom_Help(void) {
     Message_Player("&b@Random <block1> <block2>");
-    Message_Player("Outputs a block randomly between &bblock1 &fand &bblock2&f.");
-    Message_Player("You can use more than two blocks. You can also weight blocks,");
-    Message_Player("for example &b@Random grass/49 dirt/1 gravel/1&f.");
+    Message_Player("Outputs a block randomly. You can use more than two blocks and add weights.");
+    Message_Player("\x1A &b@Random grass/48 dirt/1 gravel/1&f.");
 }
 
 Brush BrushRandom = {

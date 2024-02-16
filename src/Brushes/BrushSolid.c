@@ -24,6 +24,7 @@ static BlockID BrushSolid_Paint(int x, int y, int z) {
 static void BrushSolid_Help(void) {
     Message_Player("&b@Solid <block>");
     Message_Player("Outputs &bblock&f.");
+    Message_Player("\x07 &bblock&f: block name or identifier.");
 }
 
 Brush BrushSolid = {

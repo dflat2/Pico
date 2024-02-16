@@ -32,6 +32,7 @@ static BlockID BrushStriped_Paint(int x, int y, int z) {
 static void BrushStriped_Help(void) {
     Message_Player("&b@Striped <block1> <block2>");
     Message_Player("Alternates between &bblock1 &fand &bblock2&f diagonally.");
+    Message_Player("\x07 &bblock1&f and &bblock2&f: block names or identifiers.");
 }
 
 Brush BrushStriped = {
