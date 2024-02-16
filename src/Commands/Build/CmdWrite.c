@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "ClassiCube/src/Options.h"
+
 #include "MarkSelection.h"
 #include "VectorUtils.h"
 #include "Message.h"
@@ -382,17 +384,19 @@ static bool IsColorCode(char character) {
 }
 
 static BlockID GetColoredBlockFromCode(char colorCode) {
+    bool classic = Options_GetBool(OPT_CLASSIC_MODE, true);
+    
     switch (colorCode) {
         case '0':
             return BLOCK_OBSIDIAN;
         case '1':
-            return BLOCK_DEEP_BLUE;
+            return classic ? BLOCK_BLUE : BLOCK_DEEP_BLUE;
         case '2':
-            return BLOCK_FOREST_GREEN;
+            return classic ? BLOCK_TEAL : BLOCK_FOREST_GREEN;
         case '3':
-            return BLOCK_TURQUOISE;
+            return classic ? BLOCK_CYAN : BLOCK_TURQUOISE;
         case '4':
-            return BLOCK_BROWN;
+            return classic ? BLOCK_RED : BLOCK_BROWN;
         case '5':
             return BLOCK_VIOLET;
         case '6':
