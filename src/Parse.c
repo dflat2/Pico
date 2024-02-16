@@ -21,8 +21,14 @@ static bool TryParsePositiveNumber(const cc_string* string, int* cursor, int* ou
 static bool IsDigit(char character);
 
 bool Parse_TryParseBlock(const cc_string* blockString, BlockID* block) {
-    int i_block;
+    int i_block = -1;
     i_block = Block_Parse(blockString);
+
+    // ClassiCube `Block_Parse` incorrectly parses `+` as BLOCK_AIR.
+    if (i_block == BLOCK_AIR && blockString->length == 1 && blockString->buffer[0] == '+') {
+        Message_ShowUnknownBlock(blockString);
+        return false;
+    }
 
     if (i_block == -1) {
         Message_ShowUnknownBlock(blockString);
