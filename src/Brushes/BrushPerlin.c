@@ -180,7 +180,10 @@ static BlockID BrushPerlin_Paint(int x, int y, int z) {
 
 static void BrushPerlin_Help(void) {
     Message_Player("&b@Perlin <block1> <block2> <scale> [threshold]");
-    Message_Player("Perlin noise based brush.");
+    Message_Player("Perlin noise based brush. Increasing &bthreshold &freduces the amount of &bblock2&f.");
+    Message_Player("\x07 &bblock1&f and &bblock2&f: block names or identifiers.");
+    Message_Player("\x07 &bscale&f: positive non-zero integer (recommended &b10&f).");
+    Message_Player("\x07 &bthreshold&f: decimal number between &b-1.0 &fand &b1.0 &f(default &b0.0&f).");
 }
 
 Brush BrushPerlin = {
