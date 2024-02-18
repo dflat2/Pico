@@ -30,7 +30,7 @@ static void Checkout_Command(const cc_string* args, int argsCount) {
     int operation;
 
     if (!Convert_ParseInt(&(args[0]), &operation) || operation < 0) {
-        Message_Player("&b<operation>&f must be a positive integer.");
+        Message_Player("&boperation&f must be a positive integer.");
         return;
     }
 

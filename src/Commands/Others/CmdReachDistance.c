@@ -58,9 +58,8 @@ static void ReachDistance_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    if (distance < 0.0f)
-    {
-        Message_Player("Distance must be positive or 0.");
+    if (distance < 0.0f) {
+        Message_Player("&bdistance must be a positive decimal number.");
         return;
     }
 
