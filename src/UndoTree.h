@@ -14,11 +14,11 @@ bool UndoTree_Enable(void);
 void UndoTree_Disable(void);
 
 // Undo tree navigation.
-bool UndoTree_Undo(void);
-bool UndoTree_Earlier(int deltaTime_Second, int* out_commit); 
-bool UndoTree_Later(int deltaTime_S, int* commit);
-bool UndoTree_Checkout(int commit, int* out_ascended, int* out_descended);
-bool UndoTree_Redo(void);
+void UndoTree_Undo(void);
+void UndoTree_Earlier(int deltaTime_Second); 
+void UndoTree_Later(int deltaTime_S);
+void UndoTree_Checkout(int commit);
+void UndoTree_Redo(void);
 
 // Attaching a new node.
 bool UndoTree_PrepareNewNode(char* description);

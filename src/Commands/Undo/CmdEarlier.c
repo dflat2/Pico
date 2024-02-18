@@ -32,16 +32,5 @@ static void Earlier_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    int commit;
-    bool success = UndoTree_Earlier(duration_Second, &commit);
-
-    if (!success) {
-        Message_Player("Already at the earliest moment.");
-        return;
-    } 
-
-    char messageBuffer[STRING_SIZE];
-    cc_string message = { messageBuffer, .length = 0, .capacity = STRING_SIZE };
-    UndoTree_FormatCurrentNode(&message);
-    Chat_AddOf(&message, MSG_TYPE_SMALLANNOUNCEMENT);
+    UndoTree_Earlier(duration_Second);
 }

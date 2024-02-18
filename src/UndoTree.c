@@ -158,12 +158,7 @@ static void Ascend(void) {
     s_CurrentNodeIndex = s_Nodes[s_CurrentNodeIndex].parentIndex;
 }
 
-static bool Checkout(int target, int* ascended, int* descended) {
-    if (ascended != NULL && descended != NULL) {
-        *ascended = 0;
-        *descended = 0;
-    }
-
+static bool Checkout(int target) {
     // Calculate the ancestors of the target.
     List* targetAncestors = List_CreateEmpty();
 
@@ -182,10 +177,6 @@ static bool Checkout(int target, int* ascended, int* descended) {
     // Ascend while the current node is not an ancestor of the target.
     while (!List_Contains(targetAncestors, &s_Nodes[s_CurrentNodeIndex])) {
         Ascend();
-        
-        if (ascended != NULL) {
-            (*ascended)++;
-        }
     }
 
     // Remove all ancestors above `s_CurrentNodeIndex` until last element of `targetAncestors` is a child of `s_CurrentNodeIndex`.
@@ -196,10 +187,6 @@ static bool Checkout(int target, int* ascended, int* descended) {
     // Then, descend to the target.
     while (s_CurrentNodeIndex != target) {
         Descend((UndoNode*) List_Pop(targetAncestors));
-        
-        if (descended != NULL) {
-            (*descended)++;
-        }
     }
 
     List_Free(targetAncestors);
@@ -219,13 +206,20 @@ static void StackRedo(int commit) {
     s_RedoStackCount++;
 }
 
-bool UndoTree_Earlier(int deltaTimeSeconds, int* out_commit) {
+static void ShowCurrentNode(void) {
+    char messageBuffer[STRING_SIZE];
+    cc_string message = { messageBuffer, .length = 0, .capacity = STRING_SIZE };
+    UndoTree_FormatCurrentNode(&message);
+    Chat_AddOf(&message, MSG_TYPE_SMALLANNOUNCEMENT);
+}
+
+void UndoTree_Earlier(int deltaTimeSeconds) {
     if (!s_Enabled) {
-        return false;
+        return;
     }
 
     if (deltaTimeSeconds <= 0) {
-        return false;
+        return;
     }
 
     int newIndex = 0;
@@ -238,23 +232,22 @@ bool UndoTree_Earlier(int deltaTimeSeconds, int* out_commit) {
     }
 
     if (newIndex == s_CurrentNodeIndex) {
-        return false;
+        Message_Player("Already at the earliest moment.");
+        return;
     }
 
     StackRedo(s_CurrentNodeIndex);
-    Checkout(newIndex, NULL, NULL);
-
-    *out_commit = s_CurrentNodeIndex;
-    return true;
+    Checkout(newIndex);
+    ShowCurrentNode();
 }
 
-bool UndoTree_Later(int deltaTimeSeconds, int* commit) {
+void UndoTree_Later(int deltaTimeSeconds) {
     if (!s_Enabled) {
-        return false;
+        return;
     }
 
     if (deltaTimeSeconds <= 0) {
-        return false;
+        return;
     }
 
     time_t targetTimestamp = s_Nodes[s_CurrentNodeIndex].timestamp + (long)deltaTimeSeconds;
@@ -270,51 +263,67 @@ bool UndoTree_Later(int deltaTimeSeconds, int* commit) {
     }
 
     if (newIndex == s_CurrentNodeIndex) {
-        return false;
+        Message_Player("No operation was found within this timespan.");
+        return;
     }
 
     StackRedo(s_CurrentNodeIndex);
-    Checkout(newIndex, NULL, NULL);
-        
-    *commit = s_CurrentNodeIndex;
-    return true;
+    Checkout(newIndex);
+    ShowCurrentNode();
 }
 
-bool UndoTree_Undo(void) {
-    if (!s_Enabled || s_CurrentNodeIndex == 0) {
-        return false;
-    }
-
-    StackRedo(s_CurrentNodeIndex);
-
-    Ascend();
-    return true;
-}
-
-bool UndoTree_Checkout(int commit, int* ascended, int* descended) {
+void UndoTree_Undo(void) {
     if (!s_Enabled) {
-        return false;
+        return;
+    }
+
+    if (s_CurrentNodeIndex == 0) {
+        Message_Player("There is nothing to undo.");
+        return;
+    }
+
+    StackRedo(s_CurrentNodeIndex);
+    Ascend();
+    ShowCurrentNode();
+}
+
+void UndoTree_Checkout(int commit) {
+    if (!s_Enabled) {
+        return;
     }
 
     if (commit < 0 || s_NodesCount <= (size_t)commit) {
-        return false;
+        char operationBuffer[STRING_SIZE];
+        cc_string operation = String_FromArray(operationBuffer);
+        Format_Int32(&operation, commit);
+
+        char operationNotFoundBuffer[STRING_SIZE];
+        cc_string operationNotFound = String_FromArray(operationNotFoundBuffer);
+        String_Format1(&operationNotFound, "There is no operation &b%s&f.", &operation);
+
+        Chat_Add(&operationNotFound);
+        return;
     }
 
     StackRedo(s_CurrentNodeIndex);
-
-    Checkout(commit, ascended, descended);
-    return true;
+    Checkout(commit);
+    ShowCurrentNode();
 }
 
-bool UndoTree_Redo(void) {
-    if (!s_Enabled || s_RedoStackCount == 0) {
-        return false;
+void UndoTree_Redo(void) {
+    if (!s_Enabled) {
+        return;
+    }
+
+    if (s_RedoStackCount == 0) {
+        Message_Player("You have nothing to redo.");
+        return;
     }
 
     int nodeIndexTarget = s_RedoStack[s_RedoStackCount - 1];
     s_RedoStackCount--;
-    Checkout(nodeIndexTarget, NULL, NULL);
-    return true;
+    Checkout(nodeIndexTarget);
+    ShowCurrentNode();
 }
 
 static void AddChildren(void) {

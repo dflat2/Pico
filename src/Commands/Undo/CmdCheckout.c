@@ -34,18 +34,5 @@ static void Checkout_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    int ascended;
-    int descended;
-
-    if (!UndoTree_Checkout(operation, &ascended, &descended)) {
-        char operationNotFoundMsg[STRING_SIZE];
-        snprintf(operationNotFoundMsg, sizeof(operationNotFoundMsg), "Could not find operation &b%d&f.", operation);
-        Message_Player(operationNotFoundMsg);
-        return;
-    }
-
-    char messageBuffer[STRING_SIZE];
-    cc_string message = { messageBuffer, .length = 0, .capacity = STRING_SIZE };
-    UndoTree_FormatCurrentNode(&message);
-    Chat_AddOf(&message, MSG_TYPE_SMALLANNOUNCEMENT);
+    UndoTree_Checkout(operation);
 }

@@ -31,14 +31,5 @@ static void Later_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    int commit;
-    if (!UndoTree_Later(duration_Second, &commit)) {
-        Message_Player("No operation to checkout");
-        return;
-    } 
-
-    char messageBuffer[STRING_SIZE];
-    cc_string message = { messageBuffer, .length = 0, .capacity = STRING_SIZE };
-    UndoTree_FormatCurrentNode(&message);
-    Chat_AddOf(&message, MSG_TYPE_SMALLANNOUNCEMENT);
+    UndoTree_Later(duration_Second);
 }

@@ -25,12 +25,5 @@ static void Undo_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    bool success = UndoTree_Undo();
-
-    if (!success) {
-        Message_Player("There is nothing to undo.");
-        return;
-    }
-
-    Message_Player("Undo performed.");
+    UndoTree_Undo();
 }
