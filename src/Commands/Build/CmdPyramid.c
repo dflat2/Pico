@@ -13,6 +13,8 @@
 typedef enum PyramidMode_ {
     MODE_NORMAL,
     MODE_HOLLOW,
+    MODE_ROOF,
+    MODE_WIRE,
 } PyramidMode;
 
 static PyramidMode s_Mode;
@@ -46,12 +48,15 @@ static void PyramidSelectionHandler(IVec3* marks, int count) {
 
     Draw_Start("Pyramid");
 
-    // Base
-    for (int x = min.X; x <= max.X; x++) {
-        for (int z = min.Z; z <= max.Z; z++) {
-            Draw_Brush(x, baseY, z);
-        }
+    if (s_Mode == MODE_NORMAL || s_Mode == MODE_HOLLOW) {
+        DrawCuboid(min.X, baseY, min.Z, max.X, baseY, max.Z);
+    } else if (s_Mode == MODE_ROOF || s_Mode == MODE_WIRE) {
+        DrawCuboid(min.X, baseY, min.Z, min.X, baseY, max.Z);
+        DrawCuboid(min.X, baseY, min.Z, max.X, baseY, min.Z);
+        DrawCuboid(max.X, baseY, min.Z, max.X, baseY, max.Z);
+        DrawCuboid(min.X, baseY, max.Z, max.X, baseY, max.Z);
     }
+
 
     int xMin = min.X + 1;
     int zMin = min.Z + 1;
@@ -61,11 +66,20 @@ static void PyramidSelectionHandler(IVec3* marks, int count) {
     for (int i = 1; i < height; i++) {
         if (s_Mode == MODE_NORMAL) {
             DrawCuboid(xMin, baseY + i, zMin, xMax, baseY + i, zMax);
-        } else {
+        } else if (s_Mode == MODE_HOLLOW || s_Mode == MODE_ROOF) {
             DrawCuboid(xMin, baseY + i, zMin, xMin, baseY + i, zMax);
             DrawCuboid(xMin, baseY + i, zMin, xMax, baseY + i, zMin);
             DrawCuboid(xMax, baseY + i, zMin, xMax, baseY + i, zMax);
             DrawCuboid(xMin, baseY + i, zMax, xMax, baseY + i, zMax);
+        } else if (s_Mode == MODE_WIRE) {
+            if (i == height - 1) {
+                DrawCuboid(xMin, baseY + i, zMin, xMax, baseY + i, zMax);
+            } else {
+                Draw_Brush(xMin, baseY + i, zMin);
+                Draw_Brush(xMin, baseY + i, zMax);
+                Draw_Brush(xMax, baseY + i, zMin);
+                Draw_Brush(xMax, baseY + i, zMax);
+            }
         }
         
         xMin++;
@@ -88,6 +102,8 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
     cc_string modesString[] = {
         String_FromConst("normal"),
         String_FromConst("hollow"),
+        String_FromConst("roof"),
+        String_FromConst("wire"),
     };
 
     size_t modesCount = sizeof(modesString) / sizeof(modesString[0]);
@@ -150,7 +166,7 @@ struct ChatCommand PyramidCommand = {
     {
         "&b/Pyramid [mode] @ +",
         "Draws a pyramid from a rectangular base.",
-        "\x07 &bmode&f: &bnormal&f (default) or &bhollow&f.",
+        "\x07 &bmode&f: &bnormal&f (default), &bhollow&f, &broof &for &bwire&f.",
         NULL,
         NULL
     },
