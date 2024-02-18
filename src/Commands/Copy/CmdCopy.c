@@ -31,10 +31,7 @@ static void CopySelectionHandler(IVec3* marks, int count) {
     ShowBlocksCopied(amountCopied);
 }
 
-static void Copy_Command(const cc_string* args, int argsCount) {
-    MarkSelection_Make(CopySelectionHandler, 2, "Copy", MACRO_MARKSELECTION_DO_NOT_REPEAT);
-    Message_Player("Place or break two blocks to determine the edges.");
-}
+static void Copy_Command(const cc_string* args, int argsCount);
 
 struct ChatCommand CopyCommand = {
     "Copy",
@@ -49,3 +46,13 @@ struct ChatCommand CopyCommand = {
     },
     NULL
 };
+
+static void Copy_Command(const cc_string* args, int argsCount) {
+    if (argsCount != 0) {
+        Message_CommandUsage(CopyCommand);
+        return;
+    }
+
+    MarkSelection_Make(CopySelectionHandler, 2, "Copy", MACRO_MARKSELECTION_DO_NOT_REPEAT);
+    Message_Player("Place or break two blocks to determine the edges.");
+}

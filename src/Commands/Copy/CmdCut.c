@@ -50,10 +50,7 @@ static void CutSelectionHandler(IVec3* marks, int count) {
     ShowBlocksCut(amountCopied);
 }
 
-static void Cut_Command(const cc_string* args, int argsCount) {
-    MarkSelection_Make(CutSelectionHandler, 2, "Cut", MACRO_MARKSELECTION_DO_NOT_REPEAT);
-    Message_Player("Place or break two blocks to determine the edges.");
-}
+static void Cut_Command(const cc_string* args, int argsCount);
 
 struct ChatCommand CutCommand = {
     "Cut",
@@ -68,3 +65,13 @@ struct ChatCommand CutCommand = {
     },
     NULL
 };
+
+static void Cut_Command(const cc_string* args, int argsCount) {
+    if (argsCount != 0) {
+        Message_CommandUsage(CutCommand);
+        return;
+    }
+
+    MarkSelection_Make(CutSelectionHandler, 2, "Cut", MACRO_MARKSELECTION_DO_NOT_REPEAT);
+    Message_Player("Place or break two blocks to determine the edges.");
+}
