@@ -68,6 +68,10 @@ static void ShowMarksLeft(void) {
 
     String_AppendConst(&message, "]");
 
+    if (s_Repeat) {
+        String_AppendConst(&message, " &b+");
+    }
+
     Chat_AddOf(&message, MSG_TYPE_BOTTOMRIGHT_1);
 }
 
