@@ -1,24 +1,29 @@
-#include <stdio.h>
-
 #include "ClassiCube/src/Constants.h"
 
 #include "DataStructures/BlocksBuffer.h"
 #include "Draw.h"
 #include "MarkSelection.h"
 #include "Message.h"
+#include "Format.h"
 #include "VectorUtils.h"
 #include "Memory.h"
 
 static void ShowBlocksCut(int amount) {
-    char message[STRING_SIZE];
+    char messageBuffer[STRING_SIZE];
+    cc_string message = String_FromArray(messageBuffer);
+
+    char blocksCountBuffer[STRING_SIZE];
+    cc_string blocksCount = String_FromArray(blocksCountBuffer);
+
+    Format_Int32(&blocksCount, amount);
 
     if (amount == 1) {
-        snprintf(message, sizeof(message), "&b%d &fblock were cut.", amount);
+        String_Format1(&message, "&b%s &fblock was cut.", &blocksCount);
     } else {
-        snprintf(message, sizeof(message), "&b%d &fblocks were cut.", amount);
+        String_Format1(&message, "&b%s &fblocks were cut.", &blocksCount);
     }
 
-    Message_Player(message);
+    Chat_Add(&message);
 }
 
 static void DoCut(IVec3 mark1, IVec3 mark2) {
@@ -34,8 +39,7 @@ static void DoCut(IVec3 mark1, IVec3 mark2) {
         }
     }
 
-    int blocksAffected = Draw_End();
-    Message_BlocksAffected(blocksAffected);
+    Draw_End();
 }
 
 static void CutSelectionHandler(IVec3* marks, int count) {
