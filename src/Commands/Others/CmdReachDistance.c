@@ -52,8 +52,7 @@ static void ReachDistance_Command(const cc_string* args, int argsCount) {
     float distance;
     bool success = Convert_ParseFloat(&args[0], &distance);
 
-    if (!success)
-    {
+    if (!success) {
         Message_CommandUsage(ReachDistanceCommand);
         return;
     }
