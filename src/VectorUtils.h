@@ -17,7 +17,7 @@ typedef struct FVec3_ {
 } FVec3;
 
 IVec3 VectorUtils_IVec3_Min(IVec3 a, IVec3 b);
-IVec3 VectorsUtils_IVec3_Max(IVec3 a, IVec3 b);
+IVec3 VectorUtils_IVec3_Max(IVec3 a, IVec3 b);
 IVec3 VectorsUtils_IVec3_Add(const IVec3 a, const IVec3 b);
 IVec3 VectorUtils_2DTo3D(IVec2 vector, Axis axis);
 double VectorUtils_IVec3_Distance(IVec3 a, IVec3 b);

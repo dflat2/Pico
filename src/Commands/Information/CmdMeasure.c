@@ -81,7 +81,7 @@ static void MeasureSelectionHandler(IVec3* marks, int count) {
     Message_Player(&message[0]);
 
     IVec3 min = VectorUtils_IVec3_Min(marks[0], marks[1]);
-    IVec3 max = VectorsUtils_IVec3_Max(marks[0], marks[1]);
+    IVec3 max = VectorUtils_IVec3_Max(marks[0], marks[1]);
     
     CountBlocks(min.X, min.Y, min.Z, max.X, max.Y, max.Z);
 

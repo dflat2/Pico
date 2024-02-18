@@ -28,7 +28,7 @@ static void ShowBlocksCut(int amount) {
 
 static void DoCut(IVec3 mark1, IVec3 mark2) {
     IVec3 min = VectorUtils_IVec3_Min(mark1, mark2);
-    IVec3 max = VectorsUtils_IVec3_Max(mark1, mark2);
+    IVec3 max = VectorUtils_IVec3_Max(mark1, mark2);
 
     Draw_Start("Cut");
     for (int x = min.X; x <= max.X; x++) {

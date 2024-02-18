@@ -12,7 +12,7 @@ IVec3 VectorUtils_IVec3_Min(IVec3 a, IVec3 b) {
     return result;
 }
 
-IVec3 VectorsUtils_IVec3_Max(IVec3 a, IVec3 b) {
+IVec3 VectorUtils_IVec3_Max(IVec3 a, IVec3 b) {
     IVec3 result;
 
     result.X = (a.X >= b.X) ? a.X : b.X;

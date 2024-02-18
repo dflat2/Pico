@@ -52,7 +52,7 @@ static void DoReplaceNot(IVec3 min, IVec3 max) {
 }
 
 static void ReplaceSelectionHandler(IVec3* marks, int count) {
-    DoReplaceNot(VectorUtils_IVec3_Min(marks[0], marks[1]), VectorsUtils_IVec3_Max(marks[0], marks[1]));
+    DoReplaceNot(VectorUtils_IVec3_Min(marks[0], marks[1]), VectorUtils_IVec3_Max(marks[0], marks[1]));
 }
 
 static bool TryParseArguments(const cc_string* args, int argsCount) {

@@ -22,6 +22,7 @@ extern struct ChatCommand OutlineCommand;
 extern struct ChatCommand PaintCommand;
 extern struct ChatCommand PasteCommand;
 extern struct ChatCommand PicoCommand;
+extern struct ChatCommand PyramidCommand;
 extern struct ChatCommand ReachDistanceCommand;
 extern struct ChatCommand RedoCommand;
 extern struct ChatCommand ReplaceAllCommand;
@@ -60,6 +61,7 @@ void Commands_RegisterAll(void) {
     Commands_Register(&PaintCommand);
     Commands_Register(&PasteCommand);
     Commands_Register(&PicoCommand);
+    Commands_Register(&PyramidCommand);
     Commands_Register(&ReachDistanceCommand);
     Commands_Register(&RedoCommand);
     Commands_Register(&ReplaceAllCommand);
