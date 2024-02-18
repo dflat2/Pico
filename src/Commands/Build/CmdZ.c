@@ -16,7 +16,6 @@ typedef enum ZMode_ {
     MODE_CORNERS = 4
 } ZMode;
 
-static bool s_Repeat;
 static ZMode s_Mode;
 
 typedef void (*CuboidOperation)(IVec3 min, IVec3 max);
@@ -53,7 +52,7 @@ static void DoCuboidSolid(IVec3 min, IVec3 max) {
 
     int blocksAffected = Draw_End();
 
-    if (!s_Repeat) {
+    if (!MarkSelection_Repeating()) {
         Message_BlocksAffected(blocksAffected);
     }
 }
@@ -69,7 +68,7 @@ static void DoCuboidHollow(IVec3 min, IVec3 max) {
 
     int blocksAffected = Draw_End();
 
-    if (!s_Repeat) {
+    if (!MarkSelection_Repeating()) {
         Message_BlocksAffected(blocksAffected);
     }
 }
@@ -83,7 +82,7 @@ static void DoCuboidWalls(IVec3 min, IVec3 max) {
 
     int blocksAffected = Draw_End();
 
-    if (!s_Repeat) {
+    if (!MarkSelection_Repeating()) {
         Message_BlocksAffected(blocksAffected);
     }
 }
@@ -119,7 +118,7 @@ static void DoCuboidCorners(IVec3 min, IVec3 max) {
 
     int blocksAffected = Draw_End();
 
-    if (!s_Repeat) {
+    if (!MarkSelection_Repeating()) {
         Message_BlocksAffected(blocksAffected);
     }
 }
@@ -145,8 +144,8 @@ static void ZSelectionHandler(IVec3* marks, int count) {
     CuboidOperation Operation = GetFunction(s_Mode);
     Operation(VectorUtils_IVec3_Min(marks[0], marks[1]), VectorUtils_IVec3_Max(marks[0], marks[1]));
 
-    if (s_Repeat) {
-        MarkSelection_Make(ZSelectionHandler, 2, "Z");
+    if (MarkSelection_Repeating()) {
+        MarkSelection_Make(ZSelectionHandler, 2, "Z", MACRO_MARKSELECTION_DO_REPEAT);
     }
 }
 
@@ -198,17 +197,17 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 }
 
 static void Z_Command(const cc_string* args, int argsCount) {
-    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+    bool repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (!TryParseArguments(args, argsCount)) {
         MarkSelection_Abort();
         return;
     }
 
-    if (s_Repeat) {
+    if (repeat) {
         Message_Player("Now repeating &bZ&f.");
     }
 
-    MarkSelection_Make(ZSelectionHandler, 2, "Z");
+    MarkSelection_Make(ZSelectionHandler, 2, "Z", repeat);
     Message_Player("Place or break two blocks to determine the edges.");
 }

@@ -51,7 +51,7 @@ static void CutSelectionHandler(IVec3* marks, int count) {
 }
 
 static void Cut_Command(const cc_string* args, int argsCount) {
-    MarkSelection_Make(CutSelectionHandler, 2, "Cut");
+    MarkSelection_Make(CutSelectionHandler, 2, "Cut", MACRO_MARKSELECTION_DO_NOT_REPEAT);
     Message_Player("Place or break two blocks to determine the edges.");
 }
 

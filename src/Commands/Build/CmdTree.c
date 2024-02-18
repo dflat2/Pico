@@ -3,8 +3,6 @@
 #include "Parse.h"
 #include "Draw.h"
 
-static bool s_Repeat = false;
-
 static void Tree_Command(const cc_string* args, int argsCount);
 
 struct ChatCommand TreeCommand = {
@@ -80,8 +78,8 @@ static void TreeSelectionHandler(IVec3* marks, int count) {
     DrawLeavesLayer4(x, y, z);
     int blocksAffected = Draw_End();
 
-    if (s_Repeat) {
-        MarkSelection_Make(TreeSelectionHandler, 1, "Tree");
+    if (MarkSelection_Repeating()) {
+        MarkSelection_Make(TreeSelectionHandler, 1, "Tree", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
 
@@ -89,17 +87,17 @@ static void TreeSelectionHandler(IVec3* marks, int count) {
 }
 
 static void Tree_Command(const cc_string* args, int argsCount) {
-    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+    bool repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (argsCount > 0) {
         Message_CommandUsage(TreeCommand);
         return;
     }
 
-    if (s_Repeat) {
+    if (repeat) {
         Message_Player("Now repeating &bTree&f.");
     }
 
-    MarkSelection_Make(TreeSelectionHandler, 1, "Tree");
+    MarkSelection_Make(TreeSelectionHandler, 1, "Tree", repeat);
     Message_Player("Place or break a block to determine the root.");
 }

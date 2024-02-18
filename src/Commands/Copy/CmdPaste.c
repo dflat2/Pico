@@ -10,8 +10,6 @@
 
 static void Paste_Command(const cc_string* args, int argsCount);
 
-static bool s_Repeat = false;
-
 struct ChatCommand PasteCommand = {
     "Paste",
     Paste_Command,
@@ -54,8 +52,8 @@ static void PasteSelectionHandler(IVec3* marks, int count) {
 
     int blocksAffected = Draw_End();
 
-    if (s_Repeat) {
-        MarkSelection_Make(PasteSelectionHandler, 1, "Paste");
+    if (MarkSelection_Repeating()) {
+        MarkSelection_Make(PasteSelectionHandler, 1, "Paste", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
 
@@ -63,7 +61,7 @@ static void PasteSelectionHandler(IVec3* marks, int count) {
 }
 
 static void Paste_Command(const cc_string* args, int argsCount) {
-    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+    bool repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (BlocksBuffer_IsEmpty()) {
         Message_Player("You haven't copied anything yet.");
@@ -98,10 +96,10 @@ static void Paste_Command(const cc_string* args, int argsCount) {
         s_Mode = (PasteMode)modeIndex;
     }
 
-    if (s_Repeat) {
+    if (repeat) {
         Message_Player("Now repeating &bPaste&f.");
     }
 
-    MarkSelection_Make(PasteSelectionHandler, 1, "Paste");
+    MarkSelection_Make(PasteSelectionHandler, 1, "Paste", repeat);
     Message_Player("Place a block in the corner of where you want to paste.");
 }

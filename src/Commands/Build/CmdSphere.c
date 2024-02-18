@@ -13,7 +13,6 @@ typedef enum SphereMode_ {
     MODE_HOLLOW = 1,
 } SphereMode;
 
-static bool s_Repeat;
 static SphereMode s_Mode;
 static int s_Radius;
 static IVec3 s_Center;
@@ -61,8 +60,8 @@ static void SphereSelectionHandler(IVec3* marks, int count) {
 
     int blocksAffected = Draw_End();
 
-    if (s_Repeat) {
-        MarkSelection_Make(SphereSelectionHandler, 1, "Sphere");
+    if (MarkSelection_Repeating()) {
+        MarkSelection_Make(SphereSelectionHandler, 1, "Sphere", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
 
@@ -70,7 +69,7 @@ static void SphereSelectionHandler(IVec3* marks, int count) {
 }
 
 static void Sphere_Command(const cc_string* args, int argsCount) {
-    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+    bool repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (argsCount == 0) {
         Message_CommandUsage(SphereCommand);
@@ -110,10 +109,10 @@ static void Sphere_Command(const cc_string* args, int argsCount) {
         Brush_LoadInventory();
     }
 
-    if (s_Repeat) {
+    if (repeat) {
         Message_Player("Now repeating &bSphere&f.");
     }
 
-    MarkSelection_Make(SphereSelectionHandler, 1, "Sphere");
+    MarkSelection_Make(SphereSelectionHandler, 1, "Sphere", repeat);
     Message_Player("Place or break a block to determine the center.");
 }

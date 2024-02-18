@@ -9,7 +9,7 @@ static void PaintSelectionHandler(IVec3* marks, int count) {
     Draw_Brush(marks[0].X, marks[0].Y, marks[0].Z);
     Draw_End();
 
-    MarkSelection_Make(&PaintSelectionHandler, 1, "Paint");
+    MarkSelection_Make(&PaintSelectionHandler, 1, "Paint", MACRO_MARKSELECTION_DO_REPEAT);
 }
 
 static void Paint_Command(const cc_string* args, int argsCount) {
@@ -22,7 +22,7 @@ static void Paint_Command(const cc_string* args, int argsCount) {
     }
 
     Message_Player("Place or break blocks to paint. Stop with &b/Abort&f.");
-    MarkSelection_Make(&PaintSelectionHandler, 1, "Paint");
+    MarkSelection_Make(&PaintSelectionHandler, 1, "Paint", MACRO_MARKSELECTION_DO_REPEAT);
 }
 
 struct ChatCommand PaintCommand = {

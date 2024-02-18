@@ -23,7 +23,6 @@ typedef enum FillMode_ {
     MODE_UP = 5
 } FillMode;
 
-static bool s_Repeat;
 static FillMode s_Mode;
 static int s_SourceY;
 
@@ -178,8 +177,8 @@ static void FillSelectionHandler(IVec3* marks, int count) {
 
     int blocksAffected = Draw_End();
 
-    if (s_Repeat) {
-        MarkSelection_Make(FillSelectionHandler, 1, "Fill");
+    if (MarkSelection_Repeating()) {
+        MarkSelection_Make(FillSelectionHandler, 1, "Fill", MACRO_MARKSELECTION_DO_REPEAT);
         Message_Player("Place or break a block.");
         return;
     }
@@ -188,18 +187,18 @@ static void FillSelectionHandler(IVec3* marks, int count) {
 }
 
 static void Fill_Command(const cc_string* args, int argsCount) {
-    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+    bool repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (!TryParseArguments(args, argsCount)) {
         MarkSelection_Abort();
         return;
     }
 
-    if (s_Repeat) {
+    if (repeat) {
         Message_Player("Now repeating &bFill&f.");
     }
 
-    MarkSelection_Make(FillSelectionHandler, 1, "Fill");
+    MarkSelection_Make(FillSelectionHandler, 1, "Fill", repeat);
     Message_Player("Place or break a block.");
 }
 

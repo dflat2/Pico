@@ -20,7 +20,6 @@ typedef enum OutlineMode_ {
 } OutlineMode;
 
 static BlockID s_OutlinedBlock;
-static bool s_Repeat;
 static OutlineMode s_Mode;
 
 static void Outline_Command(const cc_string* args, int argsCount);
@@ -182,8 +181,8 @@ static void OutlineSelectionHandler(IVec3* marks, int count) {
     int blocksAffected = Draw_End();
     Message_BlocksAffected(blocksAffected);
 
-    if (s_Repeat) {
-        MarkSelection_Make(OutlineSelectionHandler, 2, "Outline");
+    if (MarkSelection_Repeating()) {
+        MarkSelection_Make(OutlineSelectionHandler, 2, "Outline", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
 
@@ -191,17 +190,17 @@ static void OutlineSelectionHandler(IVec3* marks, int count) {
 }
 
 static void Outline_Command(const cc_string* args, int argsCount) {
-    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+    bool repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (!TryParseArguments(args, argsCount)) {
         MarkSelection_Abort();
         return;
     }
 
-    if (s_Repeat) {
+    if (repeat) {
         Message_Player("Now repeating &bOutline&f.");
     }
 
-    MarkSelection_Make(OutlineSelectionHandler, 2, "Outline");
+    MarkSelection_Make(OutlineSelectionHandler, 2, "Outline", repeat);
     Message_Player("Place or break two blocks to determine the edges.");
 }

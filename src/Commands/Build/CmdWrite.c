@@ -466,6 +466,6 @@ static void Write_Command(const cc_string* text, int _) {
     }
 
     String_Copy(&s_Text, text);
-    MarkSelection_Make(WriteSelectionHandler, 2, "Write");
+    MarkSelection_Make(WriteSelectionHandler, 2, "Write", MACRO_MARKSELECTION_DO_NOT_REPEAT);
     Message_Player("Place or break two blocks to indicate direction.");
 }

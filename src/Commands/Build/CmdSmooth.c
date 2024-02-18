@@ -7,7 +7,6 @@
 #include "Parse.h"
 #include "DataStructures/IVec3FastQueue.h"
 
-static bool s_Repeat;
 static unsigned short s_Block;
 static const int PERCENTAGE_THRESHOLD = 50;
 static const int SIZE = 2;
@@ -127,8 +126,8 @@ static void SmoothSelectionHandler(IVec3* marks, int count) {
 
     int blocksAffected = Draw_End();
 
-    if (s_Repeat) {
-        MarkSelection_Make(SmoothSelectionHandler, 1, "Smooth");
+    if (MarkSelection_Repeating()) {
+        MarkSelection_Make(SmoothSelectionHandler, 1, "Smooth", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
 
@@ -137,7 +136,7 @@ static void SmoothSelectionHandler(IVec3* marks, int count) {
 
 
 static void Smooth_Command(const cc_string* args, int argsCount) {
-    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+    bool repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (argsCount != 1) {
         Message_CommandUsage(SmoothCommand);
@@ -148,10 +147,10 @@ static void Smooth_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    if (s_Repeat) {
+    if (repeat) {
         Message_Player("Now repeating &bSmooth&f.");
     }
 
-    MarkSelection_Make(SmoothSelectionHandler, 1, "Smooth");
+    MarkSelection_Make(SmoothSelectionHandler, 1, "Smooth", repeat);
     Message_Player("Place or break a block.");
 }

@@ -11,8 +11,6 @@
 #include "Message.h"
 #include "Parse.h"
 
-static bool s_Repeat;
-
 typedef struct Triangle_ {
     FVec3 a;
     FVec3 b;
@@ -155,8 +153,8 @@ static void TriangleSelectionHandler(IVec3* marks, int count) {
     if (plane.normal.X == 0 && plane.normal.Y == 0 && plane.normal.Z == 0) {
         Message_Player("Cannot draw a triangle from aligned points.");
 
-        if (s_Repeat) {
-            MarkSelection_Make(TriangleSelectionHandler, 3, "Triangle");
+        if (MarkSelection_Repeating()) {
+            MarkSelection_Make(TriangleSelectionHandler, 3, "Triangle", MACRO_MARKSELECTION_DO_REPEAT);
             return;
         }
 
@@ -191,8 +189,8 @@ static void TriangleSelectionHandler(IVec3* marks, int count) {
 
     int blocksAffected = Draw_End();
 
-    if (s_Repeat) {
-        MarkSelection_Make(TriangleSelectionHandler, 3, "Triangle");
+    if (MarkSelection_Repeating()) {
+        MarkSelection_Make(TriangleSelectionHandler, 3, "Triangle", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
 
@@ -215,18 +213,18 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 }
 
 static void Triangle_Command(const cc_string* args, int argsCount) {
-    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+    bool repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (!TryParseArguments(args, argsCount)) {
         return;
     }
 
-    if (s_Repeat) {
+    if (repeat) {
         Message_Player("Now repeating &bTriangle&f.");
     }
 
     Message_Player("Place or break three points to determine the vertices.");
-    MarkSelection_Make(TriangleSelectionHandler, 3, "Triangle");
+    MarkSelection_Make(TriangleSelectionHandler, 3, "Triangle", repeat);
 }
 
 struct ChatCommand TriangleCommand = {

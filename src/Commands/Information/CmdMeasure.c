@@ -28,7 +28,6 @@ struct ChatCommand MeasureCommand = {
 
 static BlockID s_Blocks[10];
 static int s_Count;
-static bool s_Repeat;
 
 static void ShowCountedBlocks(int* counts) {
     cc_string currentBlockName;
@@ -85,14 +84,14 @@ static void MeasureSelectionHandler(IVec3* marks, int count) {
     
     CountBlocks(min.X, min.Y, min.Z, max.X, max.Y, max.Z);
 
-    if (s_Repeat) {
-        MarkSelection_Make(MeasureSelectionHandler, 2, "Measure");
+    if (MarkSelection_Repeating()) {
+        MarkSelection_Make(MeasureSelectionHandler, 2, "Measure", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
 }
 
 static void Measure_Command(const cc_string* args, int argsCount) {
-    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+    bool repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (argsCount > 10) {
         Message_Player("Cannot measure more than 10 blocks.");
@@ -113,10 +112,10 @@ static void Measure_Command(const cc_string* args, int argsCount) {
         s_Blocks[i] = (BlockID)currentBlock;
     }
 
-    if (s_Repeat) {
+    if (repeat) {
         Message_Player("Now repeating &bMeasure&f.");
     }
 
     Message_Player("Place or break two blocks to determine the edges.");
-    MarkSelection_Make(MeasureSelectionHandler, 2, "Measure");
+    MarkSelection_Make(MeasureSelectionHandler, 2, "Measure", repeat);
 }

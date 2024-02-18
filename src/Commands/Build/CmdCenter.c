@@ -9,8 +9,6 @@
 #include "VectorUtils.h"
 #include "Parse.h"
 
-static bool s_Repeat = false;
-
 static void Center_Command(const cc_string* args, int argsCount);
 
 struct ChatCommand CenterCommand = {
@@ -62,8 +60,8 @@ static void CenterSelectionHandler(IVec3* marks, int count) {
 
     char message[STRING_SIZE];
 
-    if (s_Repeat) {
-        MarkSelection_Make(CenterSelectionHandler, 2, "Center");
+    if (MarkSelection_Repeating()) {
+        MarkSelection_Make(CenterSelectionHandler, 2, "Center", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
 
@@ -76,7 +74,7 @@ static void CenterSelectionHandler(IVec3* marks, int count) {
 }
 
 static void Center_Command(const cc_string* args, int argsCount) {
-    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+    bool repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
     
     if (argsCount != 0) {
         if (!Parse_TryParseBlockOrBrush(&args[0], argsCount)) {
@@ -86,10 +84,10 @@ static void Center_Command(const cc_string* args, int argsCount) {
         Brush_LoadInventory();
     }
 
-    if (s_Repeat) {
+    if (repeat) {
         Message_Player("Now repeating &bCenter&f.");
     }
 
-    MarkSelection_Make(CenterSelectionHandler, 2, "Center");
+    MarkSelection_Make(CenterSelectionHandler, 2, "Center", repeat);
     Message_Player("Place or break two blocks to determine the edges.");
 }

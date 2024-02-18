@@ -16,7 +16,6 @@ typedef enum PyramidMode_ {
 } PyramidMode;
 
 static PyramidMode s_Mode;
-static bool s_Repeat;
 
 static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zmax) {
     for (int i = xmin; i <= xmax; i++) {
@@ -77,8 +76,8 @@ static void PyramidSelectionHandler(IVec3* marks, int count) {
 
     int blocksAffected = Draw_End();
 
-    if (s_Repeat) {
-        MarkSelection_Make(PyramidSelectionHandler, 2, "Pyramid");
+    if (MarkSelection_Repeating()) {
+        MarkSelection_Make(PyramidSelectionHandler, 2, "Pyramid", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
 
@@ -130,18 +129,18 @@ static bool TryParseArguments(const cc_string* args, int argsCount) {
 }
 
 static void Pyramid_Command(const cc_string* args, int argsCount) {
-    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+    bool repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (!TryParseArguments(args, argsCount)) {
         return;
     }
 
-    if (s_Repeat) {
+    if (repeat) {
         Message_Player("Now repeating &bPyramid&f.");
     }
 
     Message_Player("Place or break two blocks to indicate the base.");
-    MarkSelection_Make(PyramidSelectionHandler, 2, "Pyramid");
+    MarkSelection_Make(PyramidSelectionHandler, 2, "Pyramid", repeat);
 }
 
 struct ChatCommand PyramidCommand = {

@@ -15,6 +15,7 @@ static int s_TotalMarks = 0;
 static char s_OperationBuffer[STRING_SIZE];
 static cc_string s_Operation = String_FromArray(s_OperationBuffer);
 static IVec3 s_Marks[MAX_MARKS] = { 0 };
+static bool s_Repeat = false;
 static SelectionHandler s_Handler = NULL;
 
 static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock) {
@@ -85,11 +86,16 @@ void MarkSelection_DoMark(IVec3 coords) {
     }
 }
 
+bool MarkSelection_Repeating(void) {
+    return s_Repeat;
+}
+
 static void ResetSelectionState(void) {
     s_InProgress = false;
     s_CurrentMark = 0;
     s_TotalMarks = 0;
     s_Handler = NULL;
+    s_Repeat = false;
 }
 
 void MarkSelection_Abort(void) {
@@ -106,7 +112,7 @@ int MarkSelection_RemainingMarks(void) {
     return s_TotalMarks - s_CurrentMark;
 }
 
-void MarkSelection_Make(SelectionHandler handler, int count, const char* operation) {
+void MarkSelection_Make(SelectionHandler handler, int count, const char* operation, bool repeat) {
     if (s_InProgress) {
         MarkSelection_Abort();
     }
@@ -118,6 +124,7 @@ void MarkSelection_Make(SelectionHandler handler, int count, const char* operati
     s_CurrentMark = 0;
     s_TotalMarks = count;
     s_Handler = handler;
+    s_Repeat = repeat;
     ShowMarksLeft();
     RegisterBlockChanged();
 }

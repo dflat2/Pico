@@ -14,7 +14,6 @@ typedef enum CircleMode_ {
     MODE_HOLLOW = 1,
 } CircleMode;
 
-static bool s_Repeat = false;
 static CircleMode s_Mode;
 static Axis s_Axis;
 static int s_Radius;
@@ -58,8 +57,8 @@ static void CircleSelectionHandler(IVec3* marks, int count) {
 
     int blocksAffected = Draw_End();
 
-    if (s_Repeat) {
-        MarkSelection_Make(CircleSelectionHandler, 1, "Circle");
+    if (MarkSelection_Repeating()) {
+        MarkSelection_Make(CircleSelectionHandler, 1, "Circle", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
 
@@ -67,7 +66,7 @@ static void CircleSelectionHandler(IVec3* marks, int count) {
 }
 
 static void Circle_Command(const cc_string* args, int argsCount) {
-    s_Repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
+    bool repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
     if (argsCount < 2) {
         Message_CommandUsage(CircleCommand);
@@ -113,10 +112,10 @@ static void Circle_Command(const cc_string* args, int argsCount) {
         Brush_LoadInventory();
     }
 
-    if (s_Repeat) {
+    if (repeat) {
         Message_Player("Now repeating &bCircle&f.");
     }
 
-    MarkSelection_Make(CircleSelectionHandler, 1, "Circle");
+    MarkSelection_Make(CircleSelectionHandler, 1, "Circle", repeat);
     Message_Player("Place or break a block to determine the center.");
 }
