@@ -11,6 +11,14 @@ This project is still _work in progress_ and is not fully documented yet (but mo
 + All basic drawing commands: `/Fill`, `/Outline`, `/Tree`, etc.
 + Many convenient commands: `/Ascend`, `/ReachDistance`, `/Mark`, etc.
 
+## Download
+
+[Download Pico from here](https://github.com/dflat2/Pico/releases/tag/0.1.0).
+
+## Installing
+
+To install the plugin, move `pico.dylib` (or `.dll` or `.so`) in the `ClassiCube/plugins` directory.
+
 ## Compiling
 
 Before compiling, clone the repository. The `--recurse-submodules` option will also clone the `ClassiCube` submodule (required for resolving header files).
@@ -47,7 +55,3 @@ I did not test compiling on Windows yet. But you may follow the instructions doc
 ```bash
 gcc `find src/ -name '*.c'` -I. -I./src -o pico.dll -shared -L . -lClassiCube
 ```
-
-## Installing
-
-To install the plugin, move `pico.dylib` (or `.dll` or `.so`) in the `ClassiCube/plugins` directory.
