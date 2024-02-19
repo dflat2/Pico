@@ -179,7 +179,6 @@ static void OutlineSelectionHandler(IVec3* marks, int count) {
     IVec3FastQueue_Free(outline);
 
     int blocksAffected = Draw_End();
-    Message_BlocksAffected(blocksAffected);
 
     if (MarkSelection_Repeating()) {
         MarkSelection_Make(OutlineSelectionHandler, 2, "Outline", MACRO_MARKSELECTION_DO_REPEAT);
