@@ -179,7 +179,6 @@ static void FillSelectionHandler(IVec3* marks, int count) {
 
     if (MarkSelection_Repeating()) {
         MarkSelection_Make(FillSelectionHandler, 1, "Fill", MACRO_MARKSELECTION_DO_REPEAT);
-        Message_Player("Place or break a block.");
         return;
     }
 

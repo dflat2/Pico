@@ -123,7 +123,6 @@ static void Ascend_Command(const cc_string* args, int argsCount) {
     update.pos = ascendPosition;
 
     playerEntity.VTABLE->SetLocation(&playerEntity, &update);
-    Message_Player("Teleported you up.");
 }
 
 static void Descend_Command(const cc_string* args, int argsCount) {
@@ -150,5 +149,4 @@ static void Descend_Command(const cc_string* args, int argsCount) {
     update.pos = descendPosition;
 
     playerEntity.VTABLE->SetLocation(&playerEntity, &update);
-    Message_Player("Teleported you down.");
 }
