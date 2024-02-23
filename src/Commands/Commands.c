@@ -10,6 +10,7 @@ extern struct ChatCommand CopyCommand;
 extern struct ChatCommand CutCommand;
 extern struct ChatCommand DescendCommand;
 extern struct ChatCommand EarlierCommand;
+extern struct ChatCommand EnvironmentCommand;
 extern struct ChatCommand FillCommand;
 extern struct ChatCommand FixGrassCommand;
 extern struct ChatCommand FlipCommand;
@@ -50,6 +51,7 @@ void Commands_RegisterAll(void) {
     Commands_Register(&CutCommand);
     Commands_Register(&DescendCommand);
     Commands_Register(&EarlierCommand);
+    Commands_Register(&EnvironmentCommand);
     Commands_Register(&FillCommand);
     Commands_Register(&FixGrassCommand);
     Commands_Register(&FlipCommand);
