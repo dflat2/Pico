@@ -2,6 +2,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "ClassiCube/src/PackedCol.h"
+#include "ClassiCube/src/String.h"
+
 #include "Format.h"
 
 void Format_HHMMSS(cc_string* destination, time_t time) {
@@ -78,4 +81,24 @@ void Format_Int32(cc_string* destination, int integer) {
     }
 
     destination->length = j;
+}
+
+void Format_PackedColor(cc_string* destination, PackedCol color) {
+    char hexadecimalDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+    unsigned char red = (unsigned char)PackedCol_R(color);
+    unsigned char green = (unsigned char)PackedCol_G(color);
+    unsigned char blue = (unsigned char)PackedCol_B(color);
+
+    char colorString[8];
+
+    colorString[0] = '#';
+    colorString[1] = hexadecimalDigits[red >> 4];
+    colorString[2] = hexadecimalDigits[red & 0x0F];
+    colorString[3] = hexadecimalDigits[green >> 4];
+    colorString[4] = hexadecimalDigits[green & 0x0F];
+    colorString[5] = hexadecimalDigits[blue >> 4];
+    colorString[6] = hexadecimalDigits[blue & 0x0F];
+    colorString[7] = '\0';
+
+    String_Format1(destination, "%c", colorString);
 }
