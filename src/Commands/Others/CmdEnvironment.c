@@ -2,8 +2,145 @@
 #include "ClassiCube/src/Block.h"
 #include "ClassiCube/src/Constants.h"
 
+#include "Parse.h"
 #include "Message.h"
 #include "Format.h"
+
+static void SetEdgeBlock(const cc_string* argument) {
+	BlockID block;
+
+	if (Parse_TryParseBlock(argument, &block)) {
+		Env_SetEdgeBlock(block);
+	}
+}
+
+static void SetSidesBlock(const cc_string* argument) {
+	BlockID block;
+
+	if (Parse_TryParseBlock(argument, &block)) {
+		Env_SetSidesBlock(block);
+	}
+}
+
+static void SetEdgeHeight(const cc_string* argument) {
+    int value;
+
+    if (Parse_TryParseNumber(argument, &value)) {
+        Env_SetEdgeHeight(value);
+    }
+}
+
+static void SetSidesOffset(const cc_string* argument) {
+    int value;
+
+    if (Parse_TryParseNumber(argument, &value)) {
+        Env_SetSidesOffset(value);
+    }
+}
+
+static void SetCloudsHeight(const cc_string* argument) {
+    int value;
+
+    if (Parse_TryParseNumber(argument, &value)) {
+        Env_SetCloudsHeight(value);
+    }
+}
+
+static void SetCloudsSpeed(const cc_string* argument) {
+    float value;
+
+    if (Parse_TryParseFloat(argument, &value)) {
+        Env_SetCloudsSpeed(value);
+    }
+}
+
+static void SetWeatherSpeed(const cc_string* argument) {
+    float value;
+
+    if (Parse_TryParseFloat(argument, &value)) {
+        Env_SetWeatherSpeed(value);
+    }
+}
+
+static void SetWeatherFade(const cc_string* argument) {
+    float value;
+
+    if (Parse_TryParseFloat(argument, &value)) {
+        Env_SetWeatherFade(value);
+    }
+}
+
+static void SetWeather(const cc_string* argument) {
+    enum Weather_ value;
+
+    if (String_CaselessEqualsConst(argument, "Sunny")) {
+        value = WEATHER_SUNNY;
+    } else if (String_CaselessEqualsConst(argument, "Rainy")) {
+        value = WEATHER_RAINY;
+    } else if (String_CaselessEqualsConst(argument, "Snowy")) {
+        value = WEATHER_SNOWY;
+    } else {
+        Message_Player("Usage: &b/Environment weather sunny/rainy/snowy&f.");
+        return;
+    }
+
+    Env_SetWeather((int)value);
+}
+
+static void SetSkyCol(const cc_string* argument) {
+    PackedCol value;
+
+    if (Parse_TryParseColor(argument, &value)) {
+        Env_SetSkyCol(value);
+    }
+}
+
+static void SetFogCol(const cc_string* argument) {
+    PackedCol value;
+
+    if (Parse_TryParseColor(argument, &value)) {
+        Env_SetFogCol(value);
+    }
+}
+
+static void SetCloudsCol(const cc_string* argument) {
+    PackedCol value;
+
+    if (Parse_TryParseColor(argument, &value)) {
+        Env_SetCloudsCol(value);
+    }
+}
+
+static void SetSkyboxCol(const cc_string* argument) {
+    PackedCol value;
+
+    if (Parse_TryParseColor(argument, &value)) {
+        Env_SetSkyboxCol(value);
+    }
+}
+
+static void SetSunCol(const cc_string* argument) {
+    PackedCol value;
+
+    if (Parse_TryParseColor(argument, &value)) {
+        Env_SetSunCol(value);
+    }
+}
+
+static void SetShadowCol(const cc_string* argument) {
+    PackedCol value;
+
+    if (Parse_TryParseColor(argument, &value)) {
+        Env_SetShadowCol(value);
+    }
+}
+
+static void ShowUnknownEnvironmentOption(const cc_string* option) {
+    char messageBuffer[STRING_SIZE];
+    cc_string message = String_FromArray(messageBuffer);
+    String_Format1(&message, "Unknown environment option: &b%s&f.", option);
+    Chat_Add(&message);
+}
 
 static void DescribeEnvironment(void) {
     Message_Player("~ &bEnvironment &f~");
@@ -27,8 +164,8 @@ static void DescribeEnvironment(void) {
     Chat_Add(&message);
     message.length = 0;
 
-    String_AppendConst(&message, "\x07 &bSidesHeight&f: &b");
-    String_AppendInt(&message, Env.EdgeHeight + Env.SidesOffset);
+    String_AppendConst(&message, "\x07 &bEdgeHeight&f: &b");
+    String_AppendInt(&message, Env.EdgeHeight);
     String_AppendConst(&message, " &f\x07 &bSidesOffset&f: &b");
     String_AppendInt(&message, Env.SidesOffset);
     String_AppendConst(&message, "&f.");
@@ -94,30 +231,55 @@ struct ChatCommand EnvironmentCommand = {
     {
         "&b/Environment",
         "Lists all environment options and their current value.",
-        NULL,
-        NULL,
+        "&b/Environment <option> <value>",
+        "Sets &boption &fto &bvalue&f.",
         NULL
     },
     NULL
 };
 
 static void Environment_Command(const cc_string* args, int argsCount) {
-    if (argsCount != 0) {
+    if (argsCount >= 3) {
         Message_CommandUsage(EnvironmentCommand);
         return;
     }
 
-    DescribeEnvironment();
-
-    // if (argsCount >= 3) {
-    //     Message_CommandUsage(EnvironmentCommand);
-    //     return;
-    // }
-
-    // if (argsCount == 0) {
-    //     DescribeEnvironment();
-    //     return;
-    // } else {
-    //     Message_Player("Setting values is not yet implemented.");
-    // }
+    if (argsCount == 0) {
+        DescribeEnvironment();
+        return;
+    }
+    
+    if (String_CaselessEqualsConst(&args[0], "EdgeBlock")) {
+        SetEdgeBlock(&args[1]);
+    } else if (String_CaselessEqualsConst(&args[0], "SidesBlock")) {
+        SetSidesBlock(&args[1]);
+    } else if (String_CaselessEqualsConst(&args[0], "EdgeHeight")) {
+        SetEdgeHeight(&args[1]);
+    } else if (String_CaselessEqualsConst(&args[0], "SidesOffset")) {
+        SetSidesOffset(&args[1]);
+    } else if (String_CaselessEqualsConst(&args[0], "CloudsHeight")) {
+        SetCloudsHeight(&args[1]);
+    } else if (String_CaselessEqualsConst(&args[0], "CloudsSpeed")) {
+        SetCloudsSpeed(&args[1]);
+    } else if (String_CaselessEqualsConst(&args[0], "WeatherSpeed")) {
+        SetWeatherSpeed(&args[1]);
+    } else if (String_CaselessEqualsConst(&args[0], "WeatherFade")) {
+        SetWeatherFade(&args[1]);
+    } else if (String_CaselessEqualsConst(&args[0], "Weather")) {
+        SetWeather(&args[1]);
+    } else if (String_CaselessEqualsConst(&args[0], "SkyColour")) {
+        SetSkyCol(&args[1]);
+    } else if (String_CaselessEqualsConst(&args[0], "FogColour")) {
+        SetFogCol(&args[1]);
+    } else if (String_CaselessEqualsConst(&args[0], "CloudsColour")) {
+        SetCloudsCol(&args[1]);
+    } else if (String_CaselessEqualsConst(&args[0], "SkyboxColour")) {
+        SetSkyboxCol(&args[1]);
+    } else if (String_CaselessEqualsConst(&args[0], "SunColour")) {
+        SetSunCol(&args[1]);
+    } else if (String_CaselessEqualsConst(&args[0], "ShadowColour")) {
+        SetShadowCol(&args[1]);
+    } else {
+        ShowUnknownEnvironmentOption(&args[0]);
+    }
 }

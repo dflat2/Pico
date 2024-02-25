@@ -1,5 +1,6 @@
 #include "ClassiCube/src/Block.h"
 #include "ClassiCube/src/Constants.h"
+#include "ClassiCube/src/PackedCol.h"
 
 #include "Brushes/Brush.h"
 #include "Message.h"
@@ -328,5 +329,66 @@ bool Parse_TryParseCoordinates(const cc_string* coordinates, IVec3* out_result) 
     out_result->X = arrayTarget[0];
     out_result->Y = arrayTarget[1];
     out_result->Z = arrayTarget[2];
+    return true;
+}
+
+static void ColorError(const cc_string* colorString) {
+    char error[STRING_SIZE];
+    cc_string cc_error = { error, 0, STRING_SIZE };
+    String_Format1(&cc_error, "Invalid color: &b%s&f.", colorString);
+    Chat_Add(&cc_error);
+}
+
+bool Parse_TryParseColor(const cc_string* colorString, PackedCol* out_result) {
+    char colorStringCopyBuffer[STRING_SIZE];
+    cc_string colorStringCopy = String_FromArray(colorStringCopyBuffer);
+    String_Copy(&colorStringCopy, colorString);
+
+    // Remove prepended sharp if there is one.
+    if (colorStringCopy.length >= 1 && colorStringCopy.buffer[0] == '#') {
+        String_DeleteAt(&colorStringCopy, 0);
+    }
+
+    unsigned char colorCodes[6];
+
+    if (colorStringCopy.length == 6) {
+        colorCodes[0] = colorStringCopy.buffer[0];
+        colorCodes[1] = colorStringCopy.buffer[1];
+        colorCodes[2] = colorStringCopy.buffer[2];
+        colorCodes[3] = colorStringCopy.buffer[3];
+        colorCodes[4] = colorStringCopy.buffer[4];
+        colorCodes[5] = colorStringCopy.buffer[5];
+    } else if (colorStringCopy.length == 3) {
+        // So that e.g. `#8F0` is a valid color (stands for `#88FF00`).
+        colorCodes[0] = colorStringCopy.buffer[0];
+        colorCodes[1] = colorStringCopy.buffer[0];
+        colorCodes[2] = colorStringCopy.buffer[1];
+        colorCodes[3] = colorStringCopy.buffer[1];
+        colorCodes[4] = colorStringCopy.buffer[2];
+        colorCodes[5] = colorStringCopy.buffer[2];
+    } else {
+        ColorError(colorString);
+        return false;
+    }
+
+    // Translate all characters to the range 0x00 — 0x0F ('A' -> 10, 'b' -> 11, '8' -> 8, etc.).
+    for (int i = 0; i < 6; i++) {
+        if ('0' <= colorCodes[i] && colorCodes[i] <= '9') {
+            colorCodes[i] = colorCodes[i] - (unsigned char)'0';
+        } else if ('a' <= colorCodes[i] && colorCodes[i] <= 'f') {
+            colorCodes[i] = colorCodes[i] - (unsigned char)'a' + (unsigned char)10;
+        } else if ('A' <= colorCodes[i] && colorCodes[i] <= 'F') {
+            colorCodes[i] = colorCodes[i] - (unsigned char)'A' + (unsigned char)10;
+        } else {
+            ColorError(colorString);
+            return false;
+        }
+    }
+
+    unsigned char red = colorCodes[1] + (colorCodes[0] << 4);
+    unsigned char green = colorCodes[3] + (colorCodes[2] << 4);
+    unsigned char blue = colorCodes[5] + (colorCodes[4] << 4);
+
+    *out_result = PackedCol_Make(red, green, blue, 0xFF);
     return true;
 }
