@@ -1,3 +1,5 @@
+#include "ClassiCube/src/Constants.h"
+
 #include "Message.h"
 #include "Brushes/Brush.h"
 
@@ -29,5 +31,13 @@ static void HelpBrush_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    Brush_Help(args);
+    char brushStringBuffer[STRING_SIZE];
+    cc_string brushString = String_FromArray(brushStringBuffer);
+    
+    if (args[0].buffer[0] != '@') {
+        String_AppendConst(&brushString, "@");
+    }
+
+    String_AppendString(&brushString, &args[0]);
+    Brush_Help(&brushString);
 }
