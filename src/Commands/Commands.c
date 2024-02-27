@@ -16,6 +16,7 @@ extern struct ChatCommand FixGrassCommand;
 extern struct ChatCommand FlipCommand;
 extern struct ChatCommand LaterCommand;
 extern struct ChatCommand LineCommand;
+extern struct ChatCommand MapInfoCommand;
 extern struct ChatCommand MarkAllCommand;
 extern struct ChatCommand MarkCommand;
 extern struct ChatCommand MeasureCommand;
@@ -58,6 +59,7 @@ void Commands_RegisterAll(void) {
     Commands_Register(&FlipCommand);
     Commands_Register(&LaterCommand);
     Commands_Register(&LineCommand);
+    Commands_Register(&MapInfoCommand);
     Commands_Register(&MarkAllCommand);
     Commands_Register(&MarkCommand);
     Commands_Register(&MeasureCommand);
