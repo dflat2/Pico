@@ -2,7 +2,6 @@
 
 extern struct ChatCommand AbortCommand;
 extern struct ChatCommand AscendCommand;
-extern struct ChatCommand HelpBrushCommand;
 extern struct ChatCommand CenterCommand;
 extern struct ChatCommand CheckoutCommand;
 extern struct ChatCommand CircleCommand;
@@ -14,6 +13,7 @@ extern struct ChatCommand EnvironmentCommand;
 extern struct ChatCommand FillCommand;
 extern struct ChatCommand FixGrassCommand;
 extern struct ChatCommand FlipCommand;
+extern struct ChatCommand HelpBrushCommand;
 extern struct ChatCommand LaterCommand;
 extern struct ChatCommand LineCommand;
 extern struct ChatCommand MapInfoCommand;
@@ -28,8 +28,8 @@ extern struct ChatCommand PyramidCommand;
 extern struct ChatCommand ReachDistanceCommand;
 extern struct ChatCommand RedoCommand;
 extern struct ChatCommand ReplaceAllCommand;
-extern struct ChatCommand ReplaceNotCommand;
 extern struct ChatCommand ReplaceCommand;
+extern struct ChatCommand ReplaceNotCommand;
 extern struct ChatCommand RotateCommand;
 extern struct ChatCommand SmoothCommand;
 extern struct ChatCommand SpeedCommand;
@@ -37,15 +37,14 @@ extern struct ChatCommand SphereCommand;
 extern struct ChatCommand TimeCommand;
 extern struct ChatCommand TreeCommand;
 extern struct ChatCommand TriangleCommand;
-extern struct ChatCommand UndoListCommand;
 extern struct ChatCommand UndoCommand;
+extern struct ChatCommand UndoListCommand;
 extern struct ChatCommand WriteCommand;
 extern struct ChatCommand ZCommand;
 
 void Commands_RegisterAll(void) {
     Commands_Register(&AbortCommand);
     Commands_Register(&AscendCommand);
-    Commands_Register(&HelpBrushCommand);
     Commands_Register(&CenterCommand);
     Commands_Register(&CheckoutCommand);
     Commands_Register(&CircleCommand);
@@ -57,6 +56,7 @@ void Commands_RegisterAll(void) {
     Commands_Register(&FillCommand);
     Commands_Register(&FixGrassCommand);
     Commands_Register(&FlipCommand);
+    Commands_Register(&HelpBrushCommand);
     Commands_Register(&LaterCommand);
     Commands_Register(&LineCommand);
     Commands_Register(&MapInfoCommand);
@@ -71,8 +71,8 @@ void Commands_RegisterAll(void) {
     Commands_Register(&ReachDistanceCommand);
     Commands_Register(&RedoCommand);
     Commands_Register(&ReplaceAllCommand);
-    Commands_Register(&ReplaceNotCommand);
     Commands_Register(&ReplaceCommand);
+    Commands_Register(&ReplaceNotCommand);
     Commands_Register(&RotateCommand);
     Commands_Register(&SmoothCommand);
     Commands_Register(&SpeedCommand);
@@ -80,8 +80,8 @@ void Commands_RegisterAll(void) {
     Commands_Register(&TimeCommand);
     Commands_Register(&TreeCommand);
     Commands_Register(&TriangleCommand);
-    Commands_Register(&UndoListCommand);
     Commands_Register(&UndoCommand);
+    Commands_Register(&UndoListCommand);
     Commands_Register(&WriteCommand);
     Commands_Register(&ZCommand);
 }
