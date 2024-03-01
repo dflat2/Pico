@@ -33,7 +33,7 @@ static void MapInfo_Command(const cc_string* args, int argsCount) {
 
     // Map name
     if (World.Name.length >= 1) {
-        String_Format1(&message, "\x07 Map name: &b%s&f.", &World.Name);
+        String_Format1(&message, "\x07 Name: &b%s&f.", &World.Name);
         Chat_Add(&message);
         message.length = 0;
     } else {
