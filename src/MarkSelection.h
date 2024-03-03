@@ -15,5 +15,6 @@ bool MarkSelection_Repeating(void);
 void MarkSelection_Abort(void);
 void MarkSelection_DoMark(IVec3 coordinates);
 int MarkSelection_RemainingMarks(void);
+IVec3 SnapToWorldBoundaries(IVec3 coords);
 
 #endif

@@ -21,28 +21,6 @@ struct ChatCommand MarkCommand = {
     NULL
 };
 
-IVec3 SnapToWorldBoundaries(IVec3 coords) {
-    if (coords.X < 0) {
-        coords.X = 0;
-    } else if (coords.X >= World.Width) {
-        coords.X = World.Width - 1;
-    }
-
-    if (coords.Y < 0) {
-        coords.Y = 0;
-    } else if (coords.Y >= World.Height) {
-        coords.Y = World.Height - 1;
-    }
-
-    if (coords.Z < 0) {
-        coords.Z = 0;
-    } else if (coords.Z >= World.Length) {
-        coords.Z = World.Length - 1;
-    }
-
-    return coords;
-}
-
 static void Mark_Command(const cc_string* args, int argsCount) {
     if (argsCount == 0) {
         MarkSelection_DoMark(SnapToWorldBoundaries(Player_GetPosition()));
