@@ -190,6 +190,7 @@ static void TriangleSelectionHandler(IVec3* marks, int count) {
     int blocksAffected = Draw_End();
 
     if (MarkSelection_Repeating()) {
+        Message_Selection("&aPlace or break three points to determine the vertices.");
         MarkSelection_Make(TriangleSelectionHandler, 3, "Triangle", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
@@ -223,7 +224,7 @@ static void Triangle_Command(const cc_string* args, int argsCount) {
         Message_Player("Now repeating &bTriangle&f.");
     }
 
-    Message_Player("Place or break three points to determine the vertices.");
+    Message_Selection("&aPlace or break three points to determine the vertices.");
     MarkSelection_Make(TriangleSelectionHandler, 3, "Triangle", repeat);
 }
 

@@ -61,6 +61,7 @@ static void CenterSelectionHandler(IVec3* marks, int count) {
     char message[STRING_SIZE];
 
     if (MarkSelection_Repeating()) {
+        Message_Selection("&aPlace or break two blocks to determine the edges.");
         MarkSelection_Make(CenterSelectionHandler, 2, "Center", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
@@ -89,5 +90,5 @@ static void Center_Command(const cc_string* args, int argsCount) {
     }
 
     MarkSelection_Make(CenterSelectionHandler, 2, "Center", repeat);
-    Message_Player("Place or break two blocks to determine the edges.");
+    Message_Selection("&aPlace or break two blocks to determine the edges.");
 }

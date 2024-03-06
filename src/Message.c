@@ -10,6 +10,11 @@ void Message_Player(const char* message) {
     Chat_Add(&ccStringMessage);
 }
 
+void Message_Selection(const char* message) {
+    cc_string ccStringMessage = String_FromReadonly(message);
+    Chat_AddOf(&ccStringMessage, MSG_TYPE_CLIENTSTATUS_1);
+}
+
 void Message_BlocksAffected(int blocksAffected) {
     char messageBuffer[STRING_SIZE];
     cc_string message = String_FromArray(messageBuffer);

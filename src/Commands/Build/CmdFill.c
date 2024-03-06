@@ -178,6 +178,7 @@ static void FillSelectionHandler(IVec3* marks, int count) {
     int blocksAffected = Draw_End();
 
     if (MarkSelection_Repeating()) {
+        Message_Selection("&aPlace or break a block.");
         MarkSelection_Make(FillSelectionHandler, 1, "Fill", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
@@ -198,7 +199,7 @@ static void Fill_Command(const cc_string* args, int argsCount) {
     }
 
     MarkSelection_Make(FillSelectionHandler, 1, "Fill", repeat);
-    Message_Player("Place or break a block.");
+    Message_Selection("&aPlace or break a block.");
 }
 
 struct ChatCommand FillCommand = {

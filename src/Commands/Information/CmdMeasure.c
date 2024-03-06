@@ -85,6 +85,7 @@ static void MeasureSelectionHandler(IVec3* marks, int count) {
     CountBlocks(min.X, min.Y, min.Z, max.X, max.Y, max.Z);
 
     if (MarkSelection_Repeating()) {
+        Message_Selection("&aPlace or break two blocks to determine the edges.");
         MarkSelection_Make(MeasureSelectionHandler, 2, "Measure", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
@@ -116,6 +117,6 @@ static void Measure_Command(const cc_string* args, int argsCount) {
         Message_Player("Now repeating &bMeasure&f.");
     }
 
-    Message_Player("Place or break two blocks to determine the edges.");
+    Message_Selection("&aPlace or break two blocks to determine the edges.");
     MarkSelection_Make(MeasureSelectionHandler, 2, "Measure", repeat);
 }

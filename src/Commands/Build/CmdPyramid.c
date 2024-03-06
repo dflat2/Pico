@@ -91,6 +91,7 @@ static void PyramidSelectionHandler(IVec3* marks, int count) {
     int blocksAffected = Draw_End();
 
     if (MarkSelection_Repeating()) {
+        Message_Selection("&aPlace or break two blocks to indicate the base.");
         MarkSelection_Make(PyramidSelectionHandler, 2, "Pyramid", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
@@ -155,7 +156,7 @@ static void Pyramid_Command(const cc_string* args, int argsCount) {
         Message_Player("Now repeating &bPyramid&f.");
     }
 
-    Message_Player("Place or break two blocks to indicate the base.");
+    Message_Selection("&aPlace or break two blocks to indicate the base.");
     MarkSelection_Make(PyramidSelectionHandler, 2, "Pyramid", repeat);
 }
 

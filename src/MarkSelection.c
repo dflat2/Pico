@@ -35,6 +35,7 @@ static void UnregisterBlockChanged(void) {
 static void ValidateSelection(void) {
     UnregisterBlockChanged();
     s_InProgress = false;
+    Message_Selection("&a");
     s_Handler(s_Marks, s_TotalMarks);
 }
 
@@ -107,6 +108,7 @@ void MarkSelection_Abort(void) {
     ResetSelectionState();
     UnregisterBlockChanged();
     ShowMarksLeft();
+    Message_Selection("&a");
 }
 
 int MarkSelection_RemainingMarks(void) {

@@ -53,6 +53,7 @@ static void PasteSelectionHandler(IVec3* marks, int count) {
     int blocksAffected = Draw_End();
 
     if (MarkSelection_Repeating()) {
+        Message_Selection("&aPlace a block in the corner of where you want to paste.");
         MarkSelection_Make(PasteSelectionHandler, 1, "Paste", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
@@ -101,5 +102,5 @@ static void Paste_Command(const cc_string* args, int argsCount) {
     }
 
     MarkSelection_Make(PasteSelectionHandler, 1, "Paste", repeat);
-    Message_Player("Place a block in the corner of where you want to paste.");
+    Message_Selection("&aPlace a block in the corner of where you want to paste.");
 }

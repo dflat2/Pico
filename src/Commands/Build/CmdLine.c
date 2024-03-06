@@ -153,8 +153,10 @@ static void LineSelectionHandler(IVec3* marks, int count) {
 
     if (MarkSelection_Repeating()) {
         if (s_Mode != MODE_BEZIER) {
+            Message_Selection("&aPlace or break two blocks to determine the endpoints.");
             MarkSelection_Make(LineSelectionHandler, 2, "Line", MACRO_MARKSELECTION_DO_REPEAT);
         } else {
+            Message_Selection("&aPlace or break three blocks.");
             MarkSelection_Make(LineSelectionHandler, 3, "Line (bezier)", MACRO_MARKSELECTION_DO_REPEAT);
         }
         return;
@@ -220,9 +222,9 @@ static void Line_Command(const cc_string* args, int argsCount) {
     }
 
     if (s_Mode != MODE_BEZIER) {
-        Message_Player("Place or break two blocks to determine the endpoints.");
+        Message_Selection("&aPlace or break two blocks to determine the endpoints.");
     } else {
-        Message_Player("Place or break three blocks.");
+        Message_Selection("&aPlace or break three blocks.");
     }
 
     if (s_Mode != MODE_BEZIER) {

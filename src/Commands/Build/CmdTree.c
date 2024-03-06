@@ -79,6 +79,7 @@ static void TreeSelectionHandler(IVec3* marks, int count) {
     int blocksAffected = Draw_End();
 
     if (MarkSelection_Repeating()) {
+        Message_Selection("&aPlace or break a block to determine the root.");
         MarkSelection_Make(TreeSelectionHandler, 1, "Tree", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
@@ -99,5 +100,5 @@ static void Tree_Command(const cc_string* args, int argsCount) {
     }
 
     MarkSelection_Make(TreeSelectionHandler, 1, "Tree", repeat);
-    Message_Player("Place or break a block to determine the root.");
+    Message_Selection("&aPlace or break a block to determine the root.");
 }

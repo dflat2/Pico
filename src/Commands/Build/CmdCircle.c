@@ -58,6 +58,7 @@ static void CircleSelectionHandler(IVec3* marks, int count) {
     int blocksAffected = Draw_End();
 
     if (MarkSelection_Repeating()) {
+        Message_Selection("&aPlace or break a block to determine the center.");
         MarkSelection_Make(CircleSelectionHandler, 1, "Circle", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
@@ -117,5 +118,5 @@ static void Circle_Command(const cc_string* args, int argsCount) {
     }
 
     MarkSelection_Make(CircleSelectionHandler, 1, "Circle", repeat);
-    Message_Player("Place or break a block to determine the center.");
+    Message_Selection("&aPlace or break a block to determine the center.");
 }
