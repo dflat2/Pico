@@ -15,12 +15,6 @@ typedef enum TimeUnit_ {
     UNIT_NULL = 0x80,
 } TimeUnit;
 
-static bool TryParseDuration_Second(const cc_string* string, int* cursor, int* out_result_Second, TimeUnit* out_setUnit);
-static bool TryParseSingleCoordinate(const cc_string* coordinateString, int* out_result, bool* out_isRelative);
-static bool TryParseTimeUnit(const cc_string* string, int* cursor, TimeUnit* out_unit);
-static bool TryParsePositiveNumber(const cc_string* string, int* cursor, int* out_number);
-static bool IsDigit(char character);
-
 bool Parse_TryParseBlock(const cc_string* blockString, BlockID* block) {
     int i_block = -1;
     i_block = Block_Parse(blockString);
@@ -53,6 +47,95 @@ bool Parse_LastArgumentIsRepeat(const cc_string* arguments, int* ref_count) {
     }
     
     return false;
+}
+
+static bool TryParseTimeUnit(const cc_string* string, int* cursor, TimeUnit* out_unit) {
+    if (*cursor >= string->length) {
+        return false;
+    }
+
+    if (string->buffer[*cursor] == 'd') {
+        (*cursor)++;
+        *out_unit = UNIT_DAY;
+        return true;
+    } if (string->buffer[*cursor] == 'h') {
+        (*cursor)++;
+        *out_unit = UNIT_HOUR;
+        return true;
+    } else if (string->buffer[*cursor] == 'm') {
+        (*cursor)++;
+
+        // If it's "min" instead of just "m", move forward by 2 more steps.
+        if (*cursor <= (string->length - 2) && string->buffer[(*cursor)] == 'i' && string->buffer[(*cursor) + 1] == 'n') {
+            *cursor += 2;
+        }
+
+        *out_unit = UNIT_MINUTE;
+        return true;
+    } else if (string->buffer[*cursor] == 's') {
+        (*cursor)++;
+
+        // If it's "sec" instead of just "s", move forward by 2 more steps.
+        if (*cursor <= (string->length - 2) && string->buffer[(*cursor)] == 'e'  && string->buffer[(*cursor) + 1] == 'c') {
+            *cursor += 2;
+        }
+
+        *out_unit = UNIT_SECOND;
+        return true;
+    }
+
+    return false;
+}
+
+static bool IsDigit(char character) {
+    return (character >= '0' && character <= '9');
+}
+
+static bool TryParsePositiveNumber(const cc_string* string, int* cursor, int* out_number) {
+    if (*cursor >= string->length || !IsDigit(string->buffer[*cursor])) {
+        return false;
+    }
+
+    *out_number = 0;
+
+    while (IsDigit(string->buffer[*cursor])) {
+        *out_number = *out_number * 10 + (string->buffer[*cursor] - '0');
+        (*cursor)++;
+
+        if (*cursor >= string->length) {
+            break;
+        }
+    }
+
+    return true;
+}
+
+static bool TryParseDuration_Second(const cc_string* string, int* cursor, int* out_result_Second, TimeUnit* out_setUnit) {
+    if (!TryParsePositiveNumber(string, cursor, out_result_Second)) {
+        return false;
+    }
+
+    if (!TryParseTimeUnit(string, cursor, out_setUnit)) {
+        return false;
+    }
+
+    switch (*out_setUnit) {
+        case UNIT_SECOND: 
+            break;
+        case UNIT_MINUTE: 
+            *out_result_Second *= 60;
+            break;
+        case UNIT_HOUR: 
+            *out_result_Second *= 3600;
+            break;
+        case UNIT_DAY: 
+            *out_result_Second *= 86400;
+            break;
+        default:
+            return false;
+    }
+
+    return true;
 }
 
 bool Parse_TryParseDeltaTime_Second(const cc_string* string, int* out_total_Second) {
@@ -155,29 +238,6 @@ bool Parse_TryParseDegrees(const cc_string* string, int* out_degrees) {
     return true;
 }
 
-static bool IsDigit(char character) {
-    return (character >= '0' && character <= '9');
-}
-
-static bool TryParsePositiveNumber(const cc_string* string, int* cursor, int* out_number) {
-    if (*cursor >= string->length || !IsDigit(string->buffer[*cursor])) {
-        return false;
-    }
-
-    *out_number = 0;
-
-    while (IsDigit(string->buffer[*cursor])) {
-        *out_number = *out_number * 10 + (string->buffer[*cursor] - '0');
-        (*cursor)++;
-
-        if (*cursor >= string->length) {
-            break;
-        }
-    }
-
-    return true;
-}
-
 bool Parse_TryParseNumber(const cc_string* string, int* out_number) {
     bool isNegative = false;
     int start = 0;
@@ -211,72 +271,6 @@ bool Parse_TryParseFloat(const cc_string* string, float* out_float) {
         String_Format1(&invalidFloatMessage, "Invalid decimal: &b%s&f.", string);
         Chat_Add(&invalidFloatMessage);
         return false;
-    }
-
-    return true;
-}
-
-static bool TryParseTimeUnit(const cc_string* string, int* cursor, TimeUnit* out_unit) {
-    if (*cursor >= string->length) {
-        return false;
-    }
-
-    if (string->buffer[*cursor] == 'd') {
-        (*cursor)++;
-        *out_unit = UNIT_DAY;
-        return true;
-    } if (string->buffer[*cursor] == 'h') {
-        (*cursor)++;
-        *out_unit = UNIT_HOUR;
-        return true;
-    } else if (string->buffer[*cursor] == 'm') {
-        (*cursor)++;
-
-        // If it's "min" instead of just "m", move forward by 2 more steps.
-        if (*cursor <= (string->length - 2) && string->buffer[(*cursor)] == 'i' && string->buffer[(*cursor) + 1] == 'n') {
-            *cursor += 2;
-        }
-
-        *out_unit = UNIT_MINUTE;
-        return true;
-    } else if (string->buffer[*cursor] == 's') {
-        (*cursor)++;
-
-        // If it's "sec" instead of just "s", move forward by 2 more steps.
-        if (*cursor <= (string->length - 2) && string->buffer[(*cursor)] == 'e'  && string->buffer[(*cursor) + 1] == 'c') {
-            *cursor += 2;
-        }
-
-        *out_unit = UNIT_SECOND;
-        return true;
-    }
-
-    return false;
-}
-
-static bool TryParseDuration_Second(const cc_string* string, int* cursor, int* out_result_Second, TimeUnit* out_setUnit) {
-    if (!TryParsePositiveNumber(string, cursor, out_result_Second)) {
-        return false;
-    }
-
-    if (!TryParseTimeUnit(string, cursor, out_setUnit)) {
-        return false;
-    }
-
-    switch (*out_setUnit) {
-        case UNIT_SECOND: 
-            break;
-        case UNIT_MINUTE: 
-            *out_result_Second *= 60;
-            break;
-        case UNIT_HOUR: 
-            *out_result_Second *= 3600;
-            break;
-        case UNIT_DAY: 
-            *out_result_Second *= 86400;
-            break;
-        default:
-            return false;
     }
 
     return true;
