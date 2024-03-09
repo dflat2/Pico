@@ -110,8 +110,8 @@ static bool TryParsePositiveNumber(const cc_string* string, int* cursor, int* ou
     return true;
 }
 
-static bool TryParseDuration_Second(const cc_string* string, int* cursor, int* out_result_Second, TimeUnit* out_setUnit) {
-    if (!TryParsePositiveNumber(string, cursor, out_result_Second)) {
+static bool TryParseDurationInSeconds(const cc_string* string, int* cursor, int* out_resultInSeconds, TimeUnit* out_setUnit) {
+    if (!TryParsePositiveNumber(string, cursor, out_resultInSeconds)) {
         return false;
     }
 
@@ -123,13 +123,13 @@ static bool TryParseDuration_Second(const cc_string* string, int* cursor, int* o
         case UNIT_SECOND: 
             break;
         case UNIT_MINUTE: 
-            *out_result_Second *= 60;
+            *out_resultInSeconds *= 60;
             break;
         case UNIT_HOUR: 
-            *out_result_Second *= 3600;
+            *out_resultInSeconds *= 3600;
             break;
         case UNIT_DAY: 
-            *out_result_Second *= 86400;
+            *out_resultInSeconds *= 86400;
             break;
         default:
             return false;
@@ -138,8 +138,8 @@ static bool TryParseDuration_Second(const cc_string* string, int* cursor, int* o
     return true;
 }
 
-bool Parse_TryParseDeltaTime_Second(const cc_string* string, int* out_total_Second) {
-    *out_total_Second = 0;
+bool Parse_TryParseDeltaTimeInSecond(const cc_string* string, int* out_totalInSeconds) {
+    *out_totalInSeconds = 0;
 
     if (string == NULL || string->length == 0) {
         return false;
@@ -152,7 +152,7 @@ bool Parse_TryParseDeltaTime_Second(const cc_string* string, int* out_total_Seco
     TimeUnit highestSetUnit = UNIT_NULL;
 
     while (index < string->length) {
-        if (!TryParseDuration_Second(string, cursor, &out_duration_Second, &out_unit)) {
+        if (!TryParseDurationInSeconds(string, cursor, &out_duration_Second, &out_unit)) {
             return false;
         }
 
@@ -162,7 +162,7 @@ bool Parse_TryParseDeltaTime_Second(const cc_string* string, int* out_total_Seco
         }
 
         highestSetUnit = out_unit;
-        *out_total_Second += out_duration_Second;
+        *out_totalInSeconds += out_duration_Second;
     }
 
     return true;
