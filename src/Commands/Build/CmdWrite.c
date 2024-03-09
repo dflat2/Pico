@@ -22,7 +22,7 @@ static cc_string s_Text = { .buffer = s_TextBuffer, .capacity = STRING_SIZE, .le
 
 // Each letter is an 8x8 image, so that each letter can be described as 8 `char`s.
 // Each `0xHH` is a row. Should be read from top to bottom.
-static char font[256][8] = {
+const char FONT[256][8] = {
     {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0},
     {0x7e, 0x81, 0xa5, 0x81, 0xa5, 0x99, 0x81, 0x7e},
     {0x7e, 0xff, 0xdb, 0xff, 0xdb, 0xe7, 0xff, 0x7e},
@@ -324,7 +324,7 @@ static IVec3 From2DTo3D(IVec2 vector, int textOriginX3D, int textOriginZ3D, int 
 static void WriteLetter(char letter, int textOriginX3D, int textOriginZ3D, int lineBaseY, WriteDirection direction, int* offset) {
     bool letterArray[8][8];
 
-    char* letterPointer = (char*)&font[(unsigned char)letter];
+    char* letterPointer = (char*)&FONT[(unsigned char)letter];
     char row;
 
     for (int i = 0; i < 8; i++) {
