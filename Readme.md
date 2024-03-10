@@ -13,7 +13,7 @@ This project is still _work in progress_ and is not fully documented yet (but mo
 
 ## Download
 
-[Download Pico from here](https://github.com/dflat2/Pico/releases/tag/0.1.0).
+[Download Pico from here](https://github.com/dflat2/Pico/releases/tag/0.2.0).
 
 ## Installing
 
