@@ -1,6 +1,6 @@
 # Pico
 
-_A singleplayer commands plugin for ClassiCube._
+![Preview](preview.jpg)
 
 This project is still _work in progress_ and is not fully documented yet (but most `/help <command>` messages are pretty self-explanatory). Pico aims to support most building features found on server softwares such as MCGalaxy or LegendCraft. This includes:
 
