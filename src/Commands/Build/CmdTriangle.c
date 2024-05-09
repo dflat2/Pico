@@ -131,8 +131,6 @@ static Plane PlaneContainingTwoPointsAndOneVector(FVec3 pointA, FVec3 pointB, FV
 }
 
 static void TriangleSelectionHandler(IVec3* marks, int count) {
-    Draw_Start("Triangle");
-
     IVec3 min = MinimumVector3(marks[0], marks[1], marks[2]);
     IVec3 max = MaximumVector3(marks[0], marks[1], marks[2]);
 
@@ -165,6 +163,7 @@ static void TriangleSelectionHandler(IVec3* marks, int count) {
     Plane planeBC = PlaneContainingTwoPointsAndOneVector(triangle.b, triangle.c, plane.normal);
     Plane planeCA = PlaneContainingTwoPointsAndOneVector(triangle.c, triangle.a, plane.normal);
 
+    Draw_Start("Triangle");
     IVec3 current;
 
     for (int x = min.X; x <= max.X; x++) {
