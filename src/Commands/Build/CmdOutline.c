@@ -128,7 +128,7 @@ static bool ShouldOutline(IVec3 coordinates, IVec3 min, IVec3 max) {
     
     if (s_Mode == MODE_DOWN || s_Mode == MODE_3D) {
         neighbors[count].X = coordinates.X;
-        neighbors[count].Y = coordinates.Y - 1;
+        neighbors[count].Y = coordinates.Y + 1;
         neighbors[count].Z = coordinates.Z;
 
         if (World_Contains(neighbors[count].X, neighbors[count].Y, neighbors[count].Z)) {
