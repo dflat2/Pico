@@ -35,6 +35,8 @@ static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
 }
 
 static void Pico_Init(void) {
+    String_AppendConst(&Server.AppName, " + Pico 0.2.0");
+
     if (!Server.IsSinglePlayer) {
         return;
     }
