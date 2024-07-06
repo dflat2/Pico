@@ -7,12 +7,10 @@
 #include "Parse.h"
 #include "DataStructures/IVec3FastQueue.h"
 
-static unsigned short s_Block;
 static const int PERCENTAGE_THRESHOLD = 50;
-static const int SIZE = 2;
-
-// ie. when clicking a block, the volume ((BRUSH_SIZE + 1) * 2) ^ 3 around the block will be affected.
-static const int BRUSH_SIZE = 7;
+static unsigned short s_Block;
+static int s_Intensity = 2;
+static int s_Radius = 5;
 
 static void Smooth_Command(const cc_string* args, int argsCount);
 
@@ -21,11 +19,11 @@ struct ChatCommand SmoothCommand = {
     Smooth_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Smooth <block> +",
+        "&b/Smooth <block> <radius> [intensity] +",
         "Smooths structures made of &bblock &faround marked coordinates.",
         "\x07 &bblock&f: block name or identifier.",
-        NULL,
-        NULL
+        "\x07 &bradius&f: size of affected zone (recommended &b5&f)",
+        "\x07 &bintensity&f: intensity of the smooth (default &bFloor(radius / 2)&f)."
     },
     NULL
 };
@@ -33,8 +31,8 @@ struct ChatCommand SmoothCommand = {
 static int CountBlocksAround(int x, int y, int z) {
     int total = 0;
 
-    IVec3 min = { x - SIZE, y - SIZE, z - SIZE };
-    IVec3 max = { x + SIZE, y + SIZE, z + SIZE };
+    IVec3 min = { x - s_Intensity, y - s_Intensity, z - s_Intensity };
+    IVec3 max = { x + s_Intensity, y + s_Intensity, z + s_Intensity };
 
     for (int x_iter = min.X; x_iter <= max.X; x_iter++) {
         for (int y_iter = min.Y; y_iter <= max.Y; y_iter++) {
@@ -56,10 +54,10 @@ static int CountBlocksAround(int x, int y, int z) {
 static int CountBlocksAroundXY(int x, int y, const int z) {
     int total = 0;
 
-    int minX = x - SIZE;
-    int minY = y - SIZE;
-    int maxX = x + SIZE;
-    int maxY = y + SIZE;
+    int minX = x - s_Intensity;
+    int minY = y - s_Intensity;
+    int maxX = x + s_Intensity;
+    int maxY = y + s_Intensity;
 
     for (int x = minX; x <= maxX; x++) {
         for (int y = minY; y <= maxY; y++) {
@@ -77,14 +75,14 @@ static int CountBlocksAroundXY(int x, int y, const int z) {
 }
 
 static void SmoothSelectionHandler(IVec3* marks, int count) {
-    const int THRESHOLD = ((SIZE * 2) + 1) * ((SIZE * 2) + 1) * ((SIZE * 2) + 1) * PERCENTAGE_THRESHOLD / 100;
+    const int THRESHOLD = ((s_Intensity * 2) + 1) * ((s_Intensity * 2) + 1) * ((s_Intensity * 2) + 1) * PERCENTAGE_THRESHOLD / 100;
 
-    int minX = marks[0].X - BRUSH_SIZE;
-    int minY = marks[0].Y - BRUSH_SIZE;
-    int minZ = marks[0].Z - BRUSH_SIZE;
-    int maxX = marks[0].X + BRUSH_SIZE;
-    int maxY = marks[0].Y + BRUSH_SIZE;
-    int maxZ = marks[0].Z + BRUSH_SIZE;
+    int minX = marks[0].X - s_Radius;
+    int minY = marks[0].Y - s_Radius;
+    int minZ = marks[0].Z - s_Radius;
+    int maxX = marks[0].X + s_Radius;
+    int maxY = marks[0].Y + s_Radius;
+    int maxZ = marks[0].Z + s_Radius;
 
     IVec3FastQueue* shouldAdd = IVec3FastQueue_CreateEmpty();
     IVec3FastQueue* shouldRemove = IVec3FastQueue_CreateEmpty();
@@ -106,7 +104,7 @@ static void SmoothSelectionHandler(IVec3* marks, int count) {
                 }
 
                 // (2) And guess the number of blocks in subsequent volumes by calculating the differences on opposite faces.
-                blocksAround = blocksAround - CountBlocksAroundXY(x, y, z - SIZE) + CountBlocksAroundXY(x, y, z + SIZE + 1);
+                blocksAround = blocksAround - CountBlocksAroundXY(x, y, z - s_Intensity) + CountBlocksAroundXY(x, y, z + s_Intensity + 1);
             }
         }
     }
@@ -135,16 +133,50 @@ static void SmoothSelectionHandler(IVec3* marks, int count) {
     Message_BlocksAffected(blocksAffected);
 }
 
+static bool TryParseArguments(const cc_string* args, int argsCount) {
+    char messageBuffer[STRING_SIZE];
+    cc_string message = String_FromArray(messageBuffer);
+
+    if (argsCount <= 1 || 4 <= argsCount) {
+        Message_CommandUsage(SmoothCommand);
+        return false;
+    }
+
+    if (!Parse_TryParseBlock(&args[0], &s_Block)) {
+        return false;
+    } else if (!Parse_TryParseNumber(&args[1], &s_Radius)) {
+        return false;
+    } else if (s_Radius <= 1 || 11 <= s_Radius) {
+        String_AppendConst(&message, "Parameter &bradius &fshould be between &b2 &fand &b10&f.");
+        Chat_Add(&message);
+        return false;
+    }
+
+    bool hasIntensitySpecified = (argsCount == 3);
+    s_Intensity = s_Radius / 2;
+    
+    if (hasIntensitySpecified) {
+        if (!Parse_TryParseNumber(&args[2], &s_Intensity)) {
+            return false;
+        } else if (s_Intensity == 0) {
+            Message_Player("Parameter &bintensity &fcannot be &b0&f.");
+            return false;
+        } else if (s_Intensity < 0) {
+            Message_Player("Parameter &bintensity &fcannot be negative.");
+            return false;
+        } else if (s_Intensity > s_Radius / 2) {
+            Message_Player("Parameter &bintensity &fcannot be larger than half of the &bradius&f.");
+            return false;
+        }
+    }
+
+    return true;
+}
 
 static void Smooth_Command(const cc_string* args, int argsCount) {
     bool repeat = Parse_LastArgumentIsRepeat(args, &argsCount);
 
-    if (argsCount != 1) {
-        Message_CommandUsage(SmoothCommand);
-        return;
-    }
-
-    if (!Parse_TryParseBlock(&args[0], &s_Block)) {
+    if (!TryParseArguments(args, argsCount)) {
         return;
     }
 
