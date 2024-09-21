@@ -2,6 +2,7 @@
 
 #include "ClassiCube/src/Chat.h"
 #include "ClassiCube/src/String.h"
+#include "ClassiCube/src/Commands.h"
 
 #include "Format.h"
 

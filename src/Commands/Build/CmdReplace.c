@@ -32,9 +32,9 @@ static void DoReplace(IVec3 min, IVec3 max) {
     Draw_Start("Replace");
     BlockID current;
 
-    for (int x = min.X; x <= max.X; x++) {
-        for (int y = min.Y; y <= max.Y; y++) {
-            for (int z = min.Z; z <= max.Z; z++) {
+    for (int x = min.x; x <= max.x; x++) {
+        for (int y = min.y; y <= max.y; y++) {
+            for (int z = min.z; z <= max.z; z++) {
                 current = World_GetBlock(x, y, z);
 
                 if (current == s_ReplacedBlock) {

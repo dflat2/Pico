@@ -6,7 +6,7 @@
 
 static void PaintSelectionHandler(IVec3* marks, int count) {
     Draw_Start("Paint");
-    Draw_Brush(marks[0].X, marks[0].Y, marks[0].Z);
+    Draw_Brush(marks[0].x, marks[0].y, marks[0].z);
     Draw_End();
 
     MarkSelection_Make(&PaintSelectionHandler, 1, "Paint", MACRO_MARKSELECTION_DO_REPEAT);

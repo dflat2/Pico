@@ -4,6 +4,7 @@
 #include "ClassiCube/src/Block.h"
 #include "ClassiCube/src/World.h"
 #include "ClassiCube/src/Constants.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "Message.h"
 #include "MarkSelection.h"
@@ -67,13 +68,13 @@ static void CountBlocks(int x1, int y1, int z1, int x2, int y2, int z2) {
 static void MeasureSelectionHandler(IVec3* marks, int count) {
     char message[STRING_SIZE];
     snprintf(&message[0], 64, "Measuring from &b(%d, %d, %d)&f to &b(%d, %d, %d)&f.",
-            marks[0].X, marks[0].Y, marks[0].Z,
-            marks[1].X, marks[1].Y, marks[1].Z);
+            marks[0].x, marks[0].y, marks[0].z,
+            marks[1].x, marks[1].y, marks[1].z);
     Message_Player(&message[0]);
 
-    int width = abs(marks[0].X - marks[1].X) + 1;
-    int height = abs(marks[0].Y - marks[1].Y) + 1;
-    int length = abs(marks[0].Z - marks[1].Z) + 1;
+    int width = abs(marks[0].x - marks[1].x) + 1;
+    int height = abs(marks[0].y - marks[1].y) + 1;
+    int length = abs(marks[0].z - marks[1].z) + 1;
     int volume = width * height * length;
 
     snprintf(&message[0], 64, "&b%d &fwide, &b%d &fhigh, &b%d &flong, &b%d &fblocks.", width, height, length, volume);
@@ -82,7 +83,7 @@ static void MeasureSelectionHandler(IVec3* marks, int count) {
     IVec3 min = VectorUtils_IVec3_Min(marks[0], marks[1]);
     IVec3 max = VectorUtils_IVec3_Max(marks[0], marks[1]);
     
-    CountBlocks(min.X, min.Y, min.Z, max.X, max.Y, max.Z);
+    CountBlocks(min.x, min.y, min.z, max.x, max.y, max.z);
 
     if (MarkSelection_Repeating()) {
         Message_Selection("&aPlace or break two blocks to determine the edges.");

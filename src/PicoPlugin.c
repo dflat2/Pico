@@ -14,6 +14,7 @@
 #include "ClassiCube/src/Event.h"
 #include "ClassiCube/src/Server.h"
 #include "ClassiCube/src/BlockPhysics.h"
+#include "ClassiCube/src/Commands.h"
 
 #include "Commands/Commands.h"
 #include "UndoTree.h"
@@ -35,7 +36,7 @@ static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
 }
 
 static void Pico_Init(void) {
-    String_AppendConst(&Server.AppName, " + Pico 0.2.0");
+    String_AppendConst(&Server.AppName, " + Pico 0.3.0");
 
     if (!Server.IsSinglePlayer) {
         return;

@@ -30,28 +30,28 @@ static void CenterSelectionHandler(IVec3* marks, int count) {
     IVec3 max = VectorUtils_IVec3_Max(marks[0], marks[1]);
 
     IVec3 delta = {
-        .X = max.X - min.X,
-        .Y = max.Y - min.Y,
-        .Z = max.Z - min.Z
+        .x = max.x - min.x,
+        .y = max.y - min.y,
+        .z = max.z - min.z
     };
 
     IVec3 centerCuboidMin = {
-        .X = (min.X + max.X) / 2,
-        .Y = (min.Y + max.Y) / 2,
-        .Z = (min.Z + max.Z) / 2
+        .x = (min.x + max.x) / 2,
+        .y = (min.y + max.y) / 2,
+        .z = (min.z + max.z) / 2
     };
 
     IVec3 centerCuboidMax = {
-        (delta.X % 2) == 0 ? centerCuboidMin.X : (centerCuboidMin.X + 1),
-        (delta.Y % 2) == 0 ? centerCuboidMin.Y : (centerCuboidMin.Y + 1),
-        (delta.Z % 2) == 0 ? centerCuboidMin.Z : (centerCuboidMin.Z + 1)
+        (delta.x % 2) == 0 ? centerCuboidMin.x : (centerCuboidMin.x + 1),
+        (delta.y % 2) == 0 ? centerCuboidMin.y : (centerCuboidMin.y + 1),
+        (delta.z % 2) == 0 ? centerCuboidMin.z : (centerCuboidMin.z + 1)
     };
 
     Draw_Start("Center");
 
-    for (int i = centerCuboidMin.X; i <= centerCuboidMax.X; i++) {
-        for (int j = centerCuboidMin.Y; j <= centerCuboidMax.Y; j++) {
-            for (int k = centerCuboidMin.Z; k <= centerCuboidMax.Z; k++) {
+    for (int i = centerCuboidMin.x; i <= centerCuboidMax.x; i++) {
+        for (int j = centerCuboidMin.y; j <= centerCuboidMax.y; j++) {
+            for (int k = centerCuboidMin.z; k <= centerCuboidMax.z; k++) {
                 Draw_Brush(i, j, k);
             }
         }
@@ -67,8 +67,8 @@ static void CenterSelectionHandler(IVec3* marks, int count) {
     }
 
     snprintf(message, sizeof(message), "Drew cuboid from &b(%d, %d, %d)&f to &b(%d, %d, %d)&f.",
-             centerCuboidMin.X, centerCuboidMin.Y, centerCuboidMin.Z,
-             centerCuboidMax.X, centerCuboidMax.Y, centerCuboidMax.Z);
+             centerCuboidMin.x, centerCuboidMin.y, centerCuboidMin.z,
+             centerCuboidMax.x, centerCuboidMax.y, centerCuboidMax.z);
 
     Message_Player(message);
     Message_BlocksAffected(blocksAffected);

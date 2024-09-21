@@ -44,26 +44,26 @@ bool BlocksBuffer_Copy(IVec3 mark1, IVec3 mark2, int* out_amountCopied) {
     IVec3 max = VectorUtils_IVec3_Max(mark1, mark2);
     IVec3 anchor = VectorUtils_IVec3_Substract(mark1, min);
 
-    int width = max.X - min.X + 1;
-    int height = max.Y - min.Y + 1;
-    int length = max.Z - min.Z + 1;
+    int width = max.x - min.x + 1;
+    int height = max.y - min.y + 1;
+    int length = max.z - min.z + 1;
 
     BlockID* blocks = Memory_AllocateZeros(width * height * length, sizeof(BlockID));
 
     int index = 0;
 
-    for (int x = min.X; x <= max.X; x++) {
-        for (int y = min.Y; y <= max.Y; y++) {
-            for (int z = min.Z; z <= max.Z; z++) {
+    for (int x = min.x; x <= max.x; x++) {
+        for (int y = min.y; y <= max.y; y++) {
+            for (int z = min.z; z <= max.z; z++) {
                 blocks[index] = World_GetBlock(x, y, z);
                 index++;
             }
         }
     }
 
-    s_Buffer.dimensions.X = max.X - min.X + 1;
-    s_Buffer.dimensions.Y = max.Y - min.Y + 1;
-    s_Buffer.dimensions.Z = max.Z - min.Z + 1;
+    s_Buffer.dimensions.x = max.x - min.x + 1;
+    s_Buffer.dimensions.y = max.y - min.y + 1;
+    s_Buffer.dimensions.z = max.z - min.z + 1;
     s_Buffer.anchor = anchor;
 
     if (!s_BufferIsEmpty) {
@@ -77,32 +77,32 @@ bool BlocksBuffer_Copy(IVec3 mark1, IVec3 mark2, int* out_amountCopied) {
 }
 
 static IVec3 ApplyPermutation(S3 permutation, IVec3 vector) {
-    IVec3 result = { .X = vector.X, .Y = vector.Y, .Z = vector.Z };
+    IVec3 result = { .x = vector.x, .y = vector.y, .z = vector.z };
 
     switch (permutation) {
         case XYZ:
             break;
         case XZY:
-            result.Y = vector.Z;
-            result.Z = vector.Y;
+            result.y = vector.z;
+            result.z = vector.y;
             break;
         case YXZ:
-            result.X = vector.Y;
-            result.Y = vector.X;
+            result.x = vector.y;
+            result.y = vector.x;
             break;
         case ZYX:
-            result.X = vector.Z;
-            result.Z = vector.X;
+            result.x = vector.z;
+            result.z = vector.x;
             break;
         case ZXY:
-            result.X = vector.Z;
-            result.Y = vector.X;
-            result.Z = vector.Y;
+            result.x = vector.z;
+            result.y = vector.x;
+            result.z = vector.y;
             break;
         case YZX:
-            result.X = vector.Y;
-            result.Y = vector.Z;
-            result.Z = vector.X;
+            result.x = vector.y;
+            result.y = vector.z;
+            result.z = vector.x;
             break;
         default:
             break;
@@ -113,15 +113,15 @@ static IVec3 ApplyPermutation(S3 permutation, IVec3 vector) {
 
 static IVec3 ApplyTransform(Transform transform, IVec3 coordinates, IVec3 previousDimensions) {
     if (transform.flipX) {
-        coordinates.X = previousDimensions.X - 1 - coordinates.X;
+        coordinates.x = previousDimensions.x - 1 - coordinates.x;
     }
 
     if (transform.flipY) {
-        coordinates.Y = previousDimensions.Y - 1 - coordinates.Y;
+        coordinates.y = previousDimensions.y - 1 - coordinates.y;
     }
 
     if (transform.flipZ) {
-        coordinates.Z = previousDimensions.Z - 1 - coordinates.Z;
+        coordinates.z = previousDimensions.z - 1 - coordinates.z;
     }
 
     coordinates = ApplyPermutation(transform.permutation, coordinates);
@@ -129,11 +129,11 @@ static IVec3 ApplyTransform(Transform transform, IVec3 coordinates, IVec3 previo
 }
 
 static int Pack(IVec3 vector) {
-    return vector.Z + (vector.Y * s_Buffer.dimensions.Z) + vector.X * (s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
+    return vector.z + (vector.y * s_Buffer.dimensions.z) + vector.x * (s_Buffer.dimensions.y * s_Buffer.dimensions.z);
 }
 
 static bool TransformBuffer(Transform transform) {
-    BlockID* newContent = Memory_Allocate(sizeof(BlockID) * s_Buffer.dimensions.X * s_Buffer.dimensions.Y * s_Buffer.dimensions.Z);
+    BlockID* newContent = Memory_Allocate(sizeof(BlockID) * s_Buffer.dimensions.x * s_Buffer.dimensions.y * s_Buffer.dimensions.z);
 
     IVec3 previousDimensions = s_Buffer.dimensions;
     s_Buffer.dimensions = ApplyPermutation(transform.permutation, s_Buffer.dimensions);
@@ -142,9 +142,9 @@ static bool TransformBuffer(Transform transform) {
     IVec3 transformed;
     int index = 0;
 
-    for (coordinates.X = 0; coordinates.X < previousDimensions.X; coordinates.X++) {
-        for (coordinates.Y = 0; coordinates.Y < previousDimensions.Y; coordinates.Y++) {
-            for (coordinates.Z = 0; coordinates.Z < previousDimensions.Z; coordinates.Z++) {
+    for (coordinates.x = 0; coordinates.x < previousDimensions.x; coordinates.x++) {
+        for (coordinates.y = 0; coordinates.y < previousDimensions.y; coordinates.y++) {
+            for (coordinates.z = 0; coordinates.z < previousDimensions.z; coordinates.z++) {
                 transformed = ApplyTransform(transform, coordinates, previousDimensions);
                 newContent[Pack(transformed)] = s_Buffer.content[index];
                 index++;

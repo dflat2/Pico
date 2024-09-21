@@ -83,61 +83,61 @@ static bool ShouldOutline(IVec3 coordinates, IVec3 min, IVec3 max) {
     int count = 0;
     
     if (s_Mode == MODE_LAYER || s_Mode == MODE_3D) {
-        neighbors[count].X = coordinates.X + 1;
-        neighbors[count].Y = coordinates.Y;
-        neighbors[count].Z = coordinates.Z;
+        neighbors[count].x = coordinates.x + 1;
+        neighbors[count].y = coordinates.y;
+        neighbors[count].z = coordinates.z;
 
-        if (World_Contains(neighbors[count].X, neighbors[count].Y, neighbors[count].Z)) {
+        if (World_Contains(neighbors[count].x, neighbors[count].y, neighbors[count].z)) {
             count++;
         }
 
-        neighbors[count].X = coordinates.X - 1;
-        neighbors[count].Y = coordinates.Y;
-        neighbors[count].Z = coordinates.Z;
+        neighbors[count].x = coordinates.x - 1;
+        neighbors[count].y = coordinates.y;
+        neighbors[count].z = coordinates.z;
 
-        if (World_Contains(neighbors[count].X, neighbors[count].Y, neighbors[count].Z)) {
+        if (World_Contains(neighbors[count].x, neighbors[count].y, neighbors[count].z)) {
             count++;
         }
         
-        neighbors[count].X = coordinates.X;
-        neighbors[count].Y = coordinates.Y;
-        neighbors[count].Z = coordinates.Z + 1;
+        neighbors[count].x = coordinates.x;
+        neighbors[count].y = coordinates.y;
+        neighbors[count].z = coordinates.z + 1;
 
-        if (World_Contains(neighbors[count].X, neighbors[count].Y, neighbors[count].Z)) {
+        if (World_Contains(neighbors[count].x, neighbors[count].y, neighbors[count].z)) {
             count++;
         }
 
-        neighbors[count].X = coordinates.X;
-        neighbors[count].Y = coordinates.Y;
-        neighbors[count].Z = coordinates.Z - 1;
+        neighbors[count].x = coordinates.x;
+        neighbors[count].y = coordinates.y;
+        neighbors[count].z = coordinates.z - 1;
 
-        if (World_Contains(neighbors[count].X, neighbors[count].Y, neighbors[count].Z)) {
+        if (World_Contains(neighbors[count].x, neighbors[count].y, neighbors[count].z)) {
             count++;
         }
     }
     
     if (s_Mode == MODE_UP || s_Mode == MODE_3D) {
-        neighbors[count].X = coordinates.X;
-        neighbors[count].Y = coordinates.Y - 1;
-        neighbors[count].Z = coordinates.Z;
+        neighbors[count].x = coordinates.x;
+        neighbors[count].y = coordinates.y - 1;
+        neighbors[count].z = coordinates.z;
 
-        if (World_Contains(neighbors[count].X, neighbors[count].Y, neighbors[count].Z)) {
+        if (World_Contains(neighbors[count].x, neighbors[count].y, neighbors[count].z)) {
             count++;
         }
     }
     
     if (s_Mode == MODE_DOWN || s_Mode == MODE_3D) {
-        neighbors[count].X = coordinates.X;
-        neighbors[count].Y = coordinates.Y + 1;
-        neighbors[count].Z = coordinates.Z;
+        neighbors[count].x = coordinates.x;
+        neighbors[count].y = coordinates.y + 1;
+        neighbors[count].z = coordinates.z;
 
-        if (World_Contains(neighbors[count].X, neighbors[count].Y, neighbors[count].Z)) {
+        if (World_Contains(neighbors[count].x, neighbors[count].y, neighbors[count].z)) {
             count++;
         }
     }
 
     for (int i = 0; i < count; i++) {
-        if (World_GetBlock(neighbors[i].X, neighbors[i].Y, neighbors[i].Z) == s_OutlinedBlock) {
+        if (World_GetBlock(neighbors[i].x, neighbors[i].y, neighbors[i].z) == s_OutlinedBlock) {
             return true;
         }
     }
@@ -153,13 +153,13 @@ static void OutlineSelectionHandler(IVec3* marks, int count) {
 
     IVec3 here;
 
-    for (int x = min.X; x <= max.X; x++) {
-        for (int y = min.Y; y <= max.Y; y++) {
-            for (int z = min.Z; z <= max.Z; z++) {
+    for (int x = min.x; x <= max.x; x++) {
+        for (int y = min.y; y <= max.y; y++) {
+            for (int z = min.z; z <= max.z; z++) {
                 if (World_GetBlock(x, y, z) == BLOCK_AIR) {
-                    here.X = x;
-                    here.Y = y;
-                    here.Z = z;
+                    here.x = x;
+                    here.y = y;
+                    here.z = z;
 
                     if (ShouldOutline(here, min, max)) {
                         IVec3FastQueue_Enqueue(outline, here);
@@ -173,7 +173,7 @@ static void OutlineSelectionHandler(IVec3* marks, int count) {
 
     while (!IVec3FastQueue_IsEmpty(outline)) {
         here = IVec3FastQueue_Dequeue(outline);
-        Draw_Brush(here.X, here.Y, here.Z);
+        Draw_Brush(here.x, here.y, here.z);
     }
 
     IVec3FastQueue_Free(outline);

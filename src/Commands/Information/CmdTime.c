@@ -1,5 +1,6 @@
 #include <time.h>
 #include "ClassiCube/src/Constants.h"
+#include "ClassiCube/src/Chat.h"
 #include "Message.h"
 
 static void Time_Command(const cc_string* args, int argsCount);

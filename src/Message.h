@@ -1,7 +1,7 @@
 #ifndef MESSAGING_H
 #define MESSAGING_H
 
-#include "ClassiCube/src/Chat.h"
+#include "ClassiCube/src/Commands.h"
 #include "ClassiCube/src/String.h"
 
 void Message_BlocksAffected(int blocksAffected);

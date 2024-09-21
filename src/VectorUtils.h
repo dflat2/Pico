@@ -6,14 +6,14 @@
 #include "DataStructures/Axis.h"
 
 typedef struct IVec2_ {
-    int X;
-    int Y;
+    int x;
+    int y;
 } IVec2;
 
 typedef struct FVec3_ {
-    float X;
-    float Y;
-    float Z;
+    float x;
+    float y;
+    float z;
 } FVec3;
 
 IVec3 VectorUtils_IVec3_Min(IVec3 a, IVec3 b);

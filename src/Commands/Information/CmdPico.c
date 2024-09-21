@@ -24,8 +24,8 @@ static void Pico_Command(const cc_string* args, int argsCount) {
 
     Message_Player("~ &bPico &f~");
     Message_Player("A singleplayer commands plugin for ClassiCube.");
-    Message_Player("\x07 Version: &b0.2.0");
-    Message_Player("\x07 Made for ClassiCube version: &b1.3.6");
+    Message_Player("\x07 Version: &b0.3.0");
+    Message_Player("\x07 Made for ClassiCube version: &b1.3.7");
     Message_Player("\x07 Github: &bhttps://github.com/dflat2/Pico");
     Message_Player("\x07 Bug report: &bhttps://github.com/dflat2/Pico/issues");
     Message_Player("\x07 Discord: &bd_flat");

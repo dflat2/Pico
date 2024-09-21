@@ -1,4 +1,5 @@
 #include "ClassiCube/src/Constants.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "DataStructures/BlocksBuffer.h"
 #include "Draw.h"
@@ -31,9 +32,9 @@ static void DoCut(IVec3 mark1, IVec3 mark2) {
     IVec3 max = VectorUtils_IVec3_Max(mark1, mark2);
 
     Draw_Start("Cut");
-    for (int x = min.X; x <= max.X; x++) {
-        for (int y = min.Y; y <= max.Y; y++) {
-            for (int z = min.Z; z <= max.Z; z++) {
+    for (int x = min.x; x <= max.x; x++) {
+        for (int y = min.y; y <= max.y; y++) {
+            for (int z = min.z; z <= max.z; z++) {
                 Draw_Block(x, y, z, BLOCK_AIR);
             }
         }

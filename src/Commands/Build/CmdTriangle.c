@@ -48,18 +48,18 @@ static int SmallestInteger3(int a, int b, int c) {
 
 static IVec3 MinimumVector3(IVec3 vector1, IVec3 vector2, IVec3 vector3) {
     IVec3 result;
-    result.X = SmallestInteger3(vector1.X, vector2.X, vector3.X);
-    result.Y = SmallestInteger3(vector1.Y, vector2.Y, vector3.Y);
-    result.Z = SmallestInteger3(vector1.Z, vector2.Z, vector3.Z);
+    result.x = SmallestInteger3(vector1.x, vector2.x, vector3.x);
+    result.y = SmallestInteger3(vector1.y, vector2.y, vector3.y);
+    result.z = SmallestInteger3(vector1.z, vector2.z, vector3.z);
 
     return result;
 }
 
 static IVec3 MaximumVector3(IVec3 vector1, IVec3 vector2, IVec3 vector3) {
     IVec3 result;
-    result.X = GreatestInteger3(vector1.X, vector2.X, vector3.X);
-    result.Y = GreatestInteger3(vector1.Y, vector2.Y, vector3.Y);
-    result.Z = GreatestInteger3(vector1.Z, vector2.Z, vector3.Z);
+    result.x = GreatestInteger3(vector1.x, vector2.x, vector3.x);
+    result.y = GreatestInteger3(vector1.y, vector2.y, vector3.y);
+    result.z = GreatestInteger3(vector1.z, vector2.z, vector3.z);
 
     return result;
 }
@@ -75,9 +75,9 @@ static bool IsBetweenPlanes(IVec3 point, Plane plane1, Plane plane2, Plane plane
 
 static FVec3 PlaneProjection(IVec3 vector, Plane plane) {
     FVec3 floatVector;
-    floatVector.X = (float)vector.X;
-    floatVector.Y = (float)vector.Y;
-    floatVector.Z = (float)vector.Z;
+    floatVector.x = (float)vector.x;
+    floatVector.y = (float)vector.y;
+    floatVector.z = (float)vector.z;
 
     FVec3 planePointVector = VectorUtils_FVec3_Substract(floatVector, plane.point);
     float dotProduct = VectorUtils_FVec3_DotProduct(plane.normal, planePointVector);
@@ -88,14 +88,14 @@ static FVec3 PlaneProjection(IVec3 vector, Plane plane) {
 
 static FVec3 CrossProduct(FVec3 u, FVec3 v) {
     FVec3 result;
-    result.X = u.Y * v.Z - u.Z * v.Y;
-    result.Y = u.Z * v.X - u.X * v.Z;
-    result.Z = u.X * v.Y - u.Y * v.X;
+    result.x = u.y * v.z - u.z * v.y;
+    result.y = u.z * v.x - u.x * v.z;
+    result.z = u.x * v.y - u.y * v.x;
     return result;
 }
 
 static FVec3 Normalize(FVec3 vector) {
-    float norm = sqrt(vector.X * vector.X + vector.Y * vector.Y + vector.Z * vector.Z);
+    float norm = sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
 
     if (norm == 0.0f) {
         return vector;
@@ -136,19 +136,19 @@ static void TriangleSelectionHandler(IVec3* marks, int count) {
 
     Triangle triangle;
 
-    triangle.a.X = (float)marks[0].X;
-    triangle.a.Y = (float)marks[0].Y;
-    triangle.a.Z = (float)marks[0].Z;
-    triangle.b.X = (float)marks[1].X;
-    triangle.b.Y = (float)marks[1].Y;
-    triangle.b.Z = (float)marks[1].Z;
-    triangle.c.X = (float)marks[2].X;
-    triangle.c.Y = (float)marks[2].Y;
-    triangle.c.Z = (float)marks[2].Z;
+    triangle.a.x = (float)marks[0].x;
+    triangle.a.y = (float)marks[0].y;
+    triangle.a.z = (float)marks[0].z;
+    triangle.b.x = (float)marks[1].x;
+    triangle.b.y = (float)marks[1].y;
+    triangle.b.z = (float)marks[1].z;
+    triangle.c.x = (float)marks[2].x;
+    triangle.c.y = (float)marks[2].y;
+    triangle.c.z = (float)marks[2].z;
 
     Plane plane = TriangleToPlane(triangle);
 
-    if (plane.normal.X == 0 && plane.normal.Y == 0 && plane.normal.Z == 0) {
+    if (plane.normal.x == 0 && plane.normal.y == 0 && plane.normal.z == 0) {
         Message_Player("Cannot draw a triangle from aligned points.");
 
         if (MarkSelection_Repeating()) {
@@ -166,14 +166,14 @@ static void TriangleSelectionHandler(IVec3* marks, int count) {
     Draw_Start("Triangle");
     IVec3 current;
 
-    for (int x = min.X; x <= max.X; x++) {
-        current.X = x;
+    for (int x = min.x; x <= max.x; x++) {
+        current.x = x;
 
-        for (int y = min.Y; y <= max.Y; y++) {
-            current.Y = y;
+        for (int y = min.y; y <= max.y; y++) {
+            current.y = y;
 
-            for (int z = min.Z; z <= max.Z; z++) {
-                current.Z = z;
+            for (int z = min.z; z <= max.z; z++) {
+                current.z = z;
 
                 if (!IsAlmostInPlane(current, plane)) {
                     continue;

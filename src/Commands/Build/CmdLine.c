@@ -31,9 +31,9 @@ static int GreatestInteger3(int a, int b, int c) {
 }
 
 static void Line(IVec3 from, IVec3 to) {
-    int deltaX = to.X - from.X;
-    int deltaY = to.Y - from.Y;
-    int deltaZ = to.Z - from.Z;
+    int deltaX = to.x - from.x;
+    int deltaY = to.y - from.y;
+    int deltaZ = to.z - from.z;
 
     int steps = GreatestInteger3(abs(deltaX), abs(deltaY), abs(deltaZ));
 
@@ -45,9 +45,9 @@ static void Line(IVec3 from, IVec3 to) {
     float incrementY = (float)deltaY / (float)steps;
     float incrementZ = (float)deltaZ / (float)steps;
 
-    float x = from.X;
-    float y = from.Y;
-    float z = from.Z;
+    float x = from.x;
+    float y = from.y;
+    float z = from.z;
 
     for (int _ = 0; _ < steps; _++) {
         Draw_Brush(round(x), round(y), round(z));
@@ -56,7 +56,7 @@ static void Line(IVec3 from, IVec3 to) {
         z += incrementZ;
     }
 
-    Draw_Brush(to.X, to.Y, to.Z);
+    Draw_Brush(to.x, to.y, to.z);
 }
 
 static void DoLine(IVec3 from, IVec3 to) {
@@ -67,8 +67,8 @@ static void DoLine(IVec3 from, IVec3 to) {
 static void DoWall(IVec3 from, IVec3 to) {
     Draw_Start("Line");
 
-    int deltaX = to.X - from.X;
-    int deltaZ = to.Z - from.Z;
+    int deltaX = to.x - from.x;
+    int deltaZ = to.z - from.z;
 
     int steps = GreatestInteger2(abs(deltaX), abs(deltaZ));
 
@@ -81,15 +81,15 @@ static void DoWall(IVec3 from, IVec3 to) {
     float incrementX = (float)deltaX / (float)steps;
     float incrementZ = (float)deltaZ / (float)steps;
 
-    float x = from.X;
-    float z = from.Z;
+    float x = from.x;
+    float z = from.z;
 
-    int yMin = from.Y;
-    int yMax = to.Y;
+    int yMin = from.y;
+    int yMax = to.y;
 
-    if (from.Y > to.Y) {
-        yMin = to.Y;
-        yMax = from.Y;
+    if (from.y > to.y) {
+        yMin = to.y;
+        yMax = from.y;
     }
 
     for (int _ = 0; _ < steps; _++) {
@@ -102,7 +102,7 @@ static void DoWall(IVec3 from, IVec3 to) {
     }
 
     for (int y = yMin; y <= yMax; y++) {
-        Draw_Brush(to.X, round(y), to.Z);
+        Draw_Brush(to.x, round(y), to.z);
     }
 }
 

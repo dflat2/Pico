@@ -37,9 +37,9 @@ static void PasteSelectionHandler(IVec3* marks, int count) {
     IVec3 origin = VectorUtils_IVec3_Substract(marks[0], buffer.anchor);
     int index = -1;
 
-    for (int x = origin.X; x < origin.X + buffer.dimensions.X; x++) {
-        for (int y = origin.Y; y < origin.Y + buffer.dimensions.Y; y++) {
-            for (int z = origin.Z; z < origin.Z + buffer.dimensions.Z; z++) {
+    for (int x = origin.x; x < origin.x + buffer.dimensions.x; x++) {
+        for (int y = origin.y; y < origin.y + buffer.dimensions.y; y++) {
+            for (int z = origin.z; z < origin.z + buffer.dimensions.z; z++) {
                 index++;
                 if (!World_Contains(x, y, z)) continue;
 

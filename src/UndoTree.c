@@ -4,6 +4,7 @@
 #include "ClassiCube/src/World.h"
 #include "ClassiCube/src/Game.h"
 #include "ClassiCube/src/Event.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "Message.h"
 #include "UndoTree.h"
@@ -56,7 +57,7 @@ static void OnBlockChanged(void* obj, IVec3 coords, BlockID oldBlock, BlockID bl
         UndoTree_PrepareNewNode("Place");
     }
  
-    UndoTree_AddBlockChangeEntry(coords.X, coords.Y, coords.Z, block - oldBlock);
+    UndoTree_AddBlockChangeEntry(coords.x, coords.y, coords.z, block - oldBlock);
     UndoTree_Commit();
 }
 

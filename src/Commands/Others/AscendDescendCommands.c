@@ -64,16 +64,16 @@ static bool CanStandOnBlock(int x, int y, int z) {
 }
 
 static bool TryFindAbove(Vec3 currentPosition, Vec3* ascendPosition) {
-    int x = (int) currentPosition.X;
-    int y = (int) currentPosition.Y;
-    int z = (int) currentPosition.Z;
+    int x = (int) currentPosition.x;
+    int y = (int) currentPosition.y;
+    int z = (int) currentPosition.z;
 
-    ascendPosition->X = currentPosition.X;
-    ascendPosition->Z = currentPosition.Z;
+    ascendPosition->x = currentPosition.x;
+    ascendPosition->z = currentPosition.z;
 
     for (int yCandidate = y + 1; yCandidate <= World.Height; yCandidate++) {
         if (CanStandOnBlock(x, yCandidate, z)) {
-            ascendPosition->Y = (float)yCandidate;
+            ascendPosition->y = (float)yCandidate;
             return true;
         }
     }
@@ -82,16 +82,16 @@ static bool TryFindAbove(Vec3 currentPosition, Vec3* ascendPosition) {
 }
 
 static bool TryFindBelow(Vec3 currentPosition, Vec3* descendPosition) {
-    int x = (int) currentPosition.X;
-    int y = (int) currentPosition.Y;
-    int z = (int) currentPosition.Z;
+    int x = (int) currentPosition.x;
+    int y = (int) currentPosition.y;
+    int z = (int) currentPosition.z;
 
-    descendPosition->X = currentPosition.X;
-    descendPosition->Z = currentPosition.Z;
+    descendPosition->x = currentPosition.x;
+    descendPosition->z = currentPosition.z;
 
     for (int yCandidate = y - 1; yCandidate >= 0; yCandidate--) {
         if (CanStandOnBlock(x, yCandidate, z)) {
-            descendPosition->Y = (float)yCandidate;
+            descendPosition->y = (float)yCandidate;
             return true;
         }
     }

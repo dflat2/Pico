@@ -66,9 +66,9 @@ static void DrawLeavesLayer4(int x, int y, int z) {
 }
 
 static void TreeSelectionHandler(IVec3* marks, int count) {
-    int x = marks[0].X;
-    int y = marks[0].Y;
-    int z = marks[0].Z;
+    int x = marks[0].x;
+    int y = marks[0].y;
+    int z = marks[0].z;
 
     Draw_Start("Tree");
     DrawTrunk(x, y, z);

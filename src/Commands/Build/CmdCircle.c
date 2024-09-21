@@ -43,14 +43,14 @@ static void CircleSelectionHandler(IVec3* marks, int count) {
 
     for (int i = -s_Radius; i <= s_Radius; i++) {
         for (int j = -s_Radius; j <= s_Radius; j++) {
-            current2D.X = i;
-            current2D.Y = j;
+            current2D.x = i;
+            current2D.y = j;
 
             distance = sqrt(VectorUtils_IVec2_DotProduct(current2D, current2D));
 
             if ((s_Mode == MODE_SOLID && distance <= s_Radius) || (s_Radius - 1 <= distance && distance <= s_Radius)) {
                 current = VectorsUtils_IVec3_Add(marks[0], VectorUtils_2DTo3D(current2D, s_Axis));
-                Draw_Brush(current.X, current.Y, current.Z);
+                Draw_Brush(current.x, current.y, current.z);
             }
         }
     }

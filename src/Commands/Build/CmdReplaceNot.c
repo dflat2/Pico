@@ -30,9 +30,9 @@ static void ReplaceSelectionHandler(IVec3* marks, int count);
 static void DoReplaceNot(IVec3 min, IVec3 max) {
     Draw_Start("ReplaceNot");
 
-    for (int x = min.X; x <= max.X; x++) {
-        for (int y = min.Y; y <= max.Y; y++) {
-            for (int z = min.Z; z <= max.Z; z++) {
+    for (int x = min.x; x <= max.x; x++) {
+        for (int y = min.y; y <= max.y; y++) {
+            for (int z = min.z; z <= max.z; z++) {
                 if (World_GetBlock(x, y, z) != s_ReplacedNotBlock) {
                     Draw_Brush(x, y, z);
                 }

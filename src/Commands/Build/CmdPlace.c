@@ -33,13 +33,13 @@ static void Place(IVec3 position, BlockID block) {
     cc_string message = String_FromArray(messageBuffer);
 
     Draw_Start("Place");
-    Draw_Block(position.X, position.Y, position.Z, block);
+    Draw_Block(position.x, position.y, position.z, block);
     int blocksAffected = Draw_End();
 
     if (blocksAffected == 1) {
-        String_Format4(&message, "&b%s &fblock was placed at &b(%i, %i, %i)&f.", &blockName, &position.X, &position.Y, &position.Z);
+        String_Format4(&message, "&b%s &fblock was placed at &b(%i, %i, %i)&f.", &blockName, &position.x, &position.y, &position.z);
     } else {
-        String_Format4(&message, "&b(%i, %i, %i)&f is already &b%s&f.", &position.X, &position.Y, &position.Z, &blockName);
+        String_Format4(&message, "&b(%i, %i, %i)&f is already &b%s&f.", &position.x, &position.y, &position.z, &blockName);
     }
 
     Chat_Add(&message);

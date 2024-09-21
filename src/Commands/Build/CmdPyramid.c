@@ -30,13 +30,13 @@ static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zma
 }
 
 static void PyramidSelectionHandler(IVec3* marks, int count) {
-    int baseY = marks[0].Y;
+    int baseY = marks[0].y;
     
     IVec3 min = VectorUtils_IVec3_Min(marks[0], marks[1]);
     IVec3 max = VectorUtils_IVec3_Max(marks[0], marks[1]);
 
-    int sideX = max.X - min.X + 1;
-    int sideZ = max.Z - min.Z + 1;
+    int sideX = max.x - min.x + 1;
+    int sideZ = max.z - min.z + 1;
 
     int height;
 
@@ -49,19 +49,19 @@ static void PyramidSelectionHandler(IVec3* marks, int count) {
     Draw_Start("Pyramid");
 
     if (s_Mode == MODE_NORMAL || s_Mode == MODE_HOLLOW) {
-        DrawCuboid(min.X, baseY, min.Z, max.X, baseY, max.Z);
+        DrawCuboid(min.x, baseY, min.z, max.x, baseY, max.z);
     } else if (s_Mode == MODE_ROOF || s_Mode == MODE_WIRE) {
-        DrawCuboid(min.X, baseY, min.Z, min.X, baseY, max.Z);
-        DrawCuboid(min.X, baseY, min.Z, max.X, baseY, min.Z);
-        DrawCuboid(max.X, baseY, min.Z, max.X, baseY, max.Z);
-        DrawCuboid(min.X, baseY, max.Z, max.X, baseY, max.Z);
+        DrawCuboid(min.x, baseY, min.z, min.x, baseY, max.z);
+        DrawCuboid(min.x, baseY, min.z, max.x, baseY, min.z);
+        DrawCuboid(max.x, baseY, min.z, max.x, baseY, max.z);
+        DrawCuboid(min.x, baseY, max.z, max.x, baseY, max.z);
     }
 
 
-    int xMin = min.X + 1;
-    int zMin = min.Z + 1;
-    int xMax = max.X - 1;
-    int zMax = max.Z - 1;
+    int xMin = min.x + 1;
+    int zMin = min.z + 1;
+    int xMax = max.x - 1;
+    int zMax = max.z - 1;
 
     for (int i = 1; i < height; i++) {
         if (s_Mode == MODE_NORMAL) {

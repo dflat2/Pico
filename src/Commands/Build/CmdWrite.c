@@ -301,21 +301,21 @@ static IVec3 From2DTo3D(IVec2 vector, int textOriginX3D, int textOriginZ3D, int 
     IVec3 result;
 
     if (direction == DIRECTION_X_POSITIVE) {
-        result.X = textOriginX3D + vector.X;
-        result.Y = lineBaseY + vector.Y;
-        result.Z = textOriginZ3D;
+        result.x = textOriginX3D + vector.x;
+        result.y = lineBaseY + vector.y;
+        result.z = textOriginZ3D;
     } else if (direction == DIRECTION_X_NEGATIVE) {
-        result.X = textOriginX3D - vector.X;
-        result.Y = lineBaseY + vector.Y;
-        result.Z = textOriginZ3D;
+        result.x = textOriginX3D - vector.x;
+        result.y = lineBaseY + vector.y;
+        result.z = textOriginZ3D;
     } else if (direction == DIRECTION_Z_POSITIVE) {
-        result.X = textOriginX3D;
-        result.Y = lineBaseY + vector.Y;
-        result.Z = textOriginZ3D + vector.X;
+        result.x = textOriginX3D;
+        result.y = lineBaseY + vector.y;
+        result.z = textOriginZ3D + vector.x;
     } else {
-        result.X = textOriginX3D;
-        result.Y = lineBaseY + vector.Y;
-        result.Z = textOriginZ3D - vector.X;
+        result.x = textOriginX3D;
+        result.y = lineBaseY + vector.y;
+        result.z = textOriginZ3D - vector.x;
     }
 
     return result;
@@ -342,10 +342,10 @@ static void WriteLetter(char letter, int textOriginX3D, int textOriginZ3D, int l
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if (letterArray[i][j]) {
-                local2DCoordinates.X = *offset + j;
-                local2DCoordinates.Y = 7 - i;
+                local2DCoordinates.x = *offset + j;
+                local2DCoordinates.y = 7 - i;
                 global3DCoordinates = From2DTo3D(local2DCoordinates, textOriginX3D, textOriginZ3D, lineBaseY, direction);
-                Draw_Block(global3DCoordinates.X, global3DCoordinates.Y, global3DCoordinates.Z, s_CurrentBlock);
+                Draw_Block(global3DCoordinates.x, global3DCoordinates.y, global3DCoordinates.z, s_CurrentBlock);
 
                 if (j + 1 > letterWidth) {
                     letterWidth = j + 1;
@@ -358,19 +358,19 @@ static void WriteLetter(char letter, int textOriginX3D, int textOriginZ3D, int l
 }
 
 static WriteDirection GuessTextDirection(IVec3 mark1, IVec3 mark2) {
-    int deltaX = abs(mark1.X - mark2.X);
-    int deltaZ = abs(mark1.Z - mark2.Z);
+    int deltaX = abs(mark1.x - mark2.x);
+    int deltaZ = abs(mark1.z - mark2.z);
 
     if (deltaX < deltaZ) {
-        if (mark1.Z < mark2.Z) {
+        if (mark1.z < mark2.z) {
             return DIRECTION_Z_POSITIVE;
-        } else if (mark1.Z > mark2.Z) {
+        } else if (mark1.z > mark2.z) {
             return DIRECTION_Z_NEGATIVE;
         }
     } else {
-        if (mark1.X < mark2.X) {
+        if (mark1.x < mark2.x) {
             return DIRECTION_X_POSITIVE;
-        } else if (mark1.X > mark2.X) {
+        } else if (mark1.x > mark2.x) {
             return DIRECTION_X_NEGATIVE;
         }
     }
@@ -423,10 +423,10 @@ static BlockID GetColoredBlockFromCode(char colorCode) {
 }
 
 static void WriteSelectionHandler(IVec3* marks, int count) {
-    int textOriginX = marks[0].X;
-    int textOriginZ = marks[0].Z;
+    int textOriginX = marks[0].x;
+    int textOriginZ = marks[0].z;
 
-    int lineBase = marks[0].Y;
+    int lineBase = marks[0].y;
 
     WriteDirection direction = GuessTextDirection(marks[0], marks[1]);
 

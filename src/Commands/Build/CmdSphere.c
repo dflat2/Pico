@@ -48,9 +48,9 @@ static void SphereSelectionHandler(IVec3* marks, int count) {
     s_Center = marks[0];
     Draw_Start("Sphere");
 
-    for (int x = s_Center.X - s_Radius; x <= s_Center.X + s_Radius; x++) {
-        for (int y = s_Center.Y - s_Radius; y <= s_Center.Y + s_Radius; y++) {
-            for (int z = s_Center.Z - s_Radius; z <= s_Center.Z + s_Radius; z++) {
+    for (int x = s_Center.x - s_Radius; x <= s_Center.x + s_Radius; x++) {
+        for (int y = s_Center.y - s_Radius; y <= s_Center.y + s_Radius; y++) {
+            for (int z = s_Center.z - s_Radius; z <= s_Center.z + s_Radius; z++) {
                 if (ShouldDraw(x, y, z)) {
                     Draw_Brush(x, y, z);
                 }

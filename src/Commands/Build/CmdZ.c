@@ -48,7 +48,7 @@ static void DrawCuboid(int xmin, int ymin, int zmin, int xmax, int ymax, int zma
 
 static void DoCuboidSolid(IVec3 min, IVec3 max) {
     Draw_Start("Z");
-    DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, max.Z);
+    DrawCuboid(min.x, min.y, min.z, max.x, max.y, max.z);
 
     int blocksAffected = Draw_End();
 
@@ -59,12 +59,12 @@ static void DoCuboidSolid(IVec3 min, IVec3 max) {
 
 static void DoCuboidHollow(IVec3 min, IVec3 max) {
     Draw_Start("Z");
-    DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, max.Z);
-    DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, min.Z);
-    DrawCuboid(min.X, min.Y, min.Z, max.X, min.Y, max.Z);
-    DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, max.Z);
-    DrawCuboid(min.X, max.Y, min.Z, max.X, max.Y, max.Z);
-    DrawCuboid(min.X, min.Y, max.Z, max.X, max.Y, max.Z);
+    DrawCuboid(min.x, min.y, min.z, min.x, max.y, max.z);
+    DrawCuboid(min.x, min.y, min.z, max.x, max.y, min.z);
+    DrawCuboid(min.x, min.y, min.z, max.x, min.y, max.z);
+    DrawCuboid(max.x, min.y, min.z, max.x, max.y, max.z);
+    DrawCuboid(min.x, max.y, min.z, max.x, max.y, max.z);
+    DrawCuboid(min.x, min.y, max.z, max.x, max.y, max.z);
 
     int blocksAffected = Draw_End();
 
@@ -75,10 +75,10 @@ static void DoCuboidHollow(IVec3 min, IVec3 max) {
 
 static void DoCuboidWalls(IVec3 min, IVec3 max) {
     Draw_Start("Z");
-    DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, max.Z);
-    DrawCuboid(min.X, min.Y, min.Z, max.X, max.Y, min.Z);
-    DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, max.Z);
-    DrawCuboid(min.X, min.Y, max.Z, max.X, max.Y, max.Z);
+    DrawCuboid(min.x, min.y, min.z, min.x, max.y, max.z);
+    DrawCuboid(min.x, min.y, min.z, max.x, max.y, min.z);
+    DrawCuboid(max.x, min.y, min.z, max.x, max.y, max.z);
+    DrawCuboid(min.x, min.y, max.z, max.x, max.y, max.z);
 
     int blocksAffected = Draw_End();
 
@@ -89,32 +89,32 @@ static void DoCuboidWalls(IVec3 min, IVec3 max) {
 
 static void DoCuboidWire(IVec3 min, IVec3 max) {
     Draw_Start("Z");
-    DrawCuboid(min.X, min.Y, min.Z, max.X, min.Y, min.Z);
-    DrawCuboid(min.X, min.Y, min.Z, min.X, max.Y, min.Z);
-    DrawCuboid(min.X, min.Y, min.Z, min.X, min.Y, max.Z);
-    DrawCuboid(min.X, min.Y, max.Z, max.X, min.Y, max.Z);
-    DrawCuboid(min.X, min.Y, max.Z, min.X, max.Y, max.Z);
-    DrawCuboid(min.X, max.Y, min.Z, max.X, max.Y, min.Z);
-    DrawCuboid(min.X, max.Y, min.Z, min.X, max.Y, max.Z);
-    DrawCuboid(min.X, max.Y, max.Z, max.X, max.Y, max.Z);
-    DrawCuboid(max.X, min.Y, min.Z, max.X, max.Y, min.Z);
-    DrawCuboid(max.X, min.Y, min.Z, max.X, min.Y, max.Z);
-    DrawCuboid(max.X, min.Y, max.Z, max.X, max.Y, max.Z);
-    DrawCuboid(max.X, max.Y, min.Z, max.X, max.Y, max.Z);
+    DrawCuboid(min.x, min.y, min.z, max.x, min.y, min.z);
+    DrawCuboid(min.x, min.y, min.z, min.x, max.y, min.z);
+    DrawCuboid(min.x, min.y, min.z, min.x, min.y, max.z);
+    DrawCuboid(min.x, min.y, max.z, max.x, min.y, max.z);
+    DrawCuboid(min.x, min.y, max.z, min.x, max.y, max.z);
+    DrawCuboid(min.x, max.y, min.z, max.x, max.y, min.z);
+    DrawCuboid(min.x, max.y, min.z, min.x, max.y, max.z);
+    DrawCuboid(min.x, max.y, max.z, max.x, max.y, max.z);
+    DrawCuboid(max.x, min.y, min.z, max.x, max.y, min.z);
+    DrawCuboid(max.x, min.y, min.z, max.x, min.y, max.z);
+    DrawCuboid(max.x, min.y, max.z, max.x, max.y, max.z);
+    DrawCuboid(max.x, max.y, min.z, max.x, max.y, max.z);
 
     Draw_End();
 }
 
 static void DoCuboidCorners(IVec3 min, IVec3 max) {
     Draw_Start("Z");
-    Draw_Brush(min.X, min.Y, min.Z);
-    Draw_Brush(min.X, min.Y, max.Z);
-    Draw_Brush(min.X, max.Y, min.Z);
-    Draw_Brush(min.X, max.Y, max.Z);
-    Draw_Brush(max.X, min.Y, min.Z);
-    Draw_Brush(max.X, min.Y, max.Z);
-    Draw_Brush(max.X, max.Y, min.Z);
-    Draw_Brush(max.X, max.Y, max.Z);
+    Draw_Brush(min.x, min.y, min.z);
+    Draw_Brush(min.x, min.y, max.z);
+    Draw_Brush(min.x, max.y, min.z);
+    Draw_Brush(min.x, max.y, max.z);
+    Draw_Brush(max.x, min.y, min.z);
+    Draw_Brush(max.x, min.y, max.z);
+    Draw_Brush(max.x, max.y, min.z);
+    Draw_Brush(max.x, max.y, max.z);
 
     int blocksAffected = Draw_End();
 

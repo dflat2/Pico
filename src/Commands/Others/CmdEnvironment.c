@@ -1,6 +1,7 @@
 #include "ClassiCube/src/World.h"
 #include "ClassiCube/src/Block.h"
 #include "ClassiCube/src/Constants.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "Parse.h"
 #include "Message.h"

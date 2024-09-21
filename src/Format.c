@@ -28,7 +28,7 @@ void Format_Block(BlockID block, char* buffer, size_t size) {
 }
 
 void Format_Coordinates(IVec3 coordinates, char* buffer, size_t size) {
-    snprintf(buffer, size, "(%d, %d, %d)", coordinates.X, coordinates.Y, coordinates.Z);
+    snprintf(buffer, size, "(%d, %d, %d)", coordinates.x, coordinates.y, coordinates.z);
 }
 
 void Format_Int32(cc_string* destination, int integer) {

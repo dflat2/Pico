@@ -34,8 +34,8 @@ static void MarkAll_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    IVec3 low = { .X = 0, .Y = 0, .Z = 0 };
-    IVec3 high = { .X = World.Width - 1, .Y = World.Height - 1, .Z = World.Length - 1 };
+    IVec3 low = { .x = 0, .y = 0, .z = 0 };
+    IVec3 high = { .x = World.Width - 1, .y = World.Height - 1, .z = World.Length - 1 };
 
     MarkSelection_DoMark(low);
     MarkSelection_DoMark(high);

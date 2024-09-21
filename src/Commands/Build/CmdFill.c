@@ -79,59 +79,59 @@ static void Expand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlock,
     short count = 0;
 
     if (s_Mode == MODE_3D || s_Mode == MODE_LAYER || s_Mode == MODE_2DZ || s_Mode == MODE_DOWN || s_Mode == MODE_UP) {
-        neighbors[count].X = target.X - 1;
-        neighbors[count].Y = target.Y;
-        neighbors[count].Z = target.Z;
+        neighbors[count].x = target.x - 1;
+        neighbors[count].y = target.y;
+        neighbors[count].z = target.z;
         count++;
-        neighbors[count].X = target.X + 1;
-        neighbors[count].Y = target.Y;
-        neighbors[count].Z = target.Z;
+        neighbors[count].x = target.x + 1;
+        neighbors[count].y = target.y;
+        neighbors[count].z = target.z;
         count++;
     }
     
     if (s_Mode == MODE_3D || s_Mode == MODE_2DX || s_Mode == MODE_2DZ) {
-        neighbors[count].X = target.X;
-        neighbors[count].Y = target.Y - 1;
-        neighbors[count].Z = target.Z;
+        neighbors[count].x = target.x;
+        neighbors[count].y = target.y - 1;
+        neighbors[count].z = target.z;
         count++;
-        neighbors[count].X = target.X;
-        neighbors[count].Y = target.Y + 1;
-        neighbors[count].Z = target.Z;
+        neighbors[count].x = target.x;
+        neighbors[count].y = target.y + 1;
+        neighbors[count].z = target.z;
         count++;
     } else if (s_Mode == MODE_DOWN) {
-        neighbors[count].X = target.X;
-        neighbors[count].Y = target.Y - 1;
-        neighbors[count].Z = target.Z;
+        neighbors[count].x = target.x;
+        neighbors[count].y = target.y - 1;
+        neighbors[count].z = target.z;
         count++;
 
-        if (target.Y < s_SourceY) {
-            neighbors[count].X = target.X;
-            neighbors[count].Y = target.Y + 1;
-            neighbors[count].Z = target.Z;
+        if (target.y < s_SourceY) {
+            neighbors[count].x = target.x;
+            neighbors[count].y = target.y + 1;
+            neighbors[count].z = target.z;
             count++;
         }
     } else if (s_Mode == MODE_UP) {
-        neighbors[count].X = target.X;
-        neighbors[count].Y = target.Y + 1;
-        neighbors[count].Z = target.Z;
+        neighbors[count].x = target.x;
+        neighbors[count].y = target.y + 1;
+        neighbors[count].z = target.z;
         count++;
 
-        if (target.Y > s_SourceY) {
-            neighbors[count].X = target.X;
-            neighbors[count].Y = target.Y - 1;
-            neighbors[count].Z = target.Z;
+        if (target.y > s_SourceY) {
+            neighbors[count].x = target.x;
+            neighbors[count].y = target.y - 1;
+            neighbors[count].z = target.z;
             count++;
         }
     }
     
     if (s_Mode == MODE_3D || s_Mode == MODE_2DX || s_Mode == MODE_LAYER || s_Mode == MODE_DOWN || s_Mode == MODE_UP) {
-        neighbors[count].X = target.X;
-        neighbors[count].Y = target.Y;
-        neighbors[count].Z = target.Z - 1;
+        neighbors[count].x = target.x;
+        neighbors[count].y = target.y;
+        neighbors[count].z = target.z - 1;
         count++;
-        neighbors[count].X = target.X;
-        neighbors[count].Y = target.Y;
-        neighbors[count].Z = target.Z + 1;
+        neighbors[count].x = target.x;
+        neighbors[count].y = target.y;
+        neighbors[count].z = target.z + 1;
         count++;
     }
 
@@ -140,25 +140,25 @@ static void Expand(IVec3FastQueue* queue, IVec3 target, BlockID filledOverBlock,
     for (int i = 0; i < count; i++) {
         neighbor = neighbors[i];
 
-        if (!World_Contains(neighbor.X, neighbor.Y, neighbor.Z) ||
-            World_GetBlock(neighbor.X, neighbor.Y, neighbor.Z) != filledOverBlock ||
-            BinaryMap_Get(binaryMap, neighbor.X, neighbor.Y, neighbor.Z)) {
+        if (!World_Contains(neighbor.x, neighbor.y, neighbor.z) ||
+            World_GetBlock(neighbor.x, neighbor.y, neighbor.z) != filledOverBlock ||
+            BinaryMap_Get(binaryMap, neighbor.x, neighbor.y, neighbor.z)) {
             continue;
         }
 
         IVec3FastQueue_Enqueue(queue, neighbor);
-        BinaryMap_Set(binaryMap, neighbor.X, neighbor.Y, neighbor.Z);
+        BinaryMap_Set(binaryMap, neighbor.x, neighbor.y, neighbor.z);
     }
 }
 
 static void FillSelectionHandler(IVec3* marks, int count) {
     IVec3 fillOrigin = marks[0];
-    s_SourceY = fillOrigin.Y;
+    s_SourceY = fillOrigin.y;
 
-    BlockID filledOverBlock = World_GetBlock(fillOrigin.X, fillOrigin.Y, fillOrigin.Z);
+    BlockID filledOverBlock = World_GetBlock(fillOrigin.x, fillOrigin.y, fillOrigin.z);
 
     BinaryMap* binaryVisitedMap = BinaryMap_CreateEmpty(World.Width, World.Height, World.Length);
-    BinaryMap_Set(binaryVisitedMap, fillOrigin.X, fillOrigin.Y, fillOrigin.Z);
+    BinaryMap_Set(binaryVisitedMap, fillOrigin.x, fillOrigin.y, fillOrigin.z);
 
     IVec3FastQueue* queue = IVec3FastQueue_CreateEmpty();
     IVec3FastQueue_Enqueue(queue, fillOrigin);
@@ -168,7 +168,7 @@ static void FillSelectionHandler(IVec3* marks, int count) {
 
     while (!IVec3FastQueue_IsEmpty(queue)) {
         current = IVec3FastQueue_Dequeue(queue);
-        Draw_Brush(current.X, current.Y, current.Z);
+        Draw_Brush(current.x, current.y, current.z);
         Expand(queue, current, filledOverBlock, binaryVisitedMap);
     }
 

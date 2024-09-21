@@ -1,4 +1,5 @@
 #include "ClassiCube/src/Constants.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "Message.h"
 #include "UndoTree.h"

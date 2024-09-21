@@ -6,9 +6,9 @@ IVec3 Player_GetPosition(void) {
     Vec3 currentPosition = playerEntity.Position;
 
     IVec3 position;
-    position.X = (int)currentPosition.X;
-    position.Y = (int)currentPosition.Y;
-    position.Z = (int)currentPosition.Z;
+    position.x = (int)currentPosition.x;
+    position.y = (int)currentPosition.y;
+    position.z = (int)currentPosition.z;
 
     return position;
 }

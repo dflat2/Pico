@@ -1,6 +1,7 @@
 #include "ClassiCube/src/Block.h"
 #include "ClassiCube/src/Constants.h"
 #include "ClassiCube/src/PackedCol.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "Brushes/Brush.h"
 #include "Message.h"
@@ -306,7 +307,7 @@ bool Parse_TryParseCoordinates(const cc_string* coordinates, IVec3* out_result) 
     IVec3 playerPosition = Player_GetPosition();
 
     int arrayTarget[3];
-    int arrayPlayerPosition[3] = { playerPosition.X, playerPosition.Y, playerPosition.Z };
+    int arrayPlayerPosition[3] = { playerPosition.x, playerPosition.y, playerPosition.z };
     bool isRelative;
 
     for (int i = 0; i < 3; i++) {
@@ -320,9 +321,9 @@ bool Parse_TryParseCoordinates(const cc_string* coordinates, IVec3* out_result) 
         }
     }
 
-    out_result->X = arrayTarget[0];
-    out_result->Y = arrayTarget[1];
-    out_result->Z = arrayTarget[2];
+    out_result->x = arrayTarget[0];
+    out_result->y = arrayTarget[1];
+    out_result->z = arrayTarget[2];
     return true;
 }
 

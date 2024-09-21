@@ -1,4 +1,5 @@
 #include "ClassiCube/src/World.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "Draw.h"
 #include "MarkSelection.h"
@@ -34,9 +35,9 @@ static int CountBlocksAround(int x, int y, int z) {
     IVec3 min = { x - s_Intensity, y - s_Intensity, z - s_Intensity };
     IVec3 max = { x + s_Intensity, y + s_Intensity, z + s_Intensity };
 
-    for (int x_iter = min.X; x_iter <= max.X; x_iter++) {
-        for (int y_iter = min.Y; y_iter <= max.Y; y_iter++) {
-            for (int z_iter = min.Z; z_iter <= max.Z; z_iter++) {
+    for (int x_iter = min.x; x_iter <= max.x; x_iter++) {
+        for (int y_iter = min.y; y_iter <= max.y; y_iter++) {
+            for (int z_iter = min.z; z_iter <= max.z; z_iter++) {
                 if (!World_Contains(x_iter, y_iter, z_iter)) {
                     continue;
                 }
@@ -77,12 +78,12 @@ static int CountBlocksAroundXY(int x, int y, const int z) {
 static void SmoothSelectionHandler(IVec3* marks, int count) {
     const int THRESHOLD = ((s_Intensity * 2) + 1) * ((s_Intensity * 2) + 1) * ((s_Intensity * 2) + 1) * PERCENTAGE_THRESHOLD / 100;
 
-    int minX = marks[0].X - s_Radius;
-    int minY = marks[0].Y - s_Radius;
-    int minZ = marks[0].Z - s_Radius;
-    int maxX = marks[0].X + s_Radius;
-    int maxY = marks[0].Y + s_Radius;
-    int maxZ = marks[0].Z + s_Radius;
+    int minX = marks[0].x - s_Radius;
+    int minY = marks[0].y - s_Radius;
+    int minZ = marks[0].z - s_Radius;
+    int maxX = marks[0].x + s_Radius;
+    int maxY = marks[0].y + s_Radius;
+    int maxZ = marks[0].z + s_Radius;
 
     IVec3FastQueue* shouldAdd = IVec3FastQueue_CreateEmpty();
     IVec3FastQueue* shouldRemove = IVec3FastQueue_CreateEmpty();
@@ -114,12 +115,12 @@ static void SmoothSelectionHandler(IVec3* marks, int count) {
 
     while (!IVec3FastQueue_IsEmpty(shouldAdd)) {
         current = IVec3FastQueue_Dequeue(shouldAdd);
-        Draw_Block(current.X, current.Y, current.Z, s_Block);
+        Draw_Block(current.x, current.y, current.z, s_Block);
     }
 
     while (!IVec3FastQueue_IsEmpty(shouldRemove)) {
         current = IVec3FastQueue_Dequeue(shouldRemove);
-        Draw_Block(current.X, current.Y, current.Z, BLOCK_AIR);
+        Draw_Block(current.x, current.y, current.z, BLOCK_AIR);
     }
 
     int blocksAffected = Draw_End();

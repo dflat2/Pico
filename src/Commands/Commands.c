@@ -1,4 +1,4 @@
-#include "ClassiCube/src/Chat.h"
+#include "ClassiCube/src/Commands.h"
 
 extern struct ChatCommand AbortCommand;
 extern struct ChatCommand AscendCommand;

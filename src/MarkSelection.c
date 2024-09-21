@@ -4,6 +4,7 @@
 #include "ClassiCube/src/Game.h"
 #include "ClassiCube/src/Constants.h"
 #include "ClassiCube/src/World.h"
+#include "ClassiCube/src/Chat.h"
 
 #include "MarkSelection.h"
 #include "Message.h"
@@ -20,7 +21,7 @@ static bool s_Repeat = false;
 static SelectionHandler s_Handler = NULL;
 
 static void BlockChangedCallback(void* object, IVec3 coords, BlockID oldBlock, BlockID newBlock) {
-    Game_UpdateBlock(coords.X, coords.Y, coords.Z, oldBlock);
+    Game_UpdateBlock(coords.x, coords.y, coords.z, oldBlock);
     MarkSelection_DoMark(coords);
 }
 
@@ -137,22 +138,22 @@ void MarkSelection_Make(SelectionHandler handler, int count, const char* operati
 }
 
 IVec3 SnapToWorldBoundaries(IVec3 coords) {
-    if (coords.X < 0) {
-        coords.X = 0;
-    } else if (coords.X >= World.Width) {
-        coords.X = World.Width - 1;
+    if (coords.x < 0) {
+        coords.x = 0;
+    } else if (coords.x >= World.Width) {
+        coords.x = World.Width - 1;
     }
 
-    if (coords.Y < 0) {
-        coords.Y = 0;
-    } else if (coords.Y >= World.Height) {
-        coords.Y = World.Height - 1;
+    if (coords.y < 0) {
+        coords.y = 0;
+    } else if (coords.y >= World.Height) {
+        coords.y = World.Height - 1;
     }
 
-    if (coords.Z < 0) {
-        coords.Z = 0;
-    } else if (coords.Z >= World.Length) {
-        coords.Z = World.Length - 1;
+    if (coords.z < 0) {
+        coords.z = 0;
+    } else if (coords.z >= World.Length) {
+        coords.z = World.Length - 1;
     }
 
     return coords;
