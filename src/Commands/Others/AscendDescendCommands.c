@@ -105,7 +105,7 @@ static void Ascend_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    struct LocalPlayer* player = (struct LocalPlayer*)Entities.List[ENTITIES_SELF_ID];
+    struct LocalPlayer* player = Entities.CurPlayer;
     struct Entity playerEntity = player->Base;
 
     Vec3 currentPosition = playerEntity.Position;
@@ -131,7 +131,7 @@ static void Descend_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    struct LocalPlayer* player = (struct LocalPlayer*)Entities.List[ENTITIES_SELF_ID];
+    struct LocalPlayer* player = Entities.CurPlayer;
     struct Entity playerEntity = player->Base;
 
     Vec3 currentPosition = playerEntity.Position;

@@ -1,7 +1,7 @@
 #include "ClassiCube/src/Entity.h"
 
 IVec3 Player_GetPosition(void) {
-    struct LocalPlayer* player = (struct LocalPlayer*)Entities.List[ENTITIES_SELF_ID];
+    struct LocalPlayer* player = Entities.CurPlayer;
     struct Entity playerEntity = player->Base;
     Vec3 currentPosition = playerEntity.Position;
 
