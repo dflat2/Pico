@@ -39,7 +39,7 @@ static void Pico_Command(const cc_string* args, int argsCount) {
     Message_Player("&cWarning. &fPlease use:");
     Message_Player("\x07 &b/Z &finstead of &b/Cuboid&f");
     Message_Player("\x07 &b/R &finstead of &b/Replace&f");
-    Message_Player("\x07 &b/P &finstead of &b/Place&f");
+    Message_Player("\x07 &b/PL &finstead of &b/Place&f");
     Message_Player("As default build commands are incompatible with Pico.");
     Message_Player("&a------------------------------------------------");
 }

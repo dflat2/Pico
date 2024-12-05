@@ -14,11 +14,11 @@ static void Place_Command(const cc_string* args, int argsCount);
 static void Place(IVec3 position, BlockID block);
 
 struct ChatCommand PlaceCommand = {
-    "P",
+    "PL",
     Place_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/P [coordinates]",
+        "&b/PL [coordinates]",
         "&fPlaces a block &fat &bcoordinates&f.",
         "\x07 &bcoordinates&f: three space-separated integers &f(defaults to current position).",
         NULL,
@@ -32,7 +32,7 @@ static void Place(IVec3 position, BlockID block) {
     char messageBuffer[STRING_SIZE];
     cc_string message = String_FromArray(messageBuffer);
 
-    Draw_Start("P");
+    Draw_Start("PL");
     Draw_Block(position.x, position.y, position.z, block);
     int blocksAffected = Draw_End();
 
