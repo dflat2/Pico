@@ -21,22 +21,8 @@
 #include "Message.h"
 #include "MarkSelection.h"
 
-static void OnChatSending(void* obj, const cc_string* msg, int msgType) {
-    const cc_string clientCuboid = String_FromReadonly("/client cuboid");
-    const cc_string cuboid = String_FromReadonly("/cuboid");
-
-    cc_string text;
-
-    if (String_CaselessStarts(msg, &clientCuboid) || String_CaselessStarts(msg, &cuboid)) {
-        text = String_FromReadonly("&cWarning. &fYou are using the vanilla &b/Cuboid&f.");
-        Chat_Add(&text);
-        text = String_FromReadonly("You won't be able to &b/Undo&f, &b/Mark&f or &b/Abort&f. Use &b/Z &finstead.");
-        Chat_Add(&text);
-    }
-}
-
 static void Pico_Init(void) {
-    String_AppendConst(&Server.AppName, " + Pico 0.3.0");
+    String_AppendConst(&Server.AppName, " + Pico 0.3.1");
 
     if (!Server.IsSinglePlayer) {
         return;
@@ -44,11 +30,10 @@ static void Pico_Init(void) {
 
     Commands_RegisterAll();
 
-    // Warns the user when doing `/Cuboid` instead of `/Z`.
-    Event_Register((struct Event_Void*) &ChatEvents.ChatSending, NULL, (Event_Void_Callback)OnChatSending);
-
     // Disables physics as they are incompatible with undo.    
     Physics.Enabled = false;
+
+    Message_Player("Plugin &bPico 0.3.1 &fwas loaded. Get started with &b/Pico&f.");
 }
 
 static void Pico_Free(void) {
@@ -60,9 +45,6 @@ static void Pico_Free(void) {
 
     // Abort selection in case there is currently a selection in progress.
     MarkSelection_Abort();
-
-    // Disable warning when doing `/Cuboid` instead of `/Z`
-    Event_Unregister((struct Event_Void*) &ChatEvents.ChatSending, NULL, (Event_Void_Callback)OnChatSending);
     UndoTree_Disable();
 }
 

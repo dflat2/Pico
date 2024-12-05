@@ -99,3 +99,4 @@ void Message_CommandUsage(struct ChatCommand command) {
     snprintf(usageMessage, sizeof(usageMessage), "Usage: %s&f.", firstHelpLine);
     Message_Player(usageMessage);
 }
+

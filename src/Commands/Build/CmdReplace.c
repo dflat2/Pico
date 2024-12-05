@@ -13,11 +13,11 @@ static void Replace_Command(const cc_string* args, int argsCount);
 static BlockID s_ReplacedBlock;
 
 struct ChatCommand ReplaceCommand = {
-    "Replace",
+    "R",
     Replace_Command,
     COMMAND_FLAG_SINGLEPLAYER_ONLY,
     {
-        "&b/Replace <block> @ +",
+        "&b/R <block> @ +",
         "Replaces &bblock &fwith the block you're holding, or given brush.",
         "\x07 &bblock&f: block name or identifier.",
         NULL,
@@ -29,7 +29,7 @@ struct ChatCommand ReplaceCommand = {
 static void ReplaceSelectionHandler(IVec3* marks, int count);
 
 static void DoReplace(IVec3 min, IVec3 max) {
-    Draw_Start("Replace");
+    Draw_Start("R");
     BlockID current;
 
     for (int x = min.x; x <= max.x; x++) {
@@ -48,7 +48,7 @@ static void DoReplace(IVec3 min, IVec3 max) {
 
     if (MarkSelection_Repeating()) {
         Message_Selection("&aPlace or break two blocks to determine the edges.");
-        MarkSelection_Make(ReplaceSelectionHandler, 2, "Replace", MACRO_MARKSELECTION_DO_REPEAT);
+        MarkSelection_Make(ReplaceSelectionHandler, 2, "R", MACRO_MARKSELECTION_DO_REPEAT);
         return;
     }
 
@@ -91,9 +91,9 @@ static void Replace_Command(const cc_string* args, int argsCount) {
     }
 
     if (repeat) {
-        Message_Player("Now repeating &bReplace&f.");
+        Message_Player("Now repeating &bR&f.");
     }
 
-    MarkSelection_Make(ReplaceSelectionHandler, 2, "Replace", repeat);
+    MarkSelection_Make(ReplaceSelectionHandler, 2, "R", repeat);
     Message_Selection("&aPlace or break two blocks to determine the edges.");
 }
