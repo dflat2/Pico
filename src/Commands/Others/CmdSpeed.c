@@ -35,7 +35,7 @@ static void ResetSpeed(struct LocalPlayer* player) {
 }
 
 static void Speed_Command(const cc_string* args, int argsCount) {
-    struct LocalPlayer* player = (struct LocalPlayer*)Entities.List[ENTITIES_SELF_ID];
+    struct LocalPlayer* player = Entities.CurPlayer;
 
     if (argsCount == 0) {
         ResetSpeed(player);

@@ -105,10 +105,10 @@ static void Ascend_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    struct LocalPlayer* player = (struct LocalPlayer*)Entities.List[ENTITIES_SELF_ID];
-    struct Entity playerEntity = player->Base;
+    struct LocalPlayer* player = Entities.CurPlayer;
+    struct Entity* playerEntity = &player->Base;
 
-    Vec3 currentPosition = playerEntity.Position;
+    Vec3 currentPosition = playerEntity->Position;
     Vec3 ascendPosition;
 
     bool success = TryFindAbove(currentPosition, &ascendPosition);
@@ -122,7 +122,7 @@ static void Ascend_Command(const cc_string* args, int argsCount) {
     update.flags = LU_HAS_POS;
     update.pos = ascendPosition;
 
-    playerEntity.VTABLE->SetLocation(&playerEntity, &update);
+    playerEntity->VTABLE->SetLocation(playerEntity, &update);
 }
 
 static void Descend_Command(const cc_string* args, int argsCount) {
@@ -131,10 +131,10 @@ static void Descend_Command(const cc_string* args, int argsCount) {
         return;
     }
 
-    struct LocalPlayer* player = (struct LocalPlayer*)Entities.List[ENTITIES_SELF_ID];
-    struct Entity playerEntity = player->Base;
+    struct LocalPlayer* player = Entities.CurPlayer;
+    struct Entity* playerEntity = &player->Base;
 
-    Vec3 currentPosition = playerEntity.Position;
+    Vec3 currentPosition = playerEntity->Position;
     Vec3 descendPosition;
 
     bool success = TryFindBelow(currentPosition, &descendPosition);
@@ -148,5 +148,5 @@ static void Descend_Command(const cc_string* args, int argsCount) {
     update.flags = LU_HAS_POS;
     update.pos = descendPosition;
 
-    playerEntity.VTABLE->SetLocation(&playerEntity, &update);
+    playerEntity->VTABLE->SetLocation(playerEntity, &update);
 }
